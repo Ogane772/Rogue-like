@@ -163,7 +163,6 @@
     <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="debug_font.cpp" />
     <ClCompile Include="CEnemy_Srime.cpp" />
-    <ClCompile Include="effect.cpp" />
     <ClCompile Include="exp.cpp" />
     <ClCompile Include="fede.cpp" />
     <ClCompile Include="game.cpp" />
@@ -199,7 +198,6 @@
     <ClInclude Include="CTexture.h" />
     <ClInclude Include="debug_font.h" />
     <ClInclude Include="CEnemy_Srime.h" />
-    <ClInclude Include="effect.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />

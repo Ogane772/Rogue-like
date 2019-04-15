@@ -20,20 +20,7 @@ void CStage::Stage_Initialize(void)
 	//g_TextureIndex = TEXTURE_INVALID_INDEX;;
 	displayframe = 0;
 	Level++;
-	switch (Level)
-	{
-	case 1:
-		//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/1F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
-		break;
 
-	case 2:
-		//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/2F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
-		break;
-
-	case 3:
-		//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/3F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
-		break;
-	}
 	
 	Fade_Start(false, 10, 0, 0, 0);
 
@@ -46,8 +33,18 @@ void CStage::Stage_Finalize(void)
 
 void CStage::Stage_Draw(void)
 {
-	CBilboard::BilBoard_ChangeSizeColor(12.8f, 7.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
-	C2DObj::Sprite_Draw(CTexture::TEX_1F,0.0f, 0.0f, 0, 0, CTexture::Texture_GetWidth(CTexture::TEX_1F), CTexture::Texture_GetHeight(CTexture::TEX_1F));
+	switch (Level)
+	{
+	case 1:
+		C2DObj::Sprite_Draw(CTexture::TEX_1F, 0.0f, 0.0f, 0, 0, CTexture::Texture_GetWidth(CTexture::TEX_1F), CTexture::Texture_GetHeight(CTexture::TEX_1F));
+		break;
+	case 2:
+		C2DObj::Sprite_Draw(CTexture::TEX_2F, 0.0f, 0.0f, 0, 0, CTexture::Texture_GetWidth(CTexture::TEX_2F), CTexture::Texture_GetHeight(CTexture::TEX_2F));
+		break;
+	case 3:
+		C2DObj::Sprite_Draw(CTexture::TEX_3F, 0.0f, 0.0f, 0, 0, CTexture::Texture_GetWidth(CTexture::TEX_3F), CTexture::Texture_GetHeight(CTexture::TEX_3F));
+		break;
+	}
 }
 
 void CStage::Stage_Update(void)

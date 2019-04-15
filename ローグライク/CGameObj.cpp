@@ -115,6 +115,7 @@ bool CGameObj::Device_Initialize(HWND hWnd)
 		return false;
 	}
 
+
 	// ƒTƒ“ƒvƒ‰[‚ÌÝ’è
 	m_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 	m_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);

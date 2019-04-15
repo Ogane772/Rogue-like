@@ -102,30 +102,25 @@ void CUserinterface::UI_Draw(void)
 			switch (g_text.act)
 			{
 			case REGULARATTACK:
+				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！スライムに%dダメージ与えた!", g_text.damage);
-				CBilboard::BilBoard_ChangeSizeColor(16.0f, 2.5f, D3DCOLOR_RGBA(0, 0, 255, 128));
-				CBilboard::BilBoard3_Draw(TEX_WHITE, g_text.pos);
-				//Sprite_Draw(TEX_WHITE, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
 				break;
 
 			case GOLADDER:
+				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "先に進みますか？");
 				UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "⇒ 進む\n\n   そのまま");
-				CBilboard::BilBoard_ChangeSizeColor(16.0f, 2.5f, D3DCOLOR_RGBA(0, 0, 255, 128));
-				Sprite_Draw(TEX_WHITE, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
 				break;
 
 			case NOTGOLADDER:
+				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "先に進みますか？");
 				UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "    進む\n\n⇒そのまま");
-				CBilboard::BilBoard_ChangeSizeColor(16.0f, 2.5f, D3DCOLOR_RGBA(0, 0, 255, 128));
-				Sprite_Draw(TEX_WHITE, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
 				break;
 
 			case DESTROY:
+				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはやられてしまった");
-				CBilboard::BilBoard_ChangeSizeColor(16.0f, 2.5f, D3DCOLOR_RGBA(0, 0, 255, 128));
-				Sprite_Draw(TEX_WHITE, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
 				break;
 			}
 
@@ -134,23 +129,24 @@ void CUserinterface::UI_Draw(void)
 		case SRAIM:
 			if (g_text.act == REGULARATTACK)
 			{
+				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムの攻撃！プレイヤーに%dダメージ与えた!", g_text.damage);
-				CBilboard::BilBoard_ChangeSizeColor(16.0f, 2.5f, D3DCOLOR_RGBA(0, 0, 255, 128));
-				CBilboard::BilBoard3_Draw(TEX_WHITE, g_text.pos);
+				//Sprite_Draw(TEX_MESSAGE_WINDOW, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_MESSAGE_WINDOW), Texture_GetHeight(TEX_MESSAGE_WINDOW));
 				//Sprite_Draw(TEX_WHITE, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
 				break;
 			}
 
 		case SMALEMAP:
 			// ミニマップ描画
-			for (int x = 0; x < MAX_MAPWIDTH; x++)
+			int x, y;
+			for (x = 0; x < MAX_MAPWIDTH; x++)
 			{
-				for (int y = 0; y < MAX_MAPHEIGHT; y++)
+				for (y = 0; y < MAX_MAPHEIGHT; y++)
 				{
 					if (CMap::Map_GetData(y, x).type != 0)
 					{
-						CBilboard::BilBoard_ChangeMapPos(0.05f + x * 0.05f, 5.00f - y * 0.05f, D3DCOLOR_RGBA(0, 0, 255, 128)); //1マス
-						CBilboard::BilBoard3_Draw(TEX_WHITE, MapPos);
+						//CBilboard::BilBoard_ChangeMapPos(0.05f + x * 0.05f, 5.00f - y * 0.05f, D3DCOLOR_RGBA(0, 0, 255, 128)); //1マス
+						//CBilboard::BilBoard3_Draw(TEX_WHITE, MapPos);
 						//Sprite_Draw(TEX_WHITE, MapPos.x, MapPos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
 					}
 				}

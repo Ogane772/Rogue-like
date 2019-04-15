@@ -26,12 +26,10 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/3F.png",1284,720 },
 	{ "asset/texture/4F.png",1284,720 },
 	{ "asset/texture/5F.png",1284,720 },
-	{ "asset/texture/shadow000.jpg",80,80 },
-	{ "asset/texture/effect_hit1.png",240,240 },
-	{ "asset/texture/effect_hit2.png",240,240 },
-	{ "asset/texture/effect_hit3.png",240,240 },
-	{ "asset/texture/effect_hit4.png",240,240 },
+	{ "asset/texture/shadow000.png",128,128 },
+	{ "asset/texture/effect_hit.png",960,240 },
 	{ "asset/texture/rezult.png",1920,1080 },
+	{ "asset/texture/message_window.png",845,154 },
 };
 
 int CTexture::TEXTURE_MAX = sizeof(CTexture::TEXTURE_FILES) / sizeof(TEXTURE_FILES[0]);

@@ -10,6 +10,7 @@
 #include "meshField.h"
 #include "Cplayer.h"
 #include "bilboard.h"
+#include "exp.h"
 #include "CEnemy.h"
 #include "fade.h"
 #include "scene.h"
@@ -23,7 +24,6 @@
 #include "fade.h"
 #include <time.h>
 #include "map.h"
-#include "effect.h"
 #include "wall.h"
 //=============================================================================
 //	定数定義
@@ -66,7 +66,7 @@ void Game_Initialize(void)
 	CBilboard::Shadow_Init();
 	CMeshField::MeshField_Init();
 	CWall::MeshWall_Init();
-	CEffect::Effect_Initialize();
+	Exp_Init();
 	CUserinterface::UI_Initialize();
 	//Number_Initialize(3);
 	CMap::Map_Initialize();
@@ -95,7 +95,6 @@ void Game_Initialize(void)
 void Game_Finalize(void)
 {
 	CMeshField::MeshField_Finalize();
-	CEffect::Effect_Finalize();
 	CBilboard::Shadow_Finalize();
 	C3DObj::DeleteAll();			//	3Dオブジェクト全消去
 	CGameObj::DeleteAll2D();			//	2Dオブジェクト全消去
@@ -112,9 +111,9 @@ void Game_Update(void)
 	C3DObj::UpdateAll();	//	3Dオブジェクト更新
 	CGameObj::UpdateAll();	//	2Dオブジェクト更新
 	CBilboard::BilBoard_Update();
-	CEffect::Effect_Update();
 	CUserinterface::UI_Update();
 	CEnemy::EnemyTurnEnd();
+	Exp_Update();
 }
 
 //=============================================================================
@@ -127,7 +126,7 @@ void Game_Draw(void)
 	CGameObj::DrawAll();	//	2Dオブジェクト描画
 	CMeshField::MeshField_Draw();
 	CWall::MeshWall_Draw();
-	CEffect::Effect_Draw();
+	Exp_Draw();
 	CUserinterface::UI_Draw();
 }
 
