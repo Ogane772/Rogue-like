@@ -26,7 +26,7 @@ CObjectLadder::~CObjectLadder()
 
 void CObjectLadder::Initialize(int x, int z)
 {
-	g_laddertex = CTexture::Texture_SetLoadFile("./asset/texture/ladder.png", 10, 10);
+	//g_laddertex = CTexture::Texture_SetLoadFile("./asset/texture/ladder.png", 10, 10);
 	alive = true;
 	m_Mapz = z;
 	m_Mapx = x;
@@ -56,7 +56,7 @@ void CObjectLadder::Draw(void)
 
 		D3DXMatrixTranslation(&mtxTranslotation, m_Position.x, m_Position.y, m_Position.z);
 		CBilboard::BilBoard_ChangeSizeColor(5.0f, 4.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
-		CBilboard::BilBoard3_Draw(g_laddertex, m_Position);
+		CBilboard::BilBoard3_Draw(CTexture::TEX_LADDER, m_Position);
 	}
 }
 

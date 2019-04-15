@@ -14,139 +14,111 @@
 //	静的変数
 //=============================================================================
 
-CTexture::TextureFile CTexture::g_Files[TEXTURE_MANAGE_MAX];
-LPDIRECT3DTEXTURE9 CTexture::g_pTextures[TEXTURE_MANAGE_MAX];
+CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
+	{ "asset/texture/title.png",1280,720 },
+	{ "asset/texture/white.png",64,64 },
+	{ "asset/texture/wood.png",225,225 },
+	{ "asset/texture/kusa.png",1300,1300 },
+	{ "asset/texture/block.png",128,128 },
+	{ "asset/texture/ladder.png",640,640 },
+	{ "asset/texture/1F.png",1284,720 },
+	{ "asset/texture/2F.png",1284,720 },
+	{ "asset/texture/3F.png",1284,720 },
+	{ "asset/texture/4F.png",1284,720 },
+	{ "asset/texture/5F.png",1284,720 },
+	{ "asset/texture/shadow000.jpg",80,80 },
+	{ "asset/texture/effect_hit1.png",240,240 },
+	{ "asset/texture/effect_hit2.png",240,240 },
+	{ "asset/texture/effect_hit3.png",240,240 },
+	{ "asset/texture/effect_hit4.png",240,240 },
+	{ "asset/texture/rezult.png",1920,1080 },
+};
 
-// 読み込むテクスチャファイルの事前予約をする
-// 
-// 引数:pFileName = ファイル名
-//          width = テクスチャの
-//		   height = 幅テクスチャの高さ
-// 戻り値:予約(テクスチャ管理)番号
-// 
+int CTexture::TEXTURE_MAX = sizeof(CTexture::TEXTURE_FILES) / sizeof(TEXTURE_FILES[0]);
 
-int CTexture::Texture_SetLoadFile(const char* pFileName, int width, int height)
+LPDIRECT3DTEXTURE9 CTexture::m_pTextures[sizeof(CTexture::TEXTURE_FILES) / sizeof(TEXTURE_FILES[0])] = {};
+
+
+
+
+//=============================================================================
+//	生成
+//=============================================================================
+
+CTexture::CTexture()
 {
-	for (int i = 0; i < TEXTURE_MANAGE_MAX; i++)
-	{
-		// ネズミ返しコード
-		if (g_Files[i].filename[0]) continue;
 
+}
 
-		// 使われてないコード
-		strcpy(g_Files[i].filename, pFileName);
-		g_Files[i].width = width;
-		g_Files[i].height = height;
+//=============================================================================
+//	破棄
+//=============================================================================
 
+CTexture::~CTexture()
+{
+	//CTexture::Texture_Release();
 
-
-		return i;
-	}
-
-	return TEXTURE_INVALID_INDEX;
 }
 
 
-// テクスチャの読み込み
-// 
-// 戻り値:読み込めなかった数
-// 
-
+//	テクスチャの読み込み
 int CTexture::Texture_Load(void)
 {
-	int failed_count = 0;
+
 	HRESULT hr;
-
-	for (int i = 0; i < TEXTURE_MANAGE_MAX; i++)
+	int i;
+	int failed_count = 0;
+	for (i = 0; i < TEXTURE_MAX; i++)
 	{
-		// ネズミ返しコード
-		if (!g_Files[i].filename[0]) continue;
-
-		// データベースに記載があった
-
-		if (g_pTextures[i]) continue;
-
-		if (!m_pD3DDevice)
+		if (m_pTextures[i] == NULL)
 		{
-			failed_count++;
-			continue;
+			hr = D3DXCreateTextureFromFile(m_pD3DDevice, TEXTURE_FILES[i].filename, &m_pTextures[i]);
+			if (FAILED(hr))
+			{
+				failed_count++;
+				MessageBox(NULL, "テクスチャデータを読み込めませんでした", "確認", MB_OK);
+			}
 		}
-
-
-
-		hr = D3DXCreateTextureFromFile(m_pD3DDevice, g_Files[i].filename, &g_pTextures[i]);
-
-		if (FAILED(hr))
-		{
-			failed_count++;
-			continue;
-		}
-
 	}
-	//	安全に読み込める
+
 	return failed_count;
 }
 
-// テクスチャの取得
-LPDIRECT3DTEXTURE9 CTexture::Texture_GetTexture(int index)
-{
-	return g_pTextures[index];
-}
-// テクスチャの幅の取得
-int CTexture::Texture_GetWidth(int index)
-{
-	return g_Files[index].width;
-}
 
-// テクスチャの高さの取得
-int CTexture::Texture_GetHeight(int index)
+// テクスチャの開放
+void CTexture::Texture_Release(void)
 {
-	return g_Files[index].height;
-}
-
-// テクスチャの解放
-// 
-//	引数: indices = 解放したいテクスチャ番号
-//					が入った配列の先頭アドレス
-//		  count   = 解放したいテクスチャ番号
-//                  の個数
-//
-int CTexture::Texture_Release(int indices[], int count)
-{
-	int unrelease_count = 0;
-
-	for (int i = 0; i < count; i++)
+	int i;
+	for (i = 0; i < TEXTURE_MAX; i++)
 	{
-		// SAFERELEASEでも可能
-		if (g_pTextures[indices[i]])
+		if (m_pTextures[i] != NULL)
 		{
-			g_pTextures[indices[i]]->Release();
-			g_pTextures[indices[i]] = NULL;
-
+			m_pTextures[i]->Release();
+			m_pTextures[i] = NULL;
 		}
-		else
-		{
-			unrelease_count++;
-		}
-		g_Files[indices[i]].filename[0] = 0; // \0と同義
 	}
-
-	return unrelease_count;
 }
 
-// テクスチャの全解放
-void CTexture::Texture_ReleaseAll(void)
+void CTexture::Texture_Load(int index)
 {
-	for (int i = 0; i < TEXTURE_MANAGE_MAX; i++)
-	{// SAFERELEASE
-		if (g_pTextures[i])
+	HRESULT hr;
+	if (m_pTextures[index] == NULL)
+	{
+		hr = D3DXCreateTextureFromFile(m_pD3DDevice, TEXTURE_FILES[index].filename, &m_pTextures[index]);
+		if (FAILED(hr))
 		{
-			g_pTextures[i]->Release();
-			g_pTextures[i] = NULL;
+			MessageBox(NULL, "テクスチャデータを読み込めませんでした", "確認", MB_OK);
 		}
-		g_Files[i].filename[0] = 0; // \0と同義
 	}
+}
 
+void CTexture::Texture_Release(int index)
+{
+	if (m_pTextures[index] != NULL)
+	{
+		m_pTextures[index]->Release();
+		m_pTextures[index] = NULL;
+	}
 }
 
 

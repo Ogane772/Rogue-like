@@ -55,7 +55,7 @@ public:
 
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
 private:
-	static int g_TexWood2;
+	//static int g_TexWood2;
 	static MAP **g_map, *base_g_map;
 
 	static int GroupWidth;

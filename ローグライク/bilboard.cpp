@@ -18,7 +18,7 @@ static LPDIRECT3DINDEXBUFFER9 g_pIndexBuffer = NULL;
 static LPDIRECT3DVERTEXBUFFER9 g_ShadowVertexBuf = NULL;
 static LPDIRECT3DINDEXBUFFER9 g_ShadowIndexBuf = NULL;
 static D3DXMATRIX gWorld;
-static int g_Shadow = -1;
+//static int g_Shadow = -1;
 
 Vertex3D board[] = {
 	// ‘O
@@ -39,7 +39,7 @@ Vertex3D shadow[] = {
 
 void CBilboard::Shadow_Init(void)
 {
-	g_Shadow = CTexture::Texture_SetLoadFile("./asset/texture/shadow000.jpg", 128, 128);
+//	g_Shadow = CTexture::Texture_SetLoadFile("./asset/texture/shadow000.jpg", 128, 128);
 
 	CGameObj::m_pD3DDevice->CreateVertexBuffer(sizeof(Vertex3D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX3D, D3DPOOL_MANAGED, &g_ShadowVertexBuf, NULL);
 	CGameObj::m_pD3DDevice->CreateIndexBuffer(sizeof(WORD) * 6, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &g_ShadowIndexBuf,  NULL);
@@ -214,7 +214,7 @@ void CBilboard::Shadow_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos)
 	CGameObj::m_pD3DDevice->SetFVF(FVF_VERTEX3D);
 
 	CGameObj::m_pD3DDevice->SetTransform(D3DTS_WORLD, &mtxS);
-	CGameObj::m_pD3DDevice->SetTexture(0, CTexture::Texture_GetTexture(g_Shadow));
+	CGameObj::m_pD3DDevice->SetTexture(0, CTexture::Texture_GetTexture(CTexture::TEX_SHADOW));
 	CGameObj::m_pD3DDevice->SetStreamSource(0, g_ShadowVertexBuf, 0, sizeof(Vertex3D));
 	CGameObj::m_pD3DDevice->SetIndices(g_ShadowIndexBuf);
 	CGameObj::m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);

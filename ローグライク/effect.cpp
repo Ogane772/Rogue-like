@@ -40,22 +40,22 @@ static int g_EffectFramecount = 0;
 
 //static int g_ExplosionTexture = TEXTURE_INVALID_INDEX;
 
-static int g_EffectTexture1 = TEXTURE_INVALID_INDEX;
-static int g_EffectTexture2 = TEXTURE_INVALID_INDEX;
-static int g_EffectTexture3 = TEXTURE_INVALID_INDEX;
-static int g_EffectTexture4 = TEXTURE_INVALID_INDEX;
+static int g_EffectTexture1;
+static int g_EffectTexture2;
+static int g_EffectTexture3;
+static int g_EffectTexture4;
 
-static int g_ShadowTexture = TEXTURE_INVALID_INDEX;
+static int g_ShadowTexture;
 
 void CEffect::Effect_Initialize(void)
 {
 	// テクスチャの読み込み予約をしておく
 	//g_ExplosionTexture = Texture_SetLoadFile("asset/texture/explosion000.png", 8, 1);
 
-	g_EffectTexture1 = Texture_SetLoadFile("asset/texture/effect_hit1.png", 5, 5);
-	g_EffectTexture2 = Texture_SetLoadFile("asset/texture/effect_hit2.png", 5, 5);
-	g_EffectTexture3 = Texture_SetLoadFile("asset/texture/effect_hit3.png", 5, 5);
-	g_EffectTexture4 = Texture_SetLoadFile("asset/texture/effect_hit4.png", 5, 5);
+	//g_EffectTexture1 = Texture_SetLoadFile("asset/texture/effect_hit1.png", 5, 5);
+	//g_EffectTexture2 = Texture_SetLoadFile("asset/texture/effect_hit2.png", 5, 5);
+	//g_EffectTexture3 = Texture_SetLoadFile("asset/texture/effect_hit3.png", 5, 5);
+	//g_EffectTexture4 = Texture_SetLoadFile("asset/texture/effect_hit4.png", 5, 5);
 
 	for (int i = 0; i < EFFECT_MAX; i++)
 	{
@@ -75,11 +75,11 @@ void CEffect::Effect_Initialize(void)
 void CEffect::Effect_Finalize(void)
 {
 	// テクスチャの解放
-	Texture_Release(&g_EffectTexture1, 1);
-	Texture_Release(&g_EffectTexture2, 1);
-	Texture_Release(&g_EffectTexture3, 1);
-	Texture_Release(&g_EffectTexture4, 1);
-	Texture_Release(&g_ShadowTexture, 1);
+	//Texture_Release(&g_EffectTexture1, 1);
+	//Texture_Release(&g_EffectTexture2, 1);
+	//Texture_Release(&g_EffectTexture3, 1);
+	//Texture_Release(&g_EffectTexture4, 1);
+	//Texture_Release(&g_ShadowTexture, 1);
 
 }
 
