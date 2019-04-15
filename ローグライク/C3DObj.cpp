@@ -509,8 +509,8 @@ void C3DObj::DrawDX_Normal(D3DXMATRIX mtxWorld, NormalModelData * pNomalModel)
 	DWORD i;
 
 	//m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-	m_pD3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
-	m_pD3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
+	//m_pD3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
+	//m_pD3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
 
 
 	// マトリックスのセット

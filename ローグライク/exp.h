@@ -2,14 +2,7 @@
 #define EXP_H_
 enum Effect
 {
-	ENEMY_HIKKAI,//当たり判定候補
-	STAR,//でかい星
-	SHINE,//回復オーラ
-	SMALLSTAR,   //星少し
-	HIT,	   //普通のヒット
-	IMPACT_13, //候補
-	SURASYU,//スラッシュ
-	HEAL,
+	HIT,//当たり判定候補
 };
 void Exp_Init(void);
 void Exp_Update(void);

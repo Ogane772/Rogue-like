@@ -17,6 +17,8 @@ public:
 
 	static void Shadow_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos);
 	static void Shadow_Finalize(void);
+	//エフェクト用ビルボード
+	static void BillBoard_Exp_Draw(float x, float y, float z, int texture_index, int anime_pattan, float size, float rotation, int tx, int ty, int width_patan, int counter, int animetime);
 };
 //void BilBoard_NextDraw(void);
 

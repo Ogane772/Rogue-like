@@ -7,9 +7,9 @@
 #include "debug_font.h"
 #include "Attack.h"
 #include "map.h"
-#include "effect.h"
 #include "collision.h"
 #include "bilboard.h"
+#include "exp.h"
 #include "C3DObj.h"
 #define MAXHP (20)
 #define STR (4)
@@ -124,9 +124,9 @@ void CEnemy_Srime::Draw(void)
 	DebugFont_Draw(2, 110, "エネミー座標番地 Z %.0f  X %.0f (%d ～ %d)", (g_enemy[0].pos.z - 247.5f) / -5, (g_enemy[0].pos.x + 247.5f) / 5, 0, 99);
 	DebugFont_Draw(2, 140, "エネミー座標 X %.1f Y %.1f Z %.1f", g_enemy[1].pos.x, g_enemy[1].pos.y, g_enemy[1].pos.z);
 	DebugFont_Draw(2, 170, "エネミー座標番地 Z %.0f  X %.0f (%d ～ %d)", (g_enemy[1].pos.z - 247.5f) / -5, (g_enemy[1].pos.x + 247.5f) / 5, 0, 99);*/
-	DrawDX_Normal(m_mtxWorld, &Normal_model);
 	CBilboard::Shadow_Draw(m_mtxWorld, m_Position);
-
+	DrawDX_Normal(m_mtxWorld, &Normal_model);
+	/*
 	DebugFont_Draw(200, 20, "エネミー出現数%d", m_EnemyNum[TYPE_SRIME]);
 	DebugFont_Draw(200, 60, "m_Judge_enemy.HitTop = %d", m_Judge_enemy.HitTop);
 	DebugFont_Draw(200, 100, "m_Judge_enemy.HitBottom  = %d", m_Judge_enemy.HitBottom);
@@ -147,6 +147,7 @@ void CEnemy_Srime::Draw(void)
 	DebugFont_Draw(200, 700, "m_Judge_enemy.Hitnaname   = %d", m_Judge_enemy.Hitnaname);
 	DebugFont_Draw(200, 740, "Attackfream = %d", attackframe);
 	//DebugFont_Draw(200, 150, "エネミーモード%d", enemyturn);
+	*/
 }
 
 void CEnemy_Srime::Enemy_AI(void)
@@ -1059,7 +1060,7 @@ void CEnemy_Srime::Enemy_rightbottomMove(void)
 void CEnemy_Srime::Damage(int str)
 {
 	// 後にダメージエフェクトを作成
-	CEffect::Effect_Create(m_Position);
+	Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
 
 	// 後にダメージ計算式を作成
 	m_Hp -= str;

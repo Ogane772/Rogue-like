@@ -31,11 +31,9 @@ public:
 		TEX_4F,
 		TEX_5F,
 		TEX_SHADOW,
-		TEX_HIT_1,
-		TEX_HIT_2,
-		TEX_HIT_3,
-		TEX_HIT_4,
+		TEX_HIT,
 		TEX_RESULT,
+		TEX_MESSAGE_WINDOW,
 		TEX_MAX,
 	};
 
