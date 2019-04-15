@@ -10,28 +10,28 @@
 /*======================================================================
 ÉOÉçÅ[ÉoÉãïœêî
 ======================================================================*/
-int CStage::g_TextureIndex;
+//int CStage::g_TextureIndex;
 int CStage::displayframe;
 int CStage::Level;
 
 void CStage::Stage_Initialize(void)
 {
 	g_bIsFade = false;
-	g_TextureIndex = TEXTURE_INVALID_INDEX;;
+	//g_TextureIndex = TEXTURE_INVALID_INDEX;;
 	displayframe = 0;
 	Level++;
 	switch (Level)
 	{
 	case 1:
-		g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/1F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
+		//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/1F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
 		break;
 
 	case 2:
-		g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/2F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
+		//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/2F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
 		break;
 
 	case 3:
-		g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/3F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
+		//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/3F.png", WINDOW_WIDTH, WINDOW_HEIGHT);
 		break;
 	}
 	
@@ -47,12 +47,11 @@ void CStage::Stage_Finalize(void)
 void CStage::Stage_Draw(void)
 {
 	CBilboard::BilBoard_ChangeSizeColor(12.8f, 7.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
-	CBilboard::BilBoard3_Draw(g_TextureIndex, D3DXVECTOR3(CCamera::Camera_GetData().x - 6.5f, CCamera::Camera_GetData().y - 6.6f, CCamera::Camera_GetData().z - 1.0f));
+	C2DObj::Sprite_Draw(CTexture::TEX_1F,0.0f, 0.0f, 0, 0, CTexture::Texture_GetWidth(CTexture::TEX_1F), CTexture::Texture_GetHeight(CTexture::TEX_1F));
 }
 
 void CStage::Stage_Update(void)
 {
-	CBilboard::BilBoard_Update();
 	//Camera_TitleUpdate();
 	displayframe++;
 

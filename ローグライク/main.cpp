@@ -390,7 +390,7 @@ void End(void)
 
 	// テクスチャの解放
 	//Texture_Release();
-	C2DObj::Texture_ReleaseAll();
+	C2DObj::Texture_Release();
 
 	// スプライトの開放
 	//Sprite_Finalize();

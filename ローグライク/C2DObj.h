@@ -24,7 +24,7 @@ public:
 	static void Sprite_Finalize(void);		//	スプライト破棄
 
 	void m_Sprite_Draw(int texture_index, float dx, float dy, int tx, int ty, int tw, int th);	//	スプライト描画
-	void Sprite_Draw(int texture_index, float dx, float dy, int tx, int ty, int tw, int th);	//	スプライト描画タイトルリザルト用
+	static void Sprite_Draw(int texture_index, float dx, float dy, int tx, int ty, int tw, int th);	//	スプライト描画タイトルリザルト用
 	void Sprite_Draw(int texture_index, float dx, float dy, float tx, float ty, float tw, float th, float cx, float cy, float sx, float sy, float rotation);
 	static void SpriteDraw(int texture_index, float dx, float dy);
 	/*	

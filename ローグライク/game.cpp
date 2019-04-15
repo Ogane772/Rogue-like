@@ -60,7 +60,7 @@ void Game_Initialize(void)
 	srand(time(NULL));
 	int g_Dblock = -1;
 	int g_TexReef = -1;
-	g_TexReef = CTexture::Texture_SetLoadFile("./asset/texture/kusa.png", 100, 100);
+	//_TexReef = CTexture::Texture_SetLoadFile("./asset/texture/kusa.png", 100, 100);
 	//g_Dblock = Texture_SetLoadFile("./asset/texture/block.png", 100, 100);
 	CBilboard::BilBoard_Initialize();
 	CBilboard::Shadow_Init();
@@ -70,7 +70,7 @@ void Game_Initialize(void)
 	CUserinterface::UI_Initialize();
 	//Number_Initialize(3);
 	CMap::Map_Initialize();
-	CMeshField::MeshField_Create(g_TexReef, 500, 500, 100, 100, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1–Ê  = 5.0f * 5.0f
+	CMeshField::MeshField_Create(CTexture::TEX_KUSA, 500, 500, 100, 100, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1–Ê  = 5.0f * 5.0f
 
 																					// ƒ}ƒbƒv¶¬
 	CMap::Map_Create();
@@ -79,10 +79,6 @@ void Game_Initialize(void)
 
 	//XModel_Initialize("asset/model/sraimg3.x", 2, D3DXVECTOR3(0.0f, 5.5f, 0.0f), 1);
 
-	if (CTexture::Texture_Load() > 0)
-	{
-		return;
-	}
 
 	Fade_Start(false, 30, 0, 0, 0);
 

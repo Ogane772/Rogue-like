@@ -9,13 +9,14 @@
 /*======================================================================
 ƒOƒ[ƒoƒ‹•Ï”
 ======================================================================*/
-static int g_TextureIndex = TEXTURE_INVALID_INDEX;
+//static int g_TextureIndex = TEXTURE_INVALID_INDEX;
 static bool g_bIsFade;
+C2DObj *pResult;
 
 void Rezult_Initialize(void)
 {
 
-	g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/rezult.png", WINDOW_WIDTH, WINDOW_HEIGHT);
+	//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/rezult.png", WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	//Camera_Initialize();
 	CBilboard::BilBoard_Initialize();
@@ -24,18 +25,18 @@ void Rezult_Initialize(void)
 	{
 		return;
 	}
-
+	pResult = new C2DObj;
 	Fade_Start(false, 90, 0, 0, 0);
 
 }
 void Rezult_Finalize(void)
 {
-	//Texture_ReleaseAll();
+	delete pResult;;
 }
 void Rezult_Draw(void)
 {
 	CBilboard::BilBoard_ChangeSizeColor(12.8f, 7.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
-	//CBilboard::BilBoard3_Draw(g_TextureIndex, D3DXVECTOR3(Camera_GetData().x - 6.5f, Camera_GetData().y - 6.6f, Camera_GetData().z - 1.0f));
+	pResult->m_Sprite_Draw(CTexture::TEX_RESULT, 0, 0, 0, 0, pResult->Texture_GetWidth(CTexture::TEX_RESULT), pResult->Texture_GetHeight(CTexture::TEX_RESULT));
 }
 void Rezult_Update(void)
 {

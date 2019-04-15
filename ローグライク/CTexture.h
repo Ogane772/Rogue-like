@@ -9,52 +9,60 @@
 
 #include "CGameObj.h"
 
-#define TEXTURE_MANAGE_MAX   (512)
-#define TEXTURE_INVALID_INDEX (-1)
+#define TEXTURE_FILENAME_MAX (64)
 
 class CTexture : virtual public CGameObj
 {
 public:
-	static int Texture_SetLoadFile(const char* pFileName, int width, int height);
+	CTexture();
+	~CTexture();
 
-	// テクスチャの読み込み
-	// 
-	// 戻り値:読み込めなかった数
-	// 
+	enum
+	{
+		TEX_TITLE,
+		TEX_WHITE,
+		TEX_WOOD,
+		TEX_KUSA,
+		TEX_BLOCK,
+		TEX_LADDER,
+		TEX_1F,
+		TEX_2F,
+		TEX_3F,
+		TEX_4F,
+		TEX_5F,
+		TEX_SHADOW,
+		TEX_HIT_1,
+		TEX_HIT_2,
+		TEX_HIT_3,
+		TEX_HIT_4,
+		TEX_RESULT,
+		TEX_MAX,
+	};
 
-	static int Texture_Load(void);
 
-	// テクスチャの取得
-	static LPDIRECT3DTEXTURE9 Texture_GetTexture(int index);
+	static int Texture_Load(void);	//	テクスチャ読み込み
+	static void Texture_Release(void);	//	テクスチャ破棄
+	static void Texture_Load(int index);	//	指定したテクスチャ読み込み
+	static void Texture_Release(int index);	//	指定したテクスチャ破棄
+	static LPDIRECT3DTEXTURE9 Texture_GetTexture(int index) { return m_pTextures[index]; }	//	テクスチャ取得
+	static char* Texture_GetFailName(int index) { return TEXTURE_FILES[index].filename; }
+	static int Texture_GetWidth(int index) { return TEXTURE_FILES[index].width; }	// テクスチャ幅
+	static int Texture_GetHeight(int index) { return TEXTURE_FILES[index].height; }	//	テクスチャ高さ
+protected:
 
-	// テクスチャの幅の取得
-	static int Texture_GetWidth(int index);
 
-	// テクスチャの高さの取得
-	static int Texture_GetHeight(int index);
 
-	// テクスチャの解放
-	// 
-	//	引数: indices = 解放したいテクスチャ番号
-	//					が入った配列の先頭アドレス
-	//		  count   = 解放したいテクスチャ番号
-	//                  の個数
-	//
-	static int Texture_Release(int indices[], int count);
 
-	// テクスチャの全解放
-	static void Texture_ReleaseAll(void);
 private:
-	//	テクスチャファイル情報管理用レコード構造体
+	//	テクスチャデータの構造体
 	typedef struct TextureFile_tag
 	{
-		char filename[TEXTURE_FILENAME_MAX];
-		int width;
-		int height;
-	}TextureFile;
-
-	static TextureFile g_Files[TEXTURE_MANAGE_MAX];
-
-	static LPDIRECT3DTEXTURE9 g_pTextures[TEXTURE_MANAGE_MAX];
+		char filename[TEXTURE_FILENAME_MAX];	//	ファイル名
+		int width;	//	幅
+		int height;	//	高さ
+	}TextureFileData;
+	static TextureFileData TEXTURE_FILES[];	//	テクスチャ構造体宣言
+	static int TEXTURE_MAX;	//	テクスチャ構造体総数
+	static LPDIRECT3DTEXTURE9 m_pTextures[];	//	テクスチャポインタ
 };
 #endif // !1
