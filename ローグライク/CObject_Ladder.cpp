@@ -31,7 +31,7 @@ void CObjectLadder::Initialize(int x, int z)
 	m_Mapz = z;
 	m_Mapx = x;
 	type = TYPE_LADDER;
-	m_Position = D3DXVECTOR3(-247.5 + x * 5 - 2.5f, 0.0f, 247.5 - z * 5 - 1.0f);
+	m_Position = D3DXVECTOR3(-247.5f + x * 5 - 2.5f, 0.0f, 247.5f - z * 5 - 1.0f);
 }
 
 void CObjectLadder::Finalize(void)

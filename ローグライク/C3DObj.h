@@ -130,9 +130,13 @@ public:
 	int Get_3DObjIndex() { return m_3DObjIndex; }	// ワークインデックス取得
 	int Get_3DObjType() { return m_3DObjType; }		// 種類取得
 	int Get_Angle(void) { return (int)m_Angle; }	//	角度取得	
-	int Get_Hp(void) { return m_Hp; }		//	HP取得
+	float Get_Hp(void) { return m_Hp; }		//	HP取得
+	float Get_MaxHp(void) { return m_MaxHp; }		//	最大HP取得
+	int Get_Lv(void) { return m_Lv; }		//	レベル取得
+	int Get_Gold(void) { return m_Gold; }		// 所持金取得
+
+	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
-	virtual D3DXVECTOR3 Get_Position(void) = 0;
 	virtual bool Get_DrawCheck(void) = 0;
 	virtual void Damage(int str) = 0;
 	static HRESULT InitModelLoad();  //	モデル読み込み
@@ -173,8 +177,6 @@ protected:
 	D3DXMATRIX m_mtxTranslation;	//	移動行列
 	D3DXMATRIX m_mtxRotation;		//	移動行列
 	D3DXMATRIX m_mtxScaling;		//	移動行列
-	D3DXMATRIX m_mtxKeepTranslation;//	移動保持行列
-	D3DXMATRIX m_mtxInit;			//	初期位置行列
 	D3DXVECTOR3 m_Position;
 	D3DXVECTOR3 m_Rotation;			//  角度
 	D3DXVECTOR3 m_Front;			//	フロントベクトル
@@ -183,12 +185,12 @@ protected:
 
 	float m_Angle;			//	角度
 
-	
-	int m_MaxHp;
-	int m_Hp;				//	HP
+	float m_MaxHp;
+	float m_Hp;				//	HP
 	int m_Str;			    // 攻撃力
 	int m_Def;			    // 防御力
-	int shadow_number;      //  影の番号
+	int m_Lv;				// レベル
+	int m_Gold;				// 所持金
 
 	int walkf;
 	int attackframe;
@@ -244,13 +246,6 @@ private:
 
 
 	static bool VFCulling(D3DXVECTOR3* pPosition);
-
-
-#define MODEL_MAX (9)
-
-
-
-
 
 	FLOAT fAnimTime = 0.0f;
 	BOOL boPlayAnim = true;

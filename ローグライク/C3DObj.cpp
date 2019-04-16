@@ -306,7 +306,7 @@ void C3DObj::Model_Finalize(void)	//	ƒ‚ƒfƒ‹ƒf[ƒ^‚ÌŠJ•ú@•¡”‰»‚µ‚½‚ç‘S•”Á‚·‚©‚
 
 void C3DObj::NormalModel_Finalize(NormalModelData *DeleteNormalModel)	//	ƒ‚ƒfƒ‹ƒf[ƒ^‚ÌŠJ•ú
 {
-	for (int i = 0; i < DeleteNormalModel->dwNumMaterials; i++)
+	for (int i = 0; i < (signed)DeleteNormalModel->dwNumMaterials; i++)
 	{
 		//ƒIƒuƒWƒFƒNƒg‚ÌƒRƒs[‚ğ‚µ‚Ä‚¢‚é‚¹‚¢‚ÅƒGƒ‰[‚ªo‚é‚Ì‚Å’¼Úƒ‚ƒfƒ‹‚ğ“Ç‚Ş‚±‚Æ
 		if (DeleteNormalModel->pMesh != NULL)

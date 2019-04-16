@@ -8,7 +8,7 @@
 #define PLAYER_RADIUS	 (2.6f)				// 当たり判定半径
 #define PLAYER_ENERADIUS (5.0f)				// エネミー専用当たり判定
 #define PLAYER_RECOVERY (100)				// 自然回復 = MAXHP / PLAYER_RECOVERY
-#define PLAYER_MAXHP (990)
+#define PLAYER_MAXHP (500)
 #define PLAYER_STR (4)
 class CPlayer :public C3DObj
 {
@@ -29,7 +29,6 @@ public:
 	static const Sphere* Player_GetEnemyCollision(void) { return &m_EnemyColision; }
 	static void Player_NextTurn(void);
 	void Damage(int str);
-	D3DXVECTOR3 Get_Position(void) { return m_Position; }
 	bool Get_DrawCheck(void) { return alive; }
 	static C3DObj *Get_Player(void);
 	// マップ二次元配列用

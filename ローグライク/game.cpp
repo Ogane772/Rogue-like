@@ -23,6 +23,7 @@
 #include <crtdbg.h>
 #include "fade.h"
 #include <time.h>
+#include "stage.h"
 #include "map.h"
 #include "wall.h"
 //=============================================================================
@@ -54,9 +55,12 @@ static bool Fwait_flg;
 //=============================================================================
 void Game_Initialize(void)
 {
-	CPlayer::PlayerCreate();				//	プレイヤー生成		
+	if (CStage::Stage_GetLevel() == 1)
+	{
+		CPlayer::PlayerCreate();				//	プレイヤー生成		
+	}
 	CLight::Light_Create();					//	ライト生成
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	int g_Dblock = -1;
 	int g_TexReef = -1;
 	//_TexReef = CTexture::Texture_SetLoadFile("./asset/texture/kusa.png", 100, 100);
@@ -94,11 +98,7 @@ void Game_Initialize(void)
 void Game_Finalize(void)
 {
 	CMeshField::MeshField_Finalize();
-	CBilboard::Shadow_Finalize();
-	C3DObj::DeleteAll();			//	3Dオブジェクト全消去
-	CGameObj::DeleteAll2D();			//	2Dオブジェクト全消去
-
-	_CrtDumpMemoryLeaks();
+	CBilboard::Shadow_Finalize();	
 }
 
 //=============================================================================
