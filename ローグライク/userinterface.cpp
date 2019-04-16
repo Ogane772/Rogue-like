@@ -4,10 +4,12 @@
 #include "CTexture.h"
 #include "userinterface.h"
 #include "bilboard.h"
+#include "CEnemy.h"
+#include "CObject.h"
 #include "Cplayer.h"
 #include "CCamera.h"
 #include "map.h"
-
+#include "stage.h"
 /*----------------------------------------------------------------------
 　　定数
  ----------------------------------------------------------------------*/
@@ -92,6 +94,60 @@ void CUserinterface::UI_Draw(void)
 	D3DXMATRIX mtxWorld;
 	D3DXMATRIX mtxRotation;
 	D3DXMATRIX mtxTranslotation;
+	C3DObj *getplayer = CPlayer::Get_Player();
+	//UI_TextCreate(CUserinterface::SMALEMAP, CUserinterface::ACTTYPENONE);
+	//上のUI表示///////////////////
+	UI_TextDraw(570, 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%.0f", getplayer->Get_Hp());
+	UI_TextDraw(710, 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%.0f", getplayer->Get_MaxHp());
+
+	UI_TextDraw(500, 10, D3DCOLOR_RGBA(0, 255, 200, 255), "HP        /");
+
+	//HPバー
+	Sprite_Draw(TEX_HPGAGE_REDBAR, 500,50, 0, 0, Texture_GetWidth(TEX_HPGAGE_REDBAR), Texture_GetHeight(TEX_HPGAGE_REDBAR), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	Sprite_Draw(TEX_HPGAGE_WAKU, 500, 50, 0, 0, Texture_GetWidth(TEX_HPGAGE_WAKU), Texture_GetHeight(TEX_HPGAGE_WAKU), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	Sprite_Draw(TEX_HPGAGE_GREENBAR, 512, 60, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
+
+	UI_TextDraw(80, 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", CStage::Stage_GetLevel());
+	UI_TextDraw(100, 10, D3DCOLOR_RGBA(0, 255, 200, 255), "  F");
+
+	UI_TextDraw(300, 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", getplayer->Get_Lv());
+	UI_TextDraw(200, 10, D3DCOLOR_RGBA(0, 255, 200, 255), "  Lv");
+
+	UI_TextDraw(910, 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%4d", getplayer->Get_Gold());
+	UI_TextDraw(980, 10, D3DCOLOR_RGBA(0, 255, 200, 255), "  G");
+	///////////////////
+
+	//ミニマップ描画///////////////////
+	int x = 0, y = 0, i = 0;
+	for (x = 0; x < MAX_MAPWIDTH; x++)
+	{
+		for (y = 0; y < MAX_MAPHEIGHT; y++)
+		{
+			if (CMap::Map_GetData(x, y).type != 0)
+			{
+				Sprite_Draw(TEX_BLUE, (CMap::Map_GetData(x, y).pos.x + 250) * 1, (CMap::Map_GetData(x, y).pos.z * -1) + 250, 0, 0, 5, 5);
+			}
+		}
+	}
+	//プレイヤーアイコン表示
+	Sprite_Draw(TEX_PLAYER_ICON, getplayer->Get_Position().x + 250, (getplayer->Get_Position().z*-1) + 250, 0, 0, 8, 8);
+	for (i = 0; i < MAX_GAMEOBJ; i++)
+	{
+		C3DObj *enemy = CEnemy::Get_Enemy(i);
+		if (enemy)
+		{
+			Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + 250, (enemy->Get_Position().z*-1) + 250, 0, 0, 8, 8);
+		}
+		C3DObj *object = CObject::Get_Object(i);
+		//オブジェクトの判定
+		if (object)
+		{
+			Sprite_Draw(CTexture::TEX_LADDER_ICON, object->Get_Position().x + 250, (object->Get_Position().z*-1) + 250, 0, 0, 8, 8);
+		}
+	}
+	
+	///////////////////
+	//下のテキスト描画
 	if (g_text.alive)
 	{
 
@@ -131,41 +187,25 @@ void CUserinterface::UI_Draw(void)
 			{
 				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムの攻撃！プレイヤーに%dダメージ与えた!", g_text.damage);
-				//Sprite_Draw(TEX_MESSAGE_WINDOW, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_MESSAGE_WINDOW), Texture_GetHeight(TEX_MESSAGE_WINDOW));
-				//Sprite_Draw(TEX_WHITE, g_text.pos.x, g_text.pos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
 				break;
 			}
 
-		case SMALEMAP:
+		/*case SMALEMAP:
 			// ミニマップ描画
-			int x, y;
+			int x = 0, y = 0;
 			for (x = 0; x < MAX_MAPWIDTH; x++)
 			{
 				for (y = 0; y < MAX_MAPHEIGHT; y++)
 				{
 					if (CMap::Map_GetData(y, x).type != 0)
 					{
-						Sprite_Draw(TEX_WHITE, (CMap::Map_GetData(y, x).pos.x + 250) * 1, (CMap::Map_GetData(y, x).pos.z + 250) * 1, 0, 0, 5, 5);
+						Sprite_Draw(TEX_BLUE, (CMap::Map_GetData(y, x).pos.x + 250) * 1, (CMap::Map_GetData(y, x).pos.z + 250) * 1, 0, 0, 5, 5);
 					}
 				}
 			}
-			break;
+			break;*/
 		}
 	}
-
-	// ミニマップ描画
-	/*for (int x = 0; x < MAX_MAPWIDTH; x++)
-	{
-		for (int y = 0; y < MAX_MAPHEIGHT; y++)
-		{
-			if (Map_GetData(x, y).type != 0)
-			{
-				BilBoard_ChangeMapPos(0.05f + x * 0.05f, 5.00f - y * 0.05f, D3DCOLOR_RGBA(0, 0, 255, 128)); //1マス
-				BilBoard3_Draw(g_Textbackground, MapPos);
-			}
-		}
-	}*/
-
 }
 
 // 後にデバッグだけでなくゲームない文章用も作成

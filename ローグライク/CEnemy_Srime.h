@@ -31,8 +31,5 @@ public:
 
 	void Damage(int str);
 	void Enemy_Destroy(void);
-
-	D3DXVECTOR3 Get_Position(void) { return m_Position; }
-
 };
 #endif 

@@ -106,17 +106,17 @@ void CWall::MeshWall_Create(int tex, int width, int height, int wcube, int hcube
 				{
 					// バーテックス
 					if (g_wall[i].nor.z == 1.0f) // 上壁
-						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3(x * (g_wall[i].widthmax / g_wall[i].widthcube) - g_wall[i].widthmax / 2 + g_wall[i].pos.x, g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y, g_wall[i].pos.z);
+						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3((float)(x * (g_wall[i].widthmax / g_wall[i].widthcube) - g_wall[i].widthmax / 2 + g_wall[i].pos.x), (float)(g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y), (float)g_wall[i].pos.z);
 				//	pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3(x * (g_wall[i].widthmax / g_wall[i].widthcube) - g_wall[i].widthmax / 2, g_wall[i].pos.y, g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y);
 					if (g_wall[i].nor.z == -1.0f) // 下壁
-						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3(g_wall[i].widthmax / 2 - x * (g_wall[i].widthmax / g_wall[i].widthcube) + g_wall[i].pos.x, g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y, g_wall[i].pos.z);
+						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3((float)(g_wall[i].widthmax / 2 - x * (g_wall[i].widthmax / g_wall[i].widthcube) + g_wall[i].pos.x), (float)(g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y), (float)g_wall[i].pos.z);
 						//	pV[y * WIDTH_CUBE + x + y].position = D3DXVECTOR3(WIDTH_MAX / 2 - x * (WIDTH_MAX / WIDTH_CUBE), HEIGHT_MAX / 2 - (HEIGHT_MAX / HEIGHT_CUBE) * y, -10.0f);
 					if (g_wall[i].nor.x == 1.0f) // 左壁
-						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3(g_wall[i].pos.x, g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y, x * (g_wall[i].widthmax / g_wall[i].widthcube) - g_wall[i].widthmax / 2 + g_wall[i].pos.z);
+						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3((float)g_wall[i].pos.x, (float)(g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y), (float)(x * (g_wall[i].widthmax / g_wall[i].widthcube) - g_wall[i].widthmax / 2 + g_wall[i].pos.z));
 					//pV[y * WIDTH_CUBE + x + y].position = D3DXVECTOR3(-10.0f, HEIGHT_MAX / 2 - (HEIGHT_MAX / HEIGHT_CUBE) * y, x * (WIDTH_MAX / WIDTH_CUBE) - WIDTH_MAX / 2);
 
 					if (g_wall[i].nor.x == -1.0f) // 右壁
-						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3(g_wall[i].pos.x, g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y, g_wall[i].widthmax / 2 - x * (g_wall[i].widthmax / g_wall[i].widthcube) + g_wall[i].pos.z);
+						pV[y * g_wall[i].widthcube + x + y].position = D3DXVECTOR3((float)g_wall[i].pos.x, (float)(g_wall[i].heightmax / 2 - (g_wall[i].heightmax / g_wall[i].heightcube) * y), (float)(g_wall[i].widthmax / 2 - x * (g_wall[i].widthmax / g_wall[i].widthcube) + g_wall[i].pos.z));
 					//pV[y * WIDTH_CUBE + x + y].position = D3DXVECTOR3(10.0f, HEIGHT_MAX / 2 - (HEIGHT_MAX / HEIGHT_CUBE) * y, WIDTH_MAX / 2 - x * (WIDTH_MAX / WIDTH_CUBE));
 
 					//pV[y * WIDTH_CUBE + x + y].position = D3DXVECTOR3(-10.0f, HEIGHT_MAX / 2 - (HEIGHT_MAX / HEIGHT_CUBE) * y, x * (WIDTH_MAX / WIDTH_CUBE) - WIDTH_MAX / 2);

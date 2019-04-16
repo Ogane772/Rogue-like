@@ -34,8 +34,8 @@
 //	エネミー移動用構造体
 int CEnemy::m_EnemyNum[TYPE_MAX] = {};
 int CEnemy::m_EnemyEnableNum = 0;
-int CEnemy::m_EnemyMaxNum;
-int CEnemy::TurnCount;
+int CEnemy::m_EnemyMaxNum = 0;
+int CEnemy::TurnCount = 0;
 //=============================================================================
 //	生成
 //=============================================================================
@@ -91,7 +91,7 @@ void CEnemy::EnemyTurnEnd(void)
 		C3DObj *getplayer = CPlayer::Get_Player();
 		C3DObj *enemy = CEnemy::Get_Enemy(i);
 		//誰もエネミーがいなくてもターン終了時
-		if (i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->turn == CPlayer::PLAYER_TURN_END)
+		if (m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->turn == CPlayer::PLAYER_TURN_END)
 		{
 			TurnCount++;
 			CPlayer::Player_NextTurn();

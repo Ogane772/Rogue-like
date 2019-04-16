@@ -25,7 +25,7 @@ public:
 	void Draw(void);
 	void Damage(int str);
 	void Damage(void);
-	D3DXVECTOR3 Get_Position(void) { return m_Position; }
+
 private:
 	int type;
 	//int g_laddertex;

@@ -5,7 +5,7 @@
 #include "fade.h"
 #include "bilboard.h"
 #include "CCamera.h"
-
+#include "C3DObj.h"
 /*======================================================================
 グローバル変数
 ======================================================================*/
@@ -15,6 +15,8 @@ C2DObj *pResult;
 
 void Rezult_Initialize(void)
 {
+	C3DObj::DeleteAll();			//	3Dオブジェクト全消去
+	CGameObj::DeleteAll2D();			//	2Dオブジェクト全消去
 
 	//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/rezult.png", WINDOW_WIDTH, WINDOW_HEIGHT);
 

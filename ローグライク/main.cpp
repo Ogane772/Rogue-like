@@ -402,6 +402,6 @@ void End(void)
 	Gamepad_Finalize();
 	// デバイスの開放
 	CGameObj::Device_Finalize();
-
+	_CrtDumpMemoryLeaks();
 
 }

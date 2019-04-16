@@ -10,6 +10,7 @@
 #include "collision.h"
 #include "bilboard.h"
 #include "exp.h"
+#include "C2DObj.h"
 #include "C3DObj.h"
 #define MAXHP (20)
 #define STR (4)
@@ -41,7 +42,7 @@ void CEnemy_Srime::Initialize(int x, int z)
 	TurnCount = 0;
 
 	alive = true;
-	m_Position = D3DXVECTOR3(-247.5 + x * 5, 0.0f, 247.5 - z * 5);
+	m_Position = D3DXVECTOR3(-247.5f + x * 5, 0.0f, 247.5f - z * 5);
 	m_EnemyMyColision.position = m_Position;
 	m_EnemyMyColision.radius = ENEMY_RADIUS;
 	enemyturn = ENEMY_WAIT;

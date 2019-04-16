@@ -1235,8 +1235,8 @@ void CMap::Map_Create(void)
 	//===================================================
 	// 敵生成数の誤差
 	//int setenemy = rand() % 3;
-	int setenemy = 0;
-	for (int i = 0; i < 1; i++)
+	int setenemy = 3;
+	for (int i = 0; i < setenemy; i++)
 	//for (int i = 0; i < 1; i++)	// デバッグ用
 	{
 		int eposX;
