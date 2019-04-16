@@ -145,9 +145,7 @@ void CUserinterface::UI_Draw(void)
 				{
 					if (CMap::Map_GetData(y, x).type != 0)
 					{
-						//CBilboard::BilBoard_ChangeMapPos(0.05f + x * 0.05f, 5.00f - y * 0.05f, D3DCOLOR_RGBA(0, 0, 255, 128)); //1É}ÉX
-						//CBilboard::BilBoard3_Draw(TEX_WHITE, MapPos);
-						//Sprite_Draw(TEX_WHITE, MapPos.x, MapPos.y, 0, 0, Texture_GetWidth(TEX_WHITE), Texture_GetHeight(TEX_WHITE));
+						Sprite_Draw(TEX_WHITE, (CMap::Map_GetData(y, x).pos.x + 250) * 1, (CMap::Map_GetData(y, x).pos.z + 250) * 1, 0, 0, 5, 5);
 					}
 				}
 			}
