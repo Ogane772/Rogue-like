@@ -269,12 +269,12 @@ bool Begin(HINSTANCE hInstance, HWND hWnd)
 
 #if defined(_DEBUG) || defined(DEBUG)
 	// デバックフォントモジュールの初期化
-	/*DebugFont_Initialize();
+	DebugFont_Initialize();
 	//DebugPrimitive_Initialize();
 	// FPS計測用変数群の初期化
 	g_FrameCount = g_BaseFrame = 0;
 	g_BaseTime = SystemTimer_GetTime();
-	g_FPS = 0.0f;*/
+	g_FPS = 0.0f;
 #endif // _DEBUG || DEBUG
 
 	// フレーム固定用計測時間
@@ -306,7 +306,7 @@ void Update(void)
 #if defined(_DEBUG) || defined(DEBUG)
 
 	// 現在のシステム時間を取得
-	/*double time = SystemTimer_GetTime();
+	double time = SystemTimer_GetTime();
 
 	// 前回のFPS計測時間から規定時間経っていたらFPS計測
 	if (time - g_BaseTime > 1.0)
@@ -321,7 +321,7 @@ void Update(void)
 	}
 
 	// フレームカウントの更新
-	g_FrameCount++;*/
+	g_FrameCount++;
 #endif // _DEBUG || DEBUG
 }
 //　ゲームの描画関数
@@ -356,7 +356,7 @@ void Draw(void)
 
 #if defined(_DEBUG) || defined(DEBUG)
 	// FPSのデバック表示
-	//DebugFont_Draw(8, 8, "FPS : %.2f", g_FPS);
+	DebugFont_Draw(8, 8, "FPS : %.2f", g_FPS);
 	//DebugPrimitive_BatchRun();
 #endif // _DEBUG || DEBUG
 

@@ -54,7 +54,6 @@ static bool Fwait_flg;
 //=============================================================================
 void Game_Initialize(void)
 {
-	DebugFont_Initialize();
 	CPlayer::PlayerCreate();				//	プレイヤー生成		
 	CLight::Light_Create();					//	ライト生成
 	srand(time(NULL));
