@@ -4,6 +4,8 @@
 #include "C3DObj.h"
 #include <d3dx9.h>
 #include "collision.h"
+#define ATTACK_END (55)//攻撃の待機時間
+#define NOATTACK_END (15) //空振り攻撃の待機時間
 
 #define PLAYER_RADIUS	 (2.6f)				// 当たり判定半径
 #define PLAYER_ENERADIUS (5.0f)				// エネミー専用当たり判定
@@ -28,8 +30,9 @@ public:
 	static const Sphere* Player_GetCollision(void) { return &m_Colision; }
 	static const Sphere* Player_GetEnemyCollision(void) { return &m_EnemyColision; }
 	static void Player_NextTurn(void);
-	void Damage(int str);
+	int Damage(int str);
 	bool Get_DrawCheck(void) { return alive; }
+
 	static C3DObj *Get_Player(void);
 	// マップ二次元配列用
 

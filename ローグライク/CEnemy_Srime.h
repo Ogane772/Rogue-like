@@ -29,7 +29,7 @@ public:
 	void Enemy_leftbottomMove(void);
 	void Enemy_rightbottomMove(void);
 
-	void Damage(int str);
+	int Damage(int str);
 	void Enemy_Destroy(void);
 };
 #endif 

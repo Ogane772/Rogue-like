@@ -157,7 +157,7 @@ void CEnemy_Srime::Enemy_AI(void)
 	// ターンが終わってる敵の数をカウント
 	
 	// ワンフレームに攻撃できる敵をカウント
-	bool attackflag = false;
+	
 	// 攻撃待ちカウント
 	int enemyturncount = 0;
 	// プレイヤーが移動するか移動以外の行動が終わった場合エネミーも移動する
@@ -903,21 +903,19 @@ void CEnemy_Srime::Enemy_Act(void)
 				m_mtxWorld *= m_mtxTranslation;
 			}
 		}
-
-		attackframe++;
-		if (attackframe == 5)
-		{
-			// 向いてる方向、攻撃力、攻撃したキャラの名前を渡す
-			CAttack::Attack_EnemyUpdate(type, rand() % m_Str + 3);
-		}
-
-		if (attackframe == 8)
-		{
-			enemyturn = ENEMY_ACT_END;
-			attackframe = 0;
-		}
 	}
-	
+	attackframe++;
+	if (attackframe == 5)
+	{
+		// 向いてる方向、攻撃力、攻撃したキャラの名前を渡す
+		CAttack::Attack_EnemyUpdate(type, rand() % m_Str + 3);
+	}
+
+	if (attackframe == 55)
+	{
+		enemyturn = ENEMY_ACT_END;
+		attackframe = 0;
+	}
 }
 
 void CEnemy_Srime::Enemy_Move(void)
@@ -1058,7 +1056,7 @@ void CEnemy_Srime::Enemy_rightbottomMove(void)
 	}
 }
 
-void CEnemy_Srime::Damage(int str)
+int CEnemy_Srime::Damage(int str)
 {
 	// 後にダメージエフェクトを作成
 	Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
@@ -1069,7 +1067,9 @@ void CEnemy_Srime::Damage(int str)
 	if (m_Hp <= 0)
 	{
 		Enemy_Destroy();
+		return DEATH;
 	}
+	return NORMAL;
 }
 
 void CEnemy_Srime::Enemy_Destroy(void)

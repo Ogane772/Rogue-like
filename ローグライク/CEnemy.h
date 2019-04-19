@@ -30,7 +30,7 @@ public:
 
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
-	virtual void Damage(int str) = 0;
+	virtual int Damage(int str) = 0;
 
 	void Enemy_Finalize(int Index);
 	static void EnemyTurnEnd(void);
@@ -57,7 +57,7 @@ protected:
 
 	float velocity;
 	
-	
+	static bool attackflag; //エネミーが攻撃中ならtrue
 	
 
 	D3DXVECTOR3 vecenemy;

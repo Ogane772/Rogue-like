@@ -60,9 +60,9 @@ void CObjectLadder::Draw(void)
 	}
 }
 
-void CObjectLadder::Damage(int str)
+int CObjectLadder::Damage(int str)
 {
-
+	return 0;
 }
 
 void CObjectLadder::Damage(void)
