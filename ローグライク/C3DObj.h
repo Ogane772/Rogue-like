@@ -134,6 +134,8 @@ public:
 	float Get_MaxHp(void) { return m_MaxHp; }		//	最大HP取得
 	int Get_Lv(void) { return m_Lv; }		//	レベル取得
 	int Get_Gold(void) { return m_Gold; }		// 所持金取得
+	bool Get_MapDrawFlag(void) { return map_drawflag; }
+	void Set_MapDrawFlag(bool type) { map_drawflag = type; }
 
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
@@ -195,7 +197,7 @@ protected:
 	int walkf;
 	int attackframe;
 	int nanawalk;
-
+	bool map_drawflag;		// ミニマップに表示するか true=表示
 
 	// 描画処理
 	void DrawDX_Anime(D3DXMATRIX mtxWorld, int type, THING* pNomalModel);

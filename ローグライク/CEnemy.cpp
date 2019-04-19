@@ -85,11 +85,15 @@ void CEnemy::EnemyTurnEnd(void)
 {
 	int i;
 	int turnend_count;//ターンエンドカウント
+	int eposX;
+	int eposZ;
+	C3DObj *getplayer;
+	C3DObj *enemy;
 	turnend_count = 0;
 	for (i = 0; i < MAX_GAMEOBJ; i++)
 	{
-		C3DObj *getplayer = CPlayer::Get_Player();
-		C3DObj *enemy = CEnemy::Get_Enemy(i);
+		getplayer = CPlayer::Get_Player();
+		enemy = CEnemy::Get_Enemy(i);
 		//誰もエネミーがいなくてもターン終了時
 		if (m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->turn == CPlayer::PLAYER_TURN_END)
 		{
@@ -97,8 +101,6 @@ void CEnemy::EnemyTurnEnd(void)
 			CPlayer::Player_NextTurn();
 			if (TurnCount % 50 == 49)
 			{
-				int eposX;
-				int eposZ;
 				do
 				{
 					eposX = rand() % MAX_MAPWIDTH;
@@ -126,8 +128,6 @@ void CEnemy::EnemyTurnEnd(void)
 			// 数ターンごとにランダムで敵を生成
 			if (TurnCount % 50 == 49)
 			{
-				int eposX;
-				int eposZ;
 				do
 				{
 					eposX = rand() % MAX_MAPWIDTH;
@@ -142,11 +142,13 @@ void CEnemy::EnemyTurnEnd(void)
 
 void CEnemy::EnemyVsWall(JUDGE *enemy_judge, Sphere *m_EnemyMyColision)
 {
-	for (int i = 0; i < WALL_MAX; i++)
+	int i;
+	int c;
+	for (i = 0; i < WALL_MAX; i++)
 	{
 		if (CWall::Wall_GetData(i).wuse)
 		{
-			for (int c = 0; c < WALL_WIDTH_MAX; c++)
+			for (c = 0; c < WALL_WIDTH_MAX; c++)
 			{
 				// エネミーと壁の当たり判定
 				if (Collision_IsHitVtoS(CWall::Wall_GetCollision(i, c), m_EnemyMyColision))
@@ -202,9 +204,10 @@ C3DObj *CEnemy::Get_Enemy(int index)
 void CEnemy::DeleteAllEnemy(void)
 {
 	int i;
+	C3DObj *enemy;
 	for (i = 0; i < MAX_GAMEOBJ; i++)
 	{
-		C3DObj *enemy = CEnemy::Get_Enemy(i);
+		enemy = CEnemy::Get_Enemy(i);
 
 		if (enemy)
 		{

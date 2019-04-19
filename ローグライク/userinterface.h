@@ -9,6 +9,7 @@
 #define TEXT_FRAMEMAX (100)	// テキスト表示フレーム数
 #define TEXT_POSX (150)		// テキスト表示X座標
 #define TEXT_POSY (520)		// テキスト表示Y座標
+#define TEXT_ADD_POSY (50)		// テキスト表示Y座標
 //===================================
 // テキスト列挙
 //===================================
@@ -44,8 +45,9 @@ public:
 
 		int TextCreateFrame;	// 誕生フレーム
 		int TextCountFrame;		// 表示したフレーム
-		D3DXVECTOR3 pos;
-
+		D3DXVECTOR2 pos;
+		int text_number;		// 出す場所
+		
 		bool alive;
 	}TEXT;
 
@@ -56,6 +58,7 @@ public:
 	static void UI_Draw(void);
 
 	static void UI_TextDraw(int x, int y, D3DCOLOR color, const char* text, ...);
+	static void UI_TextDraw2(int x, int y, D3DCOLOR color, const char* text, ...);
 
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act);
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage);

@@ -26,12 +26,12 @@ CObjectLadder::~CObjectLadder()
 
 void CObjectLadder::Initialize(int x, int z)
 {
-	//g_laddertex = CTexture::Texture_SetLoadFile("./asset/texture/ladder.png", 10, 10);
 	alive = true;
 	m_Mapz = z;
 	m_Mapx = x;
 	type = TYPE_LADDER;
 	m_Position = D3DXVECTOR3(-247.5f + x * 5 - 2.5f, 0.0f, 247.5f - z * 5 - 1.0f);
+	map_drawflag = false;
 }
 
 void CObjectLadder::Finalize(void)

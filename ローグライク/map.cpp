@@ -17,6 +17,8 @@ CMap::MAP **CMap::g_map, *CMap::base_g_map;
 void CMap::Map_Initialize(void)
 {
 	CEnemy::DeleteAllEnemy();
+	CObject::DeleteAllObject();
+	int i = 0, j = 0;
 	//g_TexWood2 = -1;
 	if (CStage::Stage_GetLevel() == 1)
 	{
@@ -41,7 +43,8 @@ void CMap::Map_Initialize(void)
 	g_map = (MAP**)malloc(sizeof(MAP *) * MAX_MAPHEIGHT);
 	base_g_map = (MAP*)malloc(sizeof(MAP) * MAX_MAPHEIGHT * MAX_MAPWIDTH);
 
-	for (int i = 0; i < MAX_MAPHEIGHT; i++) {
+	for (i = 0; i < MAX_MAPHEIGHT; i++) 
+	{
 		g_map[i] = base_g_map + i * MAX_MAPWIDTH;
 	}
 
@@ -52,25 +55,26 @@ void CMap::Map_Initialize(void)
 		}
 	}*/
 
-	for (int z = 0; z < MAX_MAPHEIGHT; z++)
+	for (i = 0; i < MAX_MAPHEIGHT; i++)
 	{
 
-		for (int x = 0; x < MAX_MAPWIDTH; x++)
+		for (j = 0; j < MAX_MAPWIDTH; j++)
 		{
-			g_map[z][x].type = 0;		// 足場無し
-			g_map[z][x].have = NOTHAVE;
-			g_map[z][x].use = false;
-			g_map[z][x].Cxwall = false;
-			g_map[z][x].Czwall = false;
-			g_map[z][x].Cxtopwall = false;
-			g_map[z][x].Cxbotwall = false;
-			g_map[z][x].CzRwall = false;
-			g_map[z][x].CzLwall = false;
-			g_map[z][x].pos = D3DXVECTOR3(-247.5f, 0.0f, 247.5f);
-			g_map[z][x].pos.x += x * 5.0f;
-			g_map[z][x].pos.z += -z * 5.0f;
+			g_map[i][j].type = 0;		// 足場無し
+			g_map[i][j].have = NOTHAVE;
+			g_map[i][j].use = false;
+			g_map[i][j].Cxwall = false;
+			g_map[i][j].Czwall = false;
+			g_map[i][j].Cxtopwall = false;
+			g_map[i][j].Cxbotwall = false;
+			g_map[i][j].CzRwall = false;
+			g_map[i][j].CzLwall = false;
+			g_map[i][j].pos = D3DXVECTOR3(-247.5f, 0.0f, 247.5f);
+			g_map[i][j].pos.x += j * 5.0f;
+			g_map[i][j].pos.z += -i * 5.0f;
+			g_map[i][j].alpha = 0;
 			//g_map[z][x].Group = x / GroupWidth;
-			g_map[z][x].Group = (z / (MAX_MAPHEIGHT / GroupHeight) * GroupWidth) + (x / (MAX_MAPWIDTH / GroupWidth) + 1);	// グループ付け
+			g_map[i][j].Group = (i / (MAX_MAPHEIGHT / GroupHeight) * GroupWidth) + (j / (MAX_MAPWIDTH / GroupWidth) + 1);	// グループ付け
 
 		}
 	}
@@ -83,7 +87,9 @@ void CMap::Map_Create(void)
 	//===================================================
 	// フロアをGroupHeight * GroupWidth個生成
 	//===================================================
-	for (int i = 0; i < GroupHeight * GroupWidth; i++)
+	int i;
+	int h, w;
+	for (i = 0; i < GroupHeight * GroupWidth; i++)
 	{
 		
 		// フロア始点z軸
@@ -118,13 +124,13 @@ void CMap::Map_Create(void)
 				int width = rand() % 5 + 4 + x;
 
 				//while (z <= height)
-				for (int h = z; h <= height; h++)
+				for (h = z; h <= height; h++)
 				{
 
 
 					//while (x <= width)
 					// フロア作成
-					for(int w = x;w <= width;w++)
+					for(w = x;w <= width;w++)
 					{
 						g_map[h][w].type = 1;
 						g_map[h][w].use = true;

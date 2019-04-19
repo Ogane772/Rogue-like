@@ -235,8 +235,6 @@ void C2DObj::SpriteDraw(int texture_index, float dx, float dy)
 	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(Vertex2D));		//drawing are betwwen beginscene and end scene
 }
 
-
-
 void C2DObj::Sprite_Draw(int texture_index, float dx, float dy, float tx, float ty, float tw, float th, float cx, float cy, float sx, float sy, float rotation)
 {
 	float w = (float)Texture_GetWidth(texture_index);
@@ -278,6 +276,42 @@ void C2DObj::Sprite_Draw(int texture_index, float dx, float dy, float tx, float 
 	m_pD3DDevice->SetTexture(0, Texture_GetTexture(texture_index));
 	m_pD3DDevice->SetStreamSource(0, m_p2DVertexBuffer, 0, sizeof(Vertex2D));
 	m_pD3DDevice->SetIndices(m_p2DIndexBuffer);
+	m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
+}
+
+void C2DObj::Sprite_Draw(int texture_index, float dx, float dy, int alpha)
+{
+	// テクスチャの幅、高さ取得
+	float w = (float)Texture_GetWidth(texture_index);
+	float h = (float)Texture_GetHeight(texture_index);
+
+	// 頂点バッファへの頂点情報の書き込み
+
+	Vertex2D* pV; // 仮想アドレス
+	m_p2DVertexBuffer->Lock(0, 0, (void**)&pV, 0);
+
+	pV[0].pos = D3DXVECTOR4(dx - 0.5f, dy - 0.5f, 0.0f, 1.0f);
+	pV[1].pos = D3DXVECTOR4(dx + w - 0.5f, dy - 0.5f, 0.0f, 1.0f);
+	pV[2].pos = D3DXVECTOR4(dx - 0.5f, dy + h - 0.5f, 0.0f, 1.0f);
+	pV[3].pos = D3DXVECTOR4(dx + w - 0.5f, dy + h - 0.5f, 0.0f, 1.0f);
+
+	pV[0].color = D3DCOLOR_RGBA(255, 255, 255, alpha);
+	pV[1].color = D3DCOLOR_RGBA(255, 255, 255, alpha);
+	pV[2].color = D3DCOLOR_RGBA(255, 255, 255, alpha);
+	pV[3].color = D3DCOLOR_RGBA(255, 255, 255, alpha);
+
+	pV[0].texcoord = D3DXVECTOR2(0.0f, 0.0f);
+	pV[1].texcoord = D3DXVECTOR2(1.0f, 0.0f);
+	pV[2].texcoord = D3DXVECTOR2(0.0f, 1.0f);
+	pV[3].texcoord = D3DXVECTOR2(1.0f, 1.0f);
+
+	m_p2DVertexBuffer->Unlock();
+
+	m_pD3DDevice->SetFVF(FVF_VERTEX2D);                                     // デバイスに頂点の構成要素を設定
+	m_pD3DDevice->SetTexture(0, Texture_GetTexture(texture_index));         // デバイスにテクスチャを設定
+	m_pD3DDevice->SetStreamSource(0, m_p2DVertexBuffer, 0, sizeof(Vertex2D)); // 頂点バッファの設定
+	m_pD3DDevice->SetIndices(m_p2DIndexBuffer);                               // インデックスバッファの設定
+																	   // プリミティブの描画
 	m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
 }
 

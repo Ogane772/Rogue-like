@@ -7,10 +7,12 @@
 void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 {
 	int e;
+	C3DObj *getplayer;
+	C3DObj *enemy;
 	for (e = 0; e < MAX_GAMEOBJ; e++)
 	{
-		C3DObj *getplayer = CPlayer::Get_Player();
-		C3DObj *enemy = CEnemy::Get_Enemy(e);
+		getplayer = CPlayer::Get_Player();
+		enemy = CEnemy::Get_Enemy(e);
 		if (enemy)
 		{
 			if (enemy->alive)

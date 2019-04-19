@@ -37,7 +37,7 @@ public:
 	static int Get_ObjectMaxNum(void) { return m_ORNAMENT_MAX; }
 	static C3DObj *Get_Object(int index);
 	bool Get_DrawCheck(void) { return alive; }
-
+	static void CObject::DeleteAllObject(void);
 	static C3DObj *Get_Map_Object(int Index);
 protected:
 	int m_ObjectIndex;
