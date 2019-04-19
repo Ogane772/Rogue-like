@@ -27,6 +27,7 @@ public:
 	static void Sprite_Draw(int texture_index, float dx, float dy, int tx, int ty, int tw, int th);	//	スプライト描画タイトルリザルト用
 	static void Sprite_Draw(int texture_index, float dx, float dy, float tx, float ty, float tw, float th, float cx, float cy, float sx, float sy, float rotation);
 	static void SpriteDraw(int texture_index, float dx, float dy);
+	static void Sprite_Draw(int texture_index, float dx, float dy, int alpha);//アルファ値変更
 	/*	
 		texture_index:テクスチャ番号
 		dx:表示したいスプライトの左上座標X

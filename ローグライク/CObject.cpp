@@ -106,6 +106,21 @@ C3DObj *CObject::Get_AllObject(int Index)
 	return NULL;
 }
 
+void CObject::DeleteAllObject(void)
+{
+	int i;
+	C3DObj *object;
+	for (i = 0; i < MAX_GAMEOBJ; i++)
+	{
+		object = CObject::Get_Object(i);
+
+		if (object)
+		{
+			delete object;
+		}
+	}
+}
+
 C3DObj *CObject::Get_Map_Object(int Index)
 {
 	C3DObj *pObject = C3DObj::Get(Index);

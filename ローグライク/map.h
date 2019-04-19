@@ -39,7 +39,7 @@ public:
 		bool Czwall;	// 壁が作られたか
 		bool Cxwall;	// 壁が作られたか
 		int Group;		// 短径グループ
-
+		float alpha; // ミニマップ用のアルファ値操作用
 		bool Cxtopwall;	// 通路上壁が作られたか
 		bool Cxbotwall;	// 通路下壁が作られたか
 		bool CzRwall;	// 通路右壁が作られたか
@@ -54,6 +54,7 @@ public:
 	static void Map_Draw(void);
 
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
+	static void Map_SetData(int z, int x,int alpha) { g_map[z][x].alpha = alpha; }
 private:
 	//static int g_TexWood2;
 	static MAP **g_map, *base_g_map;

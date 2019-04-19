@@ -14,7 +14,18 @@
 　　定数
  ----------------------------------------------------------------------*/
 #define TEXT_MAX (100)
-
+//ミニマップ表示位置
+#define MAP_POS_X (250)
+#define MAP_POS_Y (250)
+//プレイヤー位置からの未公開マップ開放範囲
+#define MAP_ON_X (25)
+#define MAP_ON_Y (25)
+//エネミーアイコン表示範囲
+#define ENEMY_ON_X (30)
+#define ENEMY_ON_Y (30)
+//オブジェクトアイコン表示範囲
+#define OBJECT_ON_X (30)
+#define OBJECT_ON_Y (30)
  /*----------------------------------------------------------------------
  　　グローバル変数
    ----------------------------------------------------------------------*/
@@ -45,11 +56,12 @@ void CUserinterface::UI_Initialize(void)
 	g_text.Age = 0;
 	g_text.TextCountFrame = 0;
 	g_text.TextCreateFrame = 0;
-	g_text.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	g_text.pos = D3DXVECTOR2(0.0f, 0.0f);
 	g_text.act = ACTTYPENONE;
 	g_text.chara = CHARATYPENONE;
 	g_text.hitchara = CHARATYPENONE;
 	g_text.damage = 0;
+	g_text.text_number = 0;
 }
 
 void CUserinterface::UI_Finalize(void)
@@ -72,11 +84,12 @@ void CUserinterface::UI_Update(void)
 	DMapPos.y -= 8.1f;
 	DMapPos.z += 3.0f;
 
+	/*
 	g_text.pos = CCamera::Camera_GetData();
 	g_text.pos.x -= 8.0f;
 	g_text.pos.y -= 10.0f;
 	g_text.pos.z += 0.0f;
-
+	*/
 	if (g_text.alive)
 	{
 		g_text.Age = g_TextFramecount - g_text.TextCreateFrame;
@@ -103,9 +116,9 @@ void CUserinterface::UI_Draw(void)
 	UI_TextDraw(500, 10, D3DCOLOR_RGBA(0, 255, 200, 255), "HP        /");
 
 	//HPバー
-	Sprite_Draw(TEX_HPGAGE_REDBAR, 500,50, 0, 0, Texture_GetWidth(TEX_HPGAGE_REDBAR), Texture_GetHeight(TEX_HPGAGE_REDBAR), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-	Sprite_Draw(TEX_HPGAGE_WAKU, 500, 50, 0, 0, Texture_GetWidth(TEX_HPGAGE_WAKU), Texture_GetHeight(TEX_HPGAGE_WAKU), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-	Sprite_Draw(TEX_HPGAGE_GREENBAR, 512, 60, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
+	Sprite_Draw(TEX_HPGAGE_REDBAR, 500,50, 0, 0, (float)Texture_GetWidth(TEX_HPGAGE_REDBAR), (float)Texture_GetHeight(TEX_HPGAGE_REDBAR), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	Sprite_Draw(TEX_HPGAGE_WAKU, 500, 50, 0, 0, (float)Texture_GetWidth(TEX_HPGAGE_WAKU), (float)Texture_GetHeight(TEX_HPGAGE_WAKU), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	Sprite_Draw(TEX_HPGAGE_GREENBAR, 512, 60, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), (float)Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
 
 	UI_TextDraw(80, 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", CStage::Stage_GetLevel());
 	UI_TextDraw(100, 10, D3DCOLOR_RGBA(0, 255, 200, 255), "  F");
@@ -124,25 +137,52 @@ void CUserinterface::UI_Draw(void)
 		for (y = 0; y < MAX_MAPHEIGHT; y++)
 		{
 			if (CMap::Map_GetData(x, y).type != 0)
-			{
-				Sprite_Draw(TEX_BLUE, (CMap::Map_GetData(x, y).pos.x + 250) * 1, (CMap::Map_GetData(x, y).pos.z * -1) + 250, 0, 0, 5, 5);
+			{//↓このコメントを出すとマップが全開になる
+				//CMap::Map_SetData(x, y, D3DCOLOR_RGBA(255, 255, 255, 255));
+				if (CMap::Map_GetData(x, y).alpha == 0 && (getplayer->Get_Position().x + MAP_POS_X - MAP_ON_X) < (CMap::Map_GetData(x, y).pos.x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + MAP_ON_X > (CMap::Map_GetData(x, y).pos.x + MAP_POS_X)
+					&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - MAP_ON_X < (CMap::Map_GetData(x, y).pos.z * -1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + MAP_ON_Y > (CMap::Map_GetData(x, y).pos.z * -1) + MAP_POS_Y)
+				{//マップを踏んだら可視化する
+					CMap::Map_SetData(x, y, 255);
+				}
+				if (CMap::Map_GetData(x, y).alpha != 0)
+				{
+					Sprite_Draw(TEX_BLUE, (CMap::Map_GetData(x, y).pos.x + MAP_POS_X) * 1, (CMap::Map_GetData(x, y).pos.z * -1) + MAP_POS_Y, CMap::Map_GetData(x, y).alpha);
+				}
+				//Sprite_Draw(TEX_BLUE, (CMap::Map_GetData(x, y).pos.x + 250) * 1, (CMap::Map_GetData(x, y).pos.z * -1) + 250, 0, 0, 5, 5);
 			}
 		}
 	}
 	//プレイヤーアイコン表示
-	Sprite_Draw(TEX_PLAYER_ICON, getplayer->Get_Position().x + 250, (getplayer->Get_Position().z*-1) + 250, 0, 0, 8, 8);
+	Sprite_Draw(TEX_PLAYER_ICON, getplayer->Get_Position().x + MAP_POS_X, (getplayer->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+	C3DObj *enemy;
+	C3DObj *object;
 	for (i = 0; i < MAX_GAMEOBJ; i++)
 	{
-		C3DObj *enemy = CEnemy::Get_Enemy(i);
+		enemy = CEnemy::Get_Enemy(i);
 		if (enemy)
-		{
-			Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + 250, (enemy->Get_Position().z*-1) + 250, 0, 0, 8, 8);
+		{//範囲内にいたらエネミーアイコン表示
+			if ((getplayer->Get_Position().x + MAP_POS_X - ENEMY_ON_X) < (enemy->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + ENEMY_ON_X > (enemy->Get_Position().x + MAP_POS_X)
+				&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - ENEMY_ON_Y < (enemy->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + ENEMY_ON_Y > (enemy->Get_Position().z*-1) + MAP_POS_Y)
+			{
+				Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+			}
 		}
-		C3DObj *object = CObject::Get_Object(i);
+		object = CObject::Get_Object(i);
 		//オブジェクトの判定
 		if (object)
-		{
-			Sprite_Draw(CTexture::TEX_LADDER_ICON, object->Get_Position().x + 250, (object->Get_Position().z*-1) + 250, 0, 0, 8, 8);
+		{//オブジェクトは一度マッピングさせたら消えるまで表示させる
+			if ((getplayer->Get_Position().x + MAP_POS_X - OBJECT_ON_X) < (object->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + OBJECT_ON_X > (object->Get_Position().x + MAP_POS_X)
+				&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - OBJECT_ON_Y < (object->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + OBJECT_ON_Y > (object->Get_Position().z*-1) + MAP_POS_Y)
+			{
+				object->Set_MapDrawFlag(true);
+			}
+			if (object->Get_MapDrawFlag())
+			{
+				if (object->m_ObjectType == CObject::TYPE_LADDER)
+				{
+					Sprite_Draw(CTexture::TEX_LADDER_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+				}
+			}
 		}
 	}
 	
@@ -150,16 +190,18 @@ void CUserinterface::UI_Draw(void)
 	//下のテキスト描画
 	if (g_text.alive)
 	{
-
+		Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 		switch (g_text.chara)
 		{
 		case PLAYERCHARA:
-
 			switch (g_text.act)
 			{
 			case REGULARATTACK:
-				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
-				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！スライムに%dダメージ与えた!", g_text.damage);
+				UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
+				if (g_text.Age > 40)
+				{
+					UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
+				}		
 				break;
 
 			case GOLADDER:
@@ -185,31 +227,42 @@ void CUserinterface::UI_Draw(void)
 		case SRAIM:
 			if (g_text.act == REGULARATTACK)
 			{
-				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
-				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムの攻撃！プレイヤーに%dダメージ与えた!", g_text.damage);
+				UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムからの攻撃！");
+				if (g_text.Age > 40)
+				{
+					UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーに%dダメージ与えた!", g_text.damage);
+				}			
 				break;
 			}
-
-		/*case SMALEMAP:
-			// ミニマップ描画
-			int x = 0, y = 0;
-			for (x = 0; x < MAX_MAPWIDTH; x++)
-			{
-				for (y = 0; y < MAX_MAPHEIGHT; y++)
-				{
-					if (CMap::Map_GetData(y, x).type != 0)
-					{
-						Sprite_Draw(TEX_BLUE, (CMap::Map_GetData(y, x).pos.x + 250) * 1, (CMap::Map_GetData(y, x).pos.z + 250) * 1, 0, 0, 5, 5);
-					}
-				}
-			}
-			break;*/
 		}
 	}
 }
 
 // 後にデバッグだけでなくゲームない文章用も作成
 void CUserinterface::UI_TextDraw(int x, int y, D3DCOLOR color, const char* text, ...)
+{
+#if defined(_DEBUG) || defined(DEBUG)
+
+	RECT rect = { x, y, WINDOW_WIDTH, WINDOW_HEIGHT };
+
+	char Tbuffer[TEXT_MAX];
+	va_list ap;
+	// 可変長引数を１個の変数にまとめる
+	va_start(ap, text);
+	// まとめられた変数で処理する
+	//vprintf(text, ap);
+	vsprintf_s(Tbuffer, TEXT_MAX, text, ap);
+	va_end(ap);
+
+
+
+	// 実験								文字数らしいが-1なら全部になる
+	g_pD3DXFont->DrawTextA(NULL, Tbuffer, -1, &rect, DT_LEFT, color);
+	//g_pD3DXFont->DrawTextA(NULL, Ppos.x, -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 0, 255));
+#endif // _DEBUG || DEBUG
+}
+
+void CUserinterface::UI_TextDraw2(int x, int y, D3DCOLOR color, const char* text, ...)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 
@@ -248,7 +301,26 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 	g_text.chara = chara;
 	g_text.hitchara = hitchara;
 	g_text.damage = damage;
-	g_text.act = act;
+	g_text.act = act;	
+	//g_text.text_number++;
+	g_text.text_number = 1;
+	if (g_text.text_number == 4)
+	{
+		g_text.text_number = 1;
+	}
+	//text_numberに合わせて出す場所を変える
+	switch (g_text.text_number)
+	{
+	case 1:
+		g_text.pos = D3DXVECTOR2(TEXT_POSX, TEXT_POSY);
+		break;
+	case 2:
+		g_text.pos = D3DXVECTOR2(TEXT_POSX, TEXT_POSY + TEXT_ADD_POSY);
+		break;
+	case 3:
+		g_text.pos = D3DXVECTOR2(TEXT_POSX, TEXT_POSY + (TEXT_ADD_POSY * 2));
+		break;
+	}
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
 }
@@ -260,4 +332,5 @@ void CUserinterface::UI_Delete(void)
 	g_text.Age = 0;
 	g_text.act = ACTTYPENONE;
 	g_text.chara = CHARATYPENONE;
+	g_text.text_number = 0;
 }

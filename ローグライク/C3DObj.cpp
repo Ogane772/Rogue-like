@@ -94,10 +94,11 @@ C3DObj::C3DObj(int type)
 //=============================================================================
 C3DObj::~C3DObj()
 {
+	DWORD i;
 	if (Thing.pSphereMeshMaterials)
 	{
 		//delete Thing.pSphereMeshMaterials;
-		for (DWORD i = 0; i < Thing.dwNumMaterials; i++)
+		for (i = 0; i < Thing.dwNumMaterials; i++)
 		{
 			delete[]Thing.pSphereMeshMaterials;
 		}
