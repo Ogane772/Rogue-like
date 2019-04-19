@@ -36,6 +36,7 @@ int CEnemy::m_EnemyNum[TYPE_MAX] = {};
 int CEnemy::m_EnemyEnableNum = 0;
 int CEnemy::m_EnemyMaxNum = 0;
 int CEnemy::TurnCount = 0;
+bool CEnemy::attackflag = false;
 //=============================================================================
 //	生成
 //=============================================================================
@@ -87,6 +88,7 @@ void CEnemy::EnemyTurnEnd(void)
 	int turnend_count;//ターンエンドカウント
 	int eposX;
 	int eposZ;
+	attackflag = false;
 	C3DObj *getplayer;
 	C3DObj *enemy;
 	turnend_count = 0;

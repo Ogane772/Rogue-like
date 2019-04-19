@@ -13,7 +13,9 @@
 #include "CSkinAnimation.h"
 #include "collision.h"
 #include "userinterface.h"
-
+//死亡時リターンする数値
+#define DEATH (1)//死んだら1
+#define NORMAL (0)
 class C3DObj :virtual public CGameObj
 {
 public:
@@ -136,11 +138,12 @@ public:
 	int Get_Gold(void) { return m_Gold; }		// 所持金取得
 	bool Get_MapDrawFlag(void) { return map_drawflag; }
 	void Set_MapDrawFlag(bool type) { map_drawflag = type; }
+	void Set_Attack_End(int end) { attack_endframe = end; }
 
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
 	virtual bool Get_DrawCheck(void) = 0;
-	virtual void Damage(int str) = 0;
+	virtual int Damage(int str) = 0;
 	static HRESULT InitModelLoad();  //	モデル読み込み
 	//モデル情報取得
 	THING* C3DObj::GetAnimeModel(void);
@@ -194,6 +197,7 @@ protected:
 	int m_Lv;				// レベル
 	int m_Gold;				// 所持金
 
+	int attack_endframe; //攻撃終了フレーム
 	int walkf;
 	int attackframe;
 	int nanawalk;

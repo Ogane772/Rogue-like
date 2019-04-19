@@ -198,7 +198,7 @@ void CUserinterface::UI_Draw(void)
 			{
 			case REGULARATTACK:
 				UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
-				if (g_text.Age > 40)
+				if (g_text.Age > 30)
 				{
 					UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
 				}		
@@ -228,7 +228,7 @@ void CUserinterface::UI_Draw(void)
 			if (g_text.act == REGULARATTACK)
 			{
 				UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムからの攻撃！");
-				if (g_text.Age > 40)
+				if (g_text.Age > 30)
 				{
 					UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーに%dダメージ与えた!", g_text.damage);
 				}			

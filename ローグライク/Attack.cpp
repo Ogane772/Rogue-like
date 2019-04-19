@@ -9,9 +9,9 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 	int e;
 	C3DObj *getplayer;
 	C3DObj *enemy;
+	getplayer = CPlayer::Get_Player();
 	for (e = 0; e < MAX_GAMEOBJ; e++)
-	{
-		getplayer = CPlayer::Get_Player();
+	{	
 		enemy = CEnemy::Get_Enemy(e);
 		if (enemy)
 		{
@@ -22,6 +22,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					// 当たっていたらダメージを与える
 					if (enemy->m_Judge_enemy.HitEnemyBottom)
 					{
+						getplayer->Set_Attack_End(ATTACK_END);
 						enemy->Damage(str);
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
@@ -32,6 +33,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					// 当たっていたらダメージを与える
 					if (enemy->m_Judge_enemy.HitEnemyLeft)
 					{
+						getplayer->Set_Attack_End(ATTACK_END);
 						enemy->Damage(str);
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
@@ -42,6 +44,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					// 当たっていたらダメージを与える
 					if (enemy->m_Judge_enemy.HitEnemyTop)
 					{
+						getplayer->Set_Attack_End(ATTACK_END);
 						enemy->Damage(str);
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
@@ -52,6 +55,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					// 当たっていたらダメージを与える
 					if (enemy->m_Judge_enemy.HitEnemyRight)
 					{
+						getplayer->Set_Attack_End(ATTACK_END);
 						enemy->Damage(str);
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
@@ -67,6 +71,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyBottomLeft)
 						{
+							getplayer->Set_Attack_End(ATTACK_END);
 							enemy->Damage(str);
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
@@ -78,6 +83,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyTopLeft)
 						{
+							getplayer->Set_Attack_End(ATTACK_END);
 							enemy->Damage(str);
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
@@ -89,6 +95,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyTopRight)
 						{
+							getplayer->Set_Attack_End(ATTACK_END);
 							enemy->Damage(str);
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
@@ -100,6 +107,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyBottomRight)
 						{
+							getplayer->Set_Attack_End(ATTACK_END);
 							enemy->Damage(str);
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
