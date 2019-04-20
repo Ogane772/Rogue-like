@@ -41,7 +41,9 @@ void CEnemy_Srime::Initialize(int x, int z)
 
 	TurnCount = 0;
 
+	add_time = 0;
 	alive = true;
+	rival_flag = false;
 	m_Position = D3DXVECTOR3(-247.5f + x * 5, 0.0f, 247.5f - z * 5);
 	m_EnemyMyColision.position = m_Position;
 	m_EnemyMyColision.radius = ENEMY_RADIUS;
@@ -49,7 +51,7 @@ void CEnemy_Srime::Initialize(int x, int z)
 	type = CUserinterface::SRAIM;
 	m_MaxHp = MAXHP;
 	m_Hp = m_MaxHp;
-	m_Str = STR;
+	m_Str = 999;
 	m_Def = 0;
 	m_Goway = false;
 	m_Angle = 0.0f;
@@ -745,6 +747,7 @@ void CEnemy_Srime::Enemy_AI(void)
 
 void CEnemy_Srime::Enemy_Act(void)
 {
+	C3DObj *getplayer = CPlayer::Get_Player();
 	if (attackframe < 8)
 	{
 		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
@@ -910,11 +913,20 @@ void CEnemy_Srime::Enemy_Act(void)
 		// 向いてる方向、攻撃力、攻撃したキャラの名前を渡す
 		CAttack::Attack_EnemyUpdate(type, rand() % m_Str + 3);
 	}
-
-	if (attackframe == 55)
+	//プレイヤーが死んだら表示時間延長
+	if (attackframe == 20 && getplayer->Get_Hp() <= 0)
 	{
+		add_time = 25;
+	}
+	if (attackframe == 55 + add_time)
+	{
+		add_time = 0;
 		enemyturn = ENEMY_ACT_END;
 		attackframe = 0;
+		if (getplayer->Get_Hp() <= 0)
+		{
+			turn = PLAYER_DESTROY;
+		}
 	}
 }
 
@@ -1056,7 +1068,7 @@ void CEnemy_Srime::Enemy_rightbottomMove(void)
 	}
 }
 
-int CEnemy_Srime::Damage(int str)
+bool CEnemy_Srime::Damage(int str)
 {
 	// 後にダメージエフェクトを作成
 	Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);

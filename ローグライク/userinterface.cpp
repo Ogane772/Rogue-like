@@ -10,6 +10,7 @@
 #include "CCamera.h"
 #include "map.h"
 #include "stage.h"
+#include "debug_font.h"
 /*----------------------------------------------------------------------
 　　定数
  ----------------------------------------------------------------------*/
@@ -36,6 +37,9 @@ D3DXVECTOR3 CUserinterface::MapPos;
 D3DXVECTOR3 CUserinterface::DMapPos;
 int CUserinterface::g_Textbackground;
 int CUserinterface::g_TextFramecount;
+D3DXVECTOR2 time_pos;//時間で変わる位置
+int add_time; //テキスト表示時間を+するとき足す
+bool text_draw;
 
 void CUserinterface::UI_Initialize(void)
 {
@@ -51,6 +55,9 @@ void CUserinterface::UI_Initialize(void)
 
 	MapPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	DMapPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	time_pos = D3DXVECTOR2(0.0f, 0.0f);
+	add_time = 0;
+	text_draw = false;
 
 	g_text.alive = false;
 	g_text.Age = 0;
@@ -62,6 +69,7 @@ void CUserinterface::UI_Initialize(void)
 	g_text.hitchara = CHARATYPENONE;
 	g_text.damage = 0;
 	g_text.text_number = 0;
+
 }
 
 void CUserinterface::UI_Finalize(void)
@@ -72,8 +80,16 @@ void CUserinterface::UI_Finalize(void)
 
 void CUserinterface::UI_Update(void)
 {
-	g_TextFramecount++;
-
+	C3DObj *getplayer = CPlayer::Get_Player();
+	if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END && !getplayer->Get_EnterFlag())
+	{
+		//エンター待ちの時は何もしない
+		
+	}
+	else
+	{
+		g_TextFramecount++;
+	}
 	MapPos = CCamera::Camera_GetData();
 	MapPos.x -= 8.0f;
 	MapPos.y -= 8.0f;
@@ -94,7 +110,16 @@ void CUserinterface::UI_Update(void)
 	{
 		g_text.Age = g_TextFramecount - g_text.TextCreateFrame;
 
-		if (g_text.Age > TEXT_FRAMEMAX)
+		if (g_text.Age > TEXT_FRAMEMAX - 20)
+		{
+			if (getplayer->Get_EnterFlag())
+			{
+				getplayer->Set_RivalFlag(false);
+				getplayer->Set_EnterFlag(false);
+				getplayer->turn = C3DObj::PLAYER_TURN_END;
+			}
+		}
+		if (g_text.Age > TEXT_FRAMEMAX + add_time)
 		{
 			UI_Delete();
 		}
@@ -103,6 +128,7 @@ void CUserinterface::UI_Update(void)
 
 void CUserinterface::UI_Draw(void)
 {
+	DebugFont_Draw(200, 180, "g_text.Age   = %d", g_text.Age);
 	// ワールド座標変換行列の作成と設定
 	D3DXMATRIX mtxWorld;
 	D3DXMATRIX mtxRotation;
@@ -197,28 +223,86 @@ void CUserinterface::UI_Draw(void)
 			switch (g_text.act)
 			{
 			case REGULARATTACK:
-				UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
-				if (g_text.Age > 30)
+				if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END && getplayer->Get_EnterFlag() || text_draw)
+				{//レベルアップ時はレベルアップ表示までターンを止めること
+					text_draw = true;
+					time_pos.y-=2;
+					//ウィンドウ上部まで文字をスクロールし、上部まで来たら消す
+					if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y)
+					{
+						UI_TextDraw(g_text.pos.x, g_text.pos.y + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
+					}
+					if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y + 50)
+					{
+						UI_TextDraw(g_text.pos.x, g_text.pos.y + 50 + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
+					}
+					//ここからウィンドウに表示する文字、自分の場所までスクロールする
+					if (g_text.pos.y + time_pos.y + 100 < g_text.pos.y)
+					{
+						UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
+					}
+					else
+					{
+						UI_TextDraw(g_text.pos.x, g_text.pos.y + time_pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
+					}
+					if (g_text.Age >= ATTACK_END + 30)//1行目が出てから少し待ってから出す
+					{
+						if (g_text.Age == ATTACK_END + 30)
+						{
+							add_time += 40;//表示時間延長
+						}
+						if (g_text.pos.y + time_pos.y + 150 < g_text.pos.y + 50)
+						{
+							UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "経験値0獲得");
+						}
+						else
+						{
+							UI_TextDraw(g_text.pos.x, g_text.pos.y + 150 + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "経験値0獲得");
+						}
+						
+					}
+					if (g_text.Age >= ATTACK_END + 50)
+					{//レベルアップしたら
+						if (g_text.Age == ATTACK_END + 50)
+						{
+							add_time += 20;//表示時間延長
+						}
+						if (g_text.pos.y + time_pos.y + 200 < g_text.pos.y + 100)
+						{
+							UI_TextDraw(g_text.pos.x, g_text.pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはレベル2になった！");
+						}
+						else
+						{
+							UI_TextDraw(g_text.pos.x, g_text.pos.y + 200 + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはレベル2になった！");
+						}
+					}
+				}
+				else if(g_text.Age <= ATTACK_END + 1)
 				{
-					UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
-				}		
+					UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
+					if (g_text.Age > 30)
+					{
+						UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
+						if (getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
+						{
+							UI_TextDraw(g_text.pos.x + 470, g_text.pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
+						}
+					}
+				}
 				break;
-
 			case GOLADDER:
-				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "先に進みますか？");
 				UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "⇒ 進む\n\n   そのまま");
 				break;
 
 			case NOTGOLADDER:
-				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "先に進みますか？");
 				UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "    進む\n\n⇒そのまま");
 				break;
 
 			case DESTROY:
-				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはやられてしまった");
+				UI_TextDraw(g_text.pos.x + 470, g_text.pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
 				break;
 			}
 
@@ -327,10 +411,13 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 
 void CUserinterface::UI_Delete(void)
 {
+	time_pos.y = 0;
+	text_draw = false;
 	g_text.alive = false;
 	g_text.TextCreateFrame = 0;
 	g_text.Age = 0;
 	g_text.act = ACTTYPENONE;
 	g_text.chara = CHARATYPENONE;
 	g_text.text_number = 0;
+	add_time = 0;
 }

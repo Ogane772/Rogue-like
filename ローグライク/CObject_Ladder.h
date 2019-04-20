@@ -23,7 +23,7 @@ public:
 	void Finalize(void);
 	void Update(void);
 	void Draw(void);
-	int Damage(int str);
+	bool Damage(int str);
 	void Damage(void);
 
 private:
