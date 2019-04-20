@@ -51,7 +51,7 @@ void CEnemy_Srime::Initialize(int x, int z)
 	type = CUserinterface::SRAIM;
 	m_MaxHp = MAXHP;
 	m_Hp = m_MaxHp;
-	m_Str = 999;
+	m_Str = STR;
 	m_Def = 0;
 	m_Goway = false;
 	m_Angle = 0.0f;
