@@ -30,7 +30,7 @@ public:
 	static const Sphere* Player_GetCollision(void) { return &m_Colision; }
 	static const Sphere* Player_GetEnemyCollision(void) { return &m_EnemyColision; }
 	static void Player_NextTurn(void);
-	int Damage(int str);
+	bool Damage(int str);
 	bool Get_DrawCheck(void) { return alive; }
 
 	static C3DObj *Get_Player(void);

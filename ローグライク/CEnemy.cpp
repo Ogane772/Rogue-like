@@ -92,9 +92,9 @@ void CEnemy::EnemyTurnEnd(void)
 	C3DObj *getplayer;
 	C3DObj *enemy;
 	turnend_count = 0;
+	getplayer = CPlayer::Get_Player();
 	for (i = 0; i < MAX_GAMEOBJ; i++)
-	{
-		getplayer = CPlayer::Get_Player();
+	{	
 		enemy = CEnemy::Get_Enemy(i);
 		//誰もエネミーがいなくてもターン終了時
 		if (m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->turn == CPlayer::PLAYER_TURN_END)
@@ -140,6 +140,7 @@ void CEnemy::EnemyTurnEnd(void)
 			}
 		}
 	}
+
 }
 
 void CEnemy::EnemyVsWall(JUDGE *enemy_judge, Sphere *m_EnemyMyColision)

@@ -23,7 +23,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					if (enemy->m_Judge_enemy.HitEnemyBottom)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
-						enemy->Damage(str);
+						getplayer->Set_RivalFlag(enemy->Damage(str));
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
@@ -34,7 +34,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					if (enemy->m_Judge_enemy.HitEnemyLeft)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
-						enemy->Damage(str);
+						getplayer->Set_RivalFlag(enemy->Damage(str));
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
@@ -45,7 +45,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					if (enemy->m_Judge_enemy.HitEnemyTop)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
-						enemy->Damage(str);
+						getplayer->Set_RivalFlag(enemy->Damage(str));
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
@@ -56,7 +56,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					if (enemy->m_Judge_enemy.HitEnemyRight)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
-						enemy->Damage(str);
+						getplayer->Set_RivalFlag(enemy->Damage(str));
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
@@ -72,7 +72,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						if (enemy->m_Judge_enemy.HitEnemyBottomLeft)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
-							enemy->Damage(str);
+							getplayer->Set_RivalFlag(enemy->Damage(str));
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}
@@ -84,7 +84,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						if (enemy->m_Judge_enemy.HitEnemyTopLeft)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
-							enemy->Damage(str);
+							getplayer->Set_RivalFlag(enemy->Damage(str));
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}
@@ -96,7 +96,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						if (enemy->m_Judge_enemy.HitEnemyTopRight)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
-							enemy->Damage(str);
+							getplayer->Set_RivalFlag(enemy->Damage(str));
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}
@@ -108,7 +108,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						if (enemy->m_Judge_enemy.HitEnemyBottomRight)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
-							enemy->Damage(str);
+							getplayer->Set_RivalFlag(enemy->Damage(str));
 							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}

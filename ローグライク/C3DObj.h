@@ -14,8 +14,8 @@
 #include "collision.h"
 #include "userinterface.h"
 //死亡時リターンする数値
-#define DEATH (1)//死んだら1
-#define NORMAL (0)
+#define DEATH (true)//死んだら1
+#define NORMAL (false)
 class C3DObj :virtual public CGameObj
 {
 public:
@@ -136,14 +136,18 @@ public:
 	float Get_MaxHp(void) { return m_MaxHp; }		//	最大HP取得
 	int Get_Lv(void) { return m_Lv; }		//	レベル取得
 	int Get_Gold(void) { return m_Gold; }		// 所持金取得
+	bool Get_RivalFlag(void) { return rival_flag; }
 	bool Get_MapDrawFlag(void) { return map_drawflag; }
+	bool Get_EnterFlag(void) { return enter_flag; }
 	void Set_MapDrawFlag(bool type) { map_drawflag = type; }
+	void Set_RivalFlag(bool type) { rival_flag = type; }
+	void Set_EnterFlag(bool type) { enter_flag = type; }
 	void Set_Attack_End(int end) { attack_endframe = end; }
-
+	
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
 	virtual bool Get_DrawCheck(void) = 0;
-	virtual int Damage(int str) = 0;
+	virtual bool Damage(int str) = 0;
 	static HRESULT InitModelLoad();  //	モデル読み込み
 	//モデル情報取得
 	THING* C3DObj::GetAnimeModel(void);
@@ -202,7 +206,8 @@ protected:
 	int attackframe;
 	int nanawalk;
 	bool map_drawflag;		// ミニマップに表示するか true=表示
-
+	bool rival_flag;		// 攻撃相手が死んでたらtrue
+	bool enter_flag;		// エンターが押されたとき
 	// 描画処理
 	void DrawDX_Anime(D3DXMATRIX mtxWorld, int type, THING* pNomalModel);
 	void C3DObj::DrawDX_Normal(D3DXMATRIX mtxWorld, NormalModelData* pNomalModel);
