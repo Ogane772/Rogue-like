@@ -110,7 +110,7 @@ void CUserinterface::UI_Update(void)
 	{
 		g_text.Age = g_TextFramecount - g_text.TextCreateFrame;
 
-		if (g_text.Age > TEXT_FRAMEMAX - 20)
+		if (g_text.Age > TEXT_FRAMEMAX + ENEMY_DESTROY_TEXT)
 		{
 			if (getplayer->Get_EnterFlag())
 			{
@@ -230,20 +230,20 @@ void CUserinterface::UI_Draw(void)
 					//ウィンドウ上部まで文字をスクロールし、上部まで来たら消す
 					if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y)
 					{
-						UI_TextDraw(g_text.pos.x, g_text.pos.y + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
 					}
 					if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y + 50)
 					{
-						UI_TextDraw(g_text.pos.x, g_text.pos.y + 50 + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
 					}
 					//ここからウィンドウに表示する文字、自分の場所までスクロールする
 					if (g_text.pos.y + time_pos.y + 100 < g_text.pos.y)
 					{
-						UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
 					}
 					else
 					{
-						UI_TextDraw(g_text.pos.x, g_text.pos.y + time_pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
 					}
 					if (g_text.Age >= ATTACK_END + 30)//1行目が出てから少し待ってから出す
 					{
@@ -253,11 +253,11 @@ void CUserinterface::UI_Draw(void)
 						}
 						if (g_text.pos.y + time_pos.y + 150 < g_text.pos.y + 50)
 						{
-							UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "経験値0獲得");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値0獲得");
 						}
 						else
 						{
-							UI_TextDraw(g_text.pos.x, g_text.pos.y + 150 + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "経験値0獲得");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 150 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値0獲得");
 						}
 						
 					}
@@ -269,23 +269,23 @@ void CUserinterface::UI_Draw(void)
 						}
 						if (g_text.pos.y + time_pos.y + 200 < g_text.pos.y + 100)
 						{
-							UI_TextDraw(g_text.pos.x, g_text.pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはレベル2になった！");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはレベル2になった！");
 						}
 						else
 						{
-							UI_TextDraw(g_text.pos.x, g_text.pos.y + 200 + time_pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはレベル2になった！");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 200 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはレベル2になった！");
 						}
 					}
 				}
 				else if(g_text.Age <= ATTACK_END + 1)
 				{
-					UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーの攻撃！");
 					if (g_text.Age > 30)
 					{
-						UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
+						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
 						if (getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
 						{
-							UI_TextDraw(g_text.pos.x + 470, g_text.pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
+							UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
 						}
 					}
 				}
@@ -302,7 +302,7 @@ void CUserinterface::UI_Draw(void)
 
 			case DESTROY:
 				UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーはやられてしまった");
-				UI_TextDraw(g_text.pos.x + 470, g_text.pos.y + 100, D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
+				UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
 				break;
 			}
 
@@ -311,10 +311,10 @@ void CUserinterface::UI_Draw(void)
 		case SRAIM:
 			if (g_text.act == REGULARATTACK)
 			{
-				UI_TextDraw(g_text.pos.x, g_text.pos.y, D3DCOLOR_RGBA(255, 255, 255, 255), "スライムからの攻撃！");
+				UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムからの攻撃！");
 				if (g_text.Age > 30)
 				{
-					UI_TextDraw(g_text.pos.x, g_text.pos.y + 50, D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーに%dダメージ与えた!", g_text.damage);
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "プレイヤーに%dダメージ与えた!", g_text.damage);
 				}			
 				break;
 			}

@@ -11,7 +11,8 @@
 #define PLAYER_ENERADIUS (5.0f)				// エネミー専用当たり判定
 #define PLAYER_RECOVERY (100)				// 自然回復 = MAXHP / PLAYER_RECOVERY
 #define PLAYER_MAXHP (500)
-#define PLAYER_STR (4)
+#define PLAYER_STR (6)
+
 class CPlayer :public C3DObj
 {
 

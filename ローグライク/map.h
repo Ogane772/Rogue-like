@@ -39,7 +39,7 @@ public:
 		bool Czwall;	// 壁が作られたか
 		bool Cxwall;	// 壁が作られたか
 		int Group;		// 短径グループ
-		float alpha; // ミニマップ用のアルファ値操作用
+		int alpha; // ミニマップ用のアルファ値操作用
 		bool Cxtopwall;	// 通路上壁が作られたか
 		bool Cxbotwall;	// 通路下壁が作られたか
 		bool CzRwall;	// 通路右壁が作られたか
