@@ -452,7 +452,7 @@ void CEnemy_Srime::Enemy_AI(void)
 				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 				m_mtxWorld *= m_mtxTranslation;
 
-				walkf= 100;
+				walkf= 100 + WALK_COUNT - 4;
 				vecenemy = m_Front;
 				enemyturn = ENEMY_MOVE;
 
@@ -526,7 +526,7 @@ void CEnemy_Srime::Enemy_AI(void)
 				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 				m_mtxWorld *= m_mtxTranslation;
 
-				walkf= 100;
+				walkf= 100 + WALK_COUNT - 4;
 				vecenemy = m_Right;
 				enemyturn = ENEMY_MOVE;
 
@@ -650,7 +650,7 @@ void CEnemy_Srime::Enemy_AI(void)
 				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 				m_mtxWorld *= m_mtxTranslation;
 
-				walkf= 24;
+				walkf= 30;
 				nanawalk = 0;
 				vecenemy = m_Front;
 				vec2enemy = m_Right;
@@ -692,7 +692,7 @@ void CEnemy_Srime::Enemy_AI(void)
 				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 				m_mtxWorld *= m_mtxTranslation;
 
-				walkf= 8;
+				walkf= 24;
 				nanawalk = 0;
 				vecenemy = m_Front;
 				vec2enemy = m_Right;
@@ -930,16 +930,68 @@ void CEnemy_Srime::Enemy_Act(void)
 	}
 }
 
+/*çÇë¨ÇÃéû	
 void CEnemy_Srime::Enemy_Move(void)
 {
 	if (walkf<= 4)
+	{
+	m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+	
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position += vecenemy * 1.0f;
+	
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+	
+	// ìñÇΩÇËîªíËÇÃê›íË
+	//g_player.col.position = g_player.pos;
+	walkf++;
+	if (walkf== 5)
+	enemyturn = ENEMY_MOVE_END;
+	}
+	
+	if (walkf>= 96)
+	{
+	m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+	
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position -= vecenemy * 1.0f;
+	
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+	
+	// ìñÇΩÇËîªíËÇÃê›íË
+	//g_player.col.position = g_player.pos;
+	walkf--;
+	if (walkf== 95)
+	enemyturn = ENEMY_MOVE_END;
+	}
+	
+	if (walkf== 56)
+	Enemy_lefttopMove();
+	if (walkf== 40)
+	Enemy_leftbottomMove();
+	if (walkf== 30)
+	Enemy_rightbottomMove();
+	if (walkf== 24)
+	Enemy_righttopMove();
+}
+*/
+
+void CEnemy_Srime::Enemy_Move(void)
+{
+	if (walkf<= WALK_COUNT)
 	{
 		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
 		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
 
 		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-		m_Position += vecenemy * 1.0f;
+		m_Position += vecenemy * 0.5f;
 
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 		m_mtxWorld *= m_mtxTranslation;
@@ -947,7 +999,7 @@ void CEnemy_Srime::Enemy_Move(void)
 		// ìñÇΩÇËîªíËÇÃê›íË
 		//g_player.col.position = g_player.pos;
 		walkf++;
-		if (walkf== 5)
+		if (walkf== WALK_COUNT + 1)
 			enemyturn = ENEMY_MOVE_END;
 	}
 
@@ -958,7 +1010,7 @@ void CEnemy_Srime::Enemy_Move(void)
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
 
 		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-		m_Position -= vecenemy * 1.0f;
+		m_Position -= vecenemy * 0.5f;
 
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 		m_mtxWorld *= m_mtxTranslation;
@@ -974,96 +1026,96 @@ void CEnemy_Srime::Enemy_Move(void)
 		Enemy_lefttopMove();
 	if (walkf== 40)
 		Enemy_leftbottomMove();
-	if (walkf== 24)
+	if (walkf== 30)
 		Enemy_rightbottomMove();
-	if (walkf== 8)
+	if (walkf== 24)
 		Enemy_righttopMove();
 }
 
 void CEnemy_Srime::Enemy_lefttopMove(void)
 {
-	if (nanawalk <= 4)
+	if (nanawalk <= (WALK_COUNT * 2) + 1)
 	{
 		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
 		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
 
 		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-		m_Position += vecenemy * 1.0f;
+		m_Position += vecenemy * 0.25f;
 
-		m_Position -= vec2enemy * 1.0f;
+		m_Position -= vec2enemy * 0.25f;
 
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 		m_mtxWorld *= m_mtxTranslation;
 		nanawalk++;
 
-		if (nanawalk == 5)
+		if (nanawalk == (WALK_COUNT * 2) + 2)
 			enemyturn = ENEMY_MOVE_END;
 	}
 }
 
 void CEnemy_Srime::Enemy_righttopMove(void)
 {
-	if (nanawalk <= 4)
+	if (nanawalk <= (WALK_COUNT * 2) + 1)
 	{
 		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
 		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
 
 		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-		m_Position += vecenemy * 1.0f;
+		m_Position += vecenemy * 0.25f;
 
-		m_Position += vec2enemy * 1.0f;
+		m_Position += vec2enemy * 0.25f;
 
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 		m_mtxWorld *= m_mtxTranslation;
 		nanawalk++;
 
-		if (nanawalk == 5)
+		if (nanawalk == (WALK_COUNT * 2) + 2)
 			enemyturn = ENEMY_MOVE_END;
 	}
 }
 
 void CEnemy_Srime::Enemy_leftbottomMove(void)
 {
-	if (nanawalk <= 4)
+	if (nanawalk <= (WALK_COUNT * 2) + 1)
 	{
 		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
 		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
 
 		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-		m_Position -= vecenemy * 1.0f;
+		m_Position -= vecenemy * 0.25f;
 
-		m_Position -= vec2enemy * 1.0f;
+		m_Position -= vec2enemy * 0.25f;
 
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 		m_mtxWorld *= m_mtxTranslation;
 		nanawalk++;
 
-		if (nanawalk == 5)
+		if (nanawalk == (WALK_COUNT * 2) + 2)
 			enemyturn = ENEMY_MOVE_END;
 	}
 }
 
 void CEnemy_Srime::Enemy_rightbottomMove(void)
 {
-	if (nanawalk <= 4)
+	if (nanawalk <= (WALK_COUNT * 2) + 1)
 	{
 		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
 		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
 
 		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-		m_Position -= vecenemy * 1.0f;
+		m_Position -= vecenemy * 0.25f;
 
-		m_Position += vec2enemy * 1.0f;
+		m_Position += vec2enemy * 0.25f;
 
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 		m_mtxWorld *= m_mtxTranslation;
 		nanawalk++;
 
-		if (nanawalk == 5)
+		if (nanawalk == (WALK_COUNT * 2) + 2)
 			enemyturn = ENEMY_MOVE_END;
 	}
 }

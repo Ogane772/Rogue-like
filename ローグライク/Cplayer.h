@@ -12,7 +12,10 @@
 #define PLAYER_RECOVERY (100)				// 自然回復 = MAXHP / PLAYER_RECOVERY
 #define PLAYER_MAXHP (500)
 #define PLAYER_STR (6)
-
+#define PLAYER_HEAL (m_MaxHp / 5000)	//歩いたときの回復量
+#define WALK_COUNT (9) //ウォークカウント基礎値
+//0.25 19 
+//0.5 9
 class CPlayer :public C3DObj
 {
 
