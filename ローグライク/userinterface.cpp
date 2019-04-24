@@ -371,6 +371,9 @@ void CUserinterface::UI_TextDraw2(int x, int y, D3DCOLOR color, const char* text
 
 void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act)
 {
+	g_text.Age = 0;
+	time_pos.y = 0;
+	text_draw = false;
 	g_text.alive = true;
 	g_text.chara = chara;
 	g_text.act = act;
@@ -381,6 +384,9 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act)
 
 void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage)
 {
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
 	g_text.alive = true;
 	g_text.chara = chara;
 	g_text.hitchara = hitchara;
@@ -419,5 +425,6 @@ void CUserinterface::UI_Delete(void)
 	g_text.act = ACTTYPENONE;
 	g_text.chara = CHARATYPENONE;
 	g_text.text_number = 0;
+	g_text.pos = D3DXVECTOR2(0.0f, 0.0f);
 	add_time = 0;
 }
