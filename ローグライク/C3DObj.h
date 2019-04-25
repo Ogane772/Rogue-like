@@ -14,8 +14,9 @@
 #include "collision.h"
 #include "userinterface.h"
 //死亡時リターンする数値
-#define DEATH (true)//死んだら1
+#define DEATH (true)//死んだらtrue
 #define NORMAL (false)
+#define MAX_NAME (30) //名前文字の最大数　全角なので実質15文字まで
 class C3DObj :virtual public CGameObj
 {
 public:
@@ -136,6 +137,7 @@ public:
 	float Get_MaxHp(void) { return m_MaxHp; }		//	最大HP取得
 	int Get_Lv(void) { return m_Lv; }		//	レベル取得
 	int Get_Gold(void) { return m_Gold; }		// 所持金取得
+	char* Get_Name(void) { return name; };		// 名前取得
 	bool Get_RivalFlag(void) { return rival_flag; }
 	bool Get_MapDrawFlag(void) { return map_drawflag; }
 	bool Get_EnterFlag(void) { return enter_flag; }
@@ -201,10 +203,11 @@ protected:
 	int m_Lv;				// レベル
 	int m_Gold;				// 所持金
 
-	int attack_endframe; //攻撃終了フレーム
+	int attack_endframe; // 攻撃終了フレーム
 	int walkf;
 	int attackframe;
 	int nanawalk;
+	char name[MAX_NAME];			// 名前
 	bool map_drawflag;		// ミニマップに表示するか true=表示
 	bool rival_flag;		// 攻撃相手が死んでたらtrue
 	bool enter_flag;		// エンターが押されたとき

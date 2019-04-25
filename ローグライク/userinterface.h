@@ -10,6 +10,7 @@
 #define TEXT_POSX (150)		// テキスト表示X座標
 #define TEXT_POSY (520)		// テキスト表示Y座標
 #define TEXT_ADD_POSY (50)		// テキスト表示Y座標
+#define MAX_NAME (30)
 #define ENEMY_DESTROY_TEXT (15) //　敵死亡時の動けないテキスト表示時間
 //===================================
 // テキスト列挙
@@ -49,6 +50,7 @@ public:
 		D3DXVECTOR2 pos;
 		int text_number;		// 出す場所
 		
+		char *name;				// 対象の名前
 		bool alive;
 	}TEXT;
 
@@ -62,7 +64,7 @@ public:
 	static void UI_TextDraw2(int x, int y, D3DCOLOR color, const char* text, ...);
 
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act);
-	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage);
+	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, char* name);
 
 	static void UI_Delete(void);
 private:

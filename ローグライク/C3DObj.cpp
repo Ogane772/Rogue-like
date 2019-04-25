@@ -172,15 +172,15 @@ void C3DObj::DrawAll()
 
 			if (!p3DObj[i]->Thing.pFrameRoot)
 			{
-				if (VFCulling(&p3DObj[i]->m_Position))
-				{
+				//if (VFCulling(&p3DObj[i]->m_Position))
+				//{
 					p3DObj[i]->Draw();
-				}
-				else
-				{
+			//	}
+			//	else
+			//	{
 					//画面外の時はテクスチャを更新
 					//p3DObj[i]->SkinMesh.DrawFrame(m_pD3DDevice, p3DObj[i]->Thing_Normal_model.pFrameRoot, &p3DObj[i]->Thing, false);
-				}
+			//	}
 			}
 			else
 			{
