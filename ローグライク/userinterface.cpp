@@ -234,16 +234,18 @@ void CUserinterface::UI_Draw(void)
 					}
 					if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y + 50)
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムに%dダメージ与えた!", g_text.damage);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに%dダメージ与えた!", g_text.name, g_text.damage);
 					}
 					//ここからウィンドウに表示する文字、自分の場所までスクロールする
 					if (g_text.pos.y + time_pos.y + 100 < g_text.pos.y)
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "モンスターを倒した！");
+						//UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
 					}
 					else
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "スライムを倒した！");
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "モンスターを倒した！");
+						//UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
 					}
 					if (g_text.Age >= ATTACK_END + 30)//1行目が出てから少し待ってから出す
 					{
@@ -382,7 +384,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act)
 	
 }
 
-void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage)
+void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, char *name)
 {
 	g_text.Age = 0;
 	text_draw = false;
@@ -392,6 +394,10 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 	g_text.hitchara = hitchara;
 	g_text.damage = damage;
 	g_text.act = act;	
+	if (!name)
+	{
+		strcpy_s(g_text.name, MAX_NAME, name);
+	}
 	//g_text.text_number++;
 	g_text.text_number = 1;
 	if (g_text.text_number == 4)
