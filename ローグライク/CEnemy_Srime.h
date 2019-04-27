@@ -12,10 +12,10 @@
 class CEnemy_Srime : public CEnemy
 {
 public:
-	CEnemy_Srime(int x, int z);
+	CEnemy_Srime(int x, int z, ENEMY_Data enemy_data);
 	~CEnemy_Srime();
 
-	void Initialize(int x, int z);
+	void Initialize(int x, int z, ENEMY_Data enemy_data);
 	void Update(void);
 	void Draw(void);
 

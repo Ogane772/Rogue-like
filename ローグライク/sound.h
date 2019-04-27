@@ -16,30 +16,10 @@
 //*****************************************************************************
 typedef enum
 {
-	TITLE_BGM,			// ÉQÅ[ÉÄBGM
-	CHUTO_BGM,
-	MAIN_BGM,
-	RESULT_BGM,
-	START_SE,
-	NORMALHIT_SE,
-	BIGHIT_SE,
-	POPCORN_SE,
-	COASTER_SE,
-	CUP_SE,
-	FREEFALL_SE,
-	KENSETU_SE,
-	GAME_END_SE,
-	GAMEOVER_SE,
-	COASTER_ON_SE,
-	ENTER_SE,
-	FREE_WALL_UP_SE,
-	HUSEN_SE,
-	WHEEL_SE,
-	BARUP_SE,
-	CLEARBONUS_SE,
-	MONSTERHIT_SE,
-	OBJECTHIT_SE,
-	SCOREHYOUJI_SE,
+	LVUP_SE,
+	PLAYERDAMAGE_SE,
+	ENEMYDAMAGE_SE,
+	FLOOR_SE,//íÚéqÇè„Ç¡ÇΩâπ
 	SOUND_LABEL_MAX,
 } SOUND_LABEL;
 

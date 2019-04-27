@@ -24,7 +24,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(str));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
 				}
@@ -35,7 +35,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(str));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
 				}
@@ -46,7 +46,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(str));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
 				}
@@ -57,7 +57,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(str));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 						break;
 					}
 				}
@@ -73,7 +73,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(str));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}
 					}
@@ -85,7 +85,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(str));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}
 					}
@@ -97,7 +97,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(str));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}
 					}
@@ -109,7 +109,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str)
 						{
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(str));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str, enemy->Get_Name());
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, enemy->type, str);
 							break;
 						}
 					}
@@ -125,5 +125,5 @@ void CAttack::Attack_EnemyUpdate(int charatype, int str)
 	C3DObj *getplayer = CPlayer::Get_Player();
 	getplayer->Damage(str);
 	// ƒ_ƒ[ƒWŠÖ”“à‚Å‘‚­‚×‚«‚©‚à
-	CUserinterface::UI_TextCreate(CUserinterface::SRAIM, CUserinterface::REGULARATTACK, CUserinterface::PLAYERCHARA, str, getplayer->Get_Name());
+	CUserinterface::UI_TextCreate(CUserinterface::SRAIM, CUserinterface::REGULARATTACK, CUserinterface::PLAYERCHARA, str);
 }

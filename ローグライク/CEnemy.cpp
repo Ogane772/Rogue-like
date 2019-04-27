@@ -37,6 +37,11 @@ int CEnemy::m_EnemyEnableNum = 0;
 int CEnemy::m_EnemyMaxNum = 0;
 int CEnemy::TurnCount = 0;
 bool CEnemy::attackflag = false;
+CEnemy::ENEMY_Data CEnemy::m_EnemyData[]
+{
+	//名前 HP STR DEF EXP GOLD　TYPE
+	{ "スライムだろ" , 20.0f, 4, 0, 5, 5,CUserinterface::SRAIM },
+};
 //=============================================================================
 //	生成
 //=============================================================================
@@ -72,7 +77,7 @@ void CEnemy::Create(int enemy_type, int x, int z)
 	switch (enemy_type)
 	{
 	case TYPE_SRIME:
-		CEnemy_Srime *penemy_srime = new CEnemy_Srime(x, z);
+		CEnemy_Srime *penemy_srime = new CEnemy_Srime(x, z , m_EnemyData[0]);
 		break;
 	}
 }
