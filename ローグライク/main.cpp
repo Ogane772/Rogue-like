@@ -252,7 +252,7 @@ bool Begin(HINSTANCE hInstance, HWND hWnd)
 	C2DObj::Texture_Load();
 
 	// サウンドの初期化
-	//InitSound(hWnd);
+	InitSound(hWnd);
 
 	// フェードの初期化
 	Fade_Initialize();
@@ -386,7 +386,7 @@ void End(void)
 	CGameObj::DeleteAll2D();			//	2Dオブジェクト全消去
 	C3DObj::Model_Finalize();
 	// サウンド終了処理
-	//UninitSound();
+	UninitSound();
 
 	// テクスチャの解放
 	//Texture_Release();

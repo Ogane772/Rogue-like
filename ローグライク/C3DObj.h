@@ -129,7 +129,8 @@ public:
 	static void DrawAll();		// 全オブジェクト描画
 	static void DeleteAll();	// 全オブジェクト削除
 	void C3DObj_delete(void);	// オブジェクト削除	
-	static C3DObj *Get(int nIdx);					// インスタンス取得
+	static C3DObj *Get(int nIdx);	// インスタンス取得
+	virtual bool ExpGoldCheck(int exp, int gold) { return 0; }//プレイヤーの経験とお金チェック
 	int Get_3DObjIndex() { return m_3DObjIndex; }	// ワークインデックス取得
 	int Get_3DObjType() { return m_3DObjType; }		// 種類取得
 	int Get_Angle(void) { return (int)m_Angle; }	//	角度取得	
@@ -202,6 +203,7 @@ protected:
 	int m_Def;			    // 防御力
 	int m_Lv;				// レベル
 	int m_Gold;				// 所持金
+	int m_Exp;				// 経験値
 
 	int attack_endframe; // 攻撃終了フレーム
 	int walkf;

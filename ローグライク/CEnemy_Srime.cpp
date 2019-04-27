@@ -3,6 +3,7 @@
 #include "CEnemy_Srime.h"
 #include "input.h"
 #include "CPlayer.h"
+#include "sound.h"
 #include "userinterface.h"
 #include "debug_font.h"
 #include "Attack.h"
@@ -18,9 +19,9 @@
 //	生成
 //=============================================================================
 
-CEnemy_Srime::CEnemy_Srime(int x, int z) :CEnemy(TYPE_SRIME), C3DObj(C3DObj::TYPE_ENEMY)
+CEnemy_Srime::CEnemy_Srime(int x, int z, ENEMY_Data enemy_data) :CEnemy(TYPE_SRIME), C3DObj(C3DObj::TYPE_ENEMY)
 {
-	Initialize(x, z);
+	Initialize(x, z, enemy_data);
 }
 
 //=============================================================================
@@ -34,9 +35,9 @@ CEnemy_Srime::~CEnemy_Srime()
 }
 
 
-void CEnemy_Srime::Initialize(int x, int z)
+void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 {
-	strcpy_s(name, MAX_NAME, "スライム");
+	strcpy_s(name, MAX_NAME, enemy_data.enemy_name);
 	m_EnemyIndex = Get_EnemyIndex(TYPE_ALL);
 	Normal_model = GetNormalModel(MODELL_ENEMY_1);
 
@@ -49,11 +50,13 @@ void CEnemy_Srime::Initialize(int x, int z)
 	m_EnemyMyColision.position = m_Position;
 	m_EnemyMyColision.radius = ENEMY_RADIUS;
 	enemyturn = ENEMY_WAIT;
-	type = CUserinterface::SRAIM;
-	m_MaxHp = MAXHP;
+	type = enemy_data.type;
+	m_MaxHp = enemy_data.Hp;
 	m_Hp = m_MaxHp;
-	m_Str = STR;
-	m_Def = 0;
+	m_Str = enemy_data.str;
+	m_Def = enemy_data.def;
+	m_Exp = enemy_data.exp;
+	m_Gold = enemy_data.gold;
 	m_Goway = false;
 	m_Angle = 0.0f;
 	walkf = 0;
@@ -130,8 +133,8 @@ void CEnemy_Srime::Draw(void)
 	DebugFont_Draw(2, 170, "エネミー座標番地 Z %.0f  X %.0f (%d ～ %d)", (g_enemy[1].pos.z - 247.5f) / -5, (g_enemy[1].pos.x + 247.5f) / 5, 0, 99);*/
 	CBilboard::Shadow_Draw(m_mtxWorld, m_Position);
 	DrawDX_Normal(m_mtxWorld, &Normal_model);
-	DebugFont_Draw(0, 300, "エネミー nanawalk = %d", nanawalk);
-	DebugFont_Draw(0, 330, "エネミー walk = %d", walkf);
+	//DebugFont_Draw(0, 300, "エネミー nanawalk = %d", nanawalk);
+	//DebugFont_Draw(0, 330, "エネミー walk = %d", walkf);
 	/*
 	DebugFont_Draw(200, 20, "エネミー出現数%d", m_EnemyNum[TYPE_SRIME]);
 	DebugFont_Draw(200, 60, "m_Judge_enemy.HitTop = %d", m_Judge_enemy.HitTop);
@@ -1127,7 +1130,7 @@ bool CEnemy_Srime::Damage(int str)
 {
 	// 後にダメージエフェクトを作成
 	Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
-
+	PlaySound(ENEMYDAMAGE_SE);
 	// 後にダメージ計算式を作成
 	m_Hp -= str;
 	// 体力が0以下で倒れる

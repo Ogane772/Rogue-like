@@ -43,12 +43,22 @@ public:
 	static int Get_EnemyMaxNum(void) { return m_ENEMY_MAX; }
 	static C3DObj *Get_Enemy(int index);
 	bool Get_DrawCheck(void) { return alive; }
+	static int Get_EnemyExp(int index) { return m_EnemyData[index].exp; }
+	static char* Get_EnemyName(int index) { return m_EnemyData[index].enemy_name; }
 	static void Reset_EnemyEnableNum(void) {  m_EnemyEnableNum = 0; }
 	int m_Type;			// 種類
 	static void DeleteAllEnemy(void);
 	static void EnemyVsWall(JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
 protected:
-
+	typedef struct {
+		char enemy_name[MAX_NAME];
+		float Hp;				
+		int str,
+			def,		
+			exp,	
+			gold;
+		CUserinterface::CHARATYPE type;
+	}ENEMY_Data;
 	// 目的地
 	int m_Goalz;
 	int m_Goalx;
@@ -79,7 +89,7 @@ protected:
 private:
 	static int m_EnemyMaxNum;//エネミーの総数
 	static int m_ENEMY_MAX;
-
+	static ENEMY_Data m_EnemyData[];
 };
 
 #endif // !1

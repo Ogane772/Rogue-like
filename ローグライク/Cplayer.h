@@ -36,7 +36,7 @@ public:
 	static void Player_NextTurn(void);
 	bool Damage(int str);
 	bool Get_DrawCheck(void) { return alive; }
-
+	bool ExpGoldCheck(int exp, int gold);		// 獲得経験値とお金処理
 	static C3DObj *Get_Player(void);
 	// マップ二次元配列用
 
@@ -45,6 +45,13 @@ protected:
 
 	bool m_DrawCheck;			//	描画フラグ
 private:
+	typedef struct {
+		int lv,		 
+			lvup_exp,//レベルアップに必要な経験値
+			maxhp,   
+			str,
+			def;
+	}Player_LvData;
 	void Initialize(void);	//	初期化
 	void Player_Move(void);
 	void Player_MoveChenge(int MoveType);			//	移動処理の準備
@@ -96,6 +103,8 @@ private:
 	static D3DXVECTOR3 start_m_Position;//開始時の位置
 	static int start_m_Mapz;
 	static int start_m_Mapx;
+
+	static Player_LvData m_PlayerLvData[];
 };
 
 
