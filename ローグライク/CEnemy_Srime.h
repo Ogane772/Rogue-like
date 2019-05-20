@@ -22,14 +22,18 @@ public:
 	void Enemy_AI(void);
 
 	void Enemy_Act(void);
+	void Enemy_TurboMove(void);
 	void Enemy_Move(void);
 	// ŽÎ‚ßˆÚ“®(—Í‹Z)
 	void Enemy_lefttopMove(void);
 	void Enemy_righttopMove(void);
 	void Enemy_leftbottomMove(void);
 	void Enemy_rightbottomMove(void);
-
-	bool Damage(int str);
+	void Enemy_TurbolefttopMove(void);
+	void Enemy_TurborighttopMove(void);
+	void Enemy_TurboleftbottomMove(void);
+	void Enemy_TurborightbottomMove(void);
+	bool Damage(int str, float angle);
 	void Enemy_Destroy(void);
 };
 #endif 

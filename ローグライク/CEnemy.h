@@ -13,6 +13,15 @@
 class CEnemy :virtual public C3DObj
 {
 public:
+	typedef enum {
+		ENEMY_WAIT,			// プレイヤー入力待ち
+		ENEMY_ACTION,		// 行動中
+		ENEMY_ACT_END,		// 行動終了
+		ENEMY_MOVE,			// 移動中
+		ENEMY_MOVE_END,		// 移動終了
+		ENEMY_TURN_END,		// ターン終了
+		ENEMY_NONE
+	}ENEMYTURN;
 	// 敵の種類
 	enum
 	{
@@ -30,7 +39,7 @@ public:
 
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
-	virtual bool Damage(int str) = 0;
+	virtual bool Damage(int str, float angle) = 0;
 
 	void Enemy_Finalize(int Index);
 	static void EnemyTurnEnd(void);
@@ -39,14 +48,14 @@ public:
 	static int Get_EnemyNum(int EnemyType) { return m_EnemyNum[EnemyType]; }
 	static int Get_EnemyIndex(int EnemyType) { return m_EnemyNum[EnemyType] - 1; }
 
-	int Get_Type(void) { return m_Type; }
 	static int Get_EnemyMaxNum(void) { return m_ENEMY_MAX; }
 	static C3DObj *Get_Enemy(int index);
 	bool Get_DrawCheck(void) { return alive; }
+	int Get_EnemyTurn(void){ return enemyturn; }
+	void Set_EnemyTurn(int turn) { enemyturn = turn;	}
 	static int Get_EnemyExp(int index) { return m_EnemyData[index].exp; }
 	static char* Get_EnemyName(int index) { return m_EnemyData[index].enemy_name; }
 	static void Reset_EnemyEnableNum(void) {  m_EnemyEnableNum = 0; }
-	int m_Type;			// 種類
 	static void DeleteAllEnemy(void);
 	static void EnemyVsWall(JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
 protected:
@@ -57,8 +66,10 @@ protected:
 			def,		
 			exp,	
 			gold;
-		CUserinterface::CHARATYPE type;
+		int first_floor;//出現開始フロア
+		int end_floor;//出現終わりフロア
 	}ENEMY_Data;
+	int enemyturn;
 	// 目的地
 	int m_Goalz;
 	int m_Goalx;
@@ -76,14 +87,8 @@ protected:
 
 	static int TurnCount;
 
-	int m_EnemyIndex;
-	
-	bool m_playercheck;
+	int m_EnemyIndex;	
 
-	int m_CreateCount;
-	int m_InitCreateCount;
-	int m_InitDirection;
-	bool m_Death;	//	死んだら1回だけ通る用
 	static int m_EnemyEnableNum;
 	static int m_EnemyNum[TYPE_MAX];//各エネミーの総数
 private:

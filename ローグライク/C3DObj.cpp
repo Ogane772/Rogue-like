@@ -25,6 +25,7 @@ int C3DObj::m_3DObjNum = 0;
 C3DObj::MaterialFileData C3DObj::NORMAL_MODEL_FILES[] = {
 	{ "asset/model/sraim1_10.x" },
 	{ "asset/model/sraimv3.x" },
+	{ "asset/model/knight.x" },
 };
 //	使いたいアニメモデルの数だけ書く
 C3DObj::MaterialFileData2 C3DObj::ANIME_MODEL_FILES[] = {

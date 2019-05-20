@@ -17,6 +17,10 @@
 #define DEATH (true)//死んだらtrue
 #define NORMAL (false)
 #define MAX_NAME (30) //名前文字の最大数　全角なので実質15文字まで
+//ダメージ計算式 後で武器タイプ補正も入れる
+#define PLAYER_W_DAMAGEKEISAN (str / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
+#define PLAYER_NORMAL_DAMAGEKEISAN (str / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
+#define ENEMY_DAMAGEKEISAN (str / 2) - (enemy->Get_Def() / 4)
 class C3DObj :virtual public CGameObj
 {
 public:
@@ -56,6 +60,7 @@ public:
 
 		// オブジェクト用
 		bool HitLadder;
+		bool HitItem;
 	}JUDGE;
 
 	C3DObj(int type);
@@ -76,6 +81,7 @@ public:
 		TYPE_ENEMY,		// エネミー
 
 		TYPE_OBJECT,	// 障害物
+		TYPE_WEPON,	// 装備
 		TYPE_etc,		// その他
 		TYPE_MAX
 
@@ -84,6 +90,7 @@ public:
 	typedef enum {
 		MODELL_PLAYER,
 		MODELL_ENEMY_1,
+		MODELL_KISHI,
 	}NorMalModelFileData;
 	enum ANIME_MODEL
 	{
@@ -94,28 +101,7 @@ public:
 		MODELL_ANIME_BIG,
 		ANIME_MODEL_MAX,//アニメモデル最大数
 	}AnimeModelFileData;;
-	typedef enum {
-		PLAYER_FIRST,			//階を移動した時の最初の処理	
-		PLAYER_STANDBY,			// HPの回復などを行う
-		PLAYER_KEY_INPUT,		// 入力待ち
-		PLAYER_SERECT_UI,		// 梯子,アイテムなどの選択
-		PLAYER_DESTROY,			// プレイヤーがやられる
-		PLAYER_ACT,				// 行動中
-		PLAYER_ACT_END,			// 行動終了
-		PLAYER_MOVE,			// 移動中
-		PLAYER_MOVE_END,		// 移動終了
-		PLAYER_TURN_END,		// ターン終了
-		PLAYER_NONE
-	}PLAYERTURN;
-	typedef enum {
-		ENEMY_WAIT,			// プレイヤー入力待ち
-		ENEMY_ACTION,		// 行動中
-		ENEMY_ACT_END,		// 行動終了
-		ENEMY_MOVE,			// 移動中
-		ENEMY_MOVE_END,		// 移動終了
-		ENEMY_TURN_END,		// ターン終了
-		ENEMY_NONE
-	}ENEMYTURN;
+
 
 	virtual void Finalize(void);
 	virtual void Update(void) = 0;	//	更新
@@ -130,14 +116,36 @@ public:
 	static void DeleteAll();	// 全オブジェクト削除
 	void C3DObj_delete(void);	// オブジェクト削除	
 	static C3DObj *Get(int nIdx);	// インスタンス取得
+	virtual int Get_PlayerWeponStock(int index) { return 0; }//所持武器取得
+	virtual int Get_PlayerItemStock(int index) { return 0; }//所持アイテム取得
+	virtual int Get_CursorNumber(void) { return 0; }//ウィンドウカーソル位置取得
+	virtual int Get_TimeCursorNumber(void) { return 0; }
+	virtual int Get_PlayerNextExp(int index) { return 0; } //次のレベルまでの必要経験値を取得
+	virtual void Player_OnakaDown(void) {}; //プレイヤーのおなかを減らす
+	virtual int Get_PlayerOnaka(void) { return 0; }//プレイヤーのおなか取得
+	virtual bool Get_WMode(void) { return 0; }//プレイヤーが両手持ちか取得
 	virtual bool ExpGoldCheck(int exp, int gold) { return 0; }//プレイヤーの経験とお金チェック
+	virtual bool Get_TurboMode(void) { return 0; }//ターボモード取得
+	virtual bool Get_ItemOn(void) { return 0; }//アイテム選択を取得
+	virtual bool Get_ItemTips(void) { return 0; }//アイテムを選択から効果を選んだとき
+	virtual bool Get_NextItemPage(void) { return 0; }//所持アイテムウィンドウが2ページ目かどうか返す
+	virtual int Get_PlayerItemStockType(int index) { return 0; }//取得アイテムタイプを取得
+	virtual int Get_PlayerAllItemStock(int index) { return 0; }//全ての取得アイテムを格納
+	virtual int Get_PlayerTurn(void) { return 0; }//プレイヤーのターンモード取得
+	virtual void Set_PlayerTurn(int turn) {}//プレイヤーのターンモードセット
+	virtual int Get_EnemyTurn(void) { return 0; }//エネミーのターンモード取得
+	virtual void Set_EnemyTurn(int turn) {}//エネミーのターンモードセット
 	int Get_3DObjIndex() { return m_3DObjIndex; }	// ワークインデックス取得
 	int Get_3DObjType() { return m_3DObjType; }		// 種類取得
-	int Get_Angle(void) { return (int)m_Angle; }	//	角度取得	
+	float Get_Angle(void) { return m_Angle; }	//	角度取得	
 	float Get_Hp(void) { return m_Hp; }		//	HP取得
 	float Get_MaxHp(void) { return m_MaxHp; }		//	最大HP取得
+	int Get_Str(void) { return m_Str; }		//	攻撃力取得
+	int Get_Def(void) { return m_Def; }		//	防御力取得
 	int Get_Lv(void) { return m_Lv; }		//	レベル取得
 	int Get_Gold(void) { return m_Gold; }		// 所持金取得
+	int Get_Exp(void) { return m_Exp; }		// 経験値取得
+	int Get_Type(void) { return m_Type; }		// エネミータイプ取得
 	char* Get_Name(void) { return name; };		// 名前取得
 	bool Get_RivalFlag(void) { return rival_flag; }
 	bool Get_MapDrawFlag(void) { return map_drawflag; }
@@ -150,14 +158,14 @@ public:
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
 	virtual bool Get_DrawCheck(void) = 0;
-	virtual bool Damage(int str) = 0;
+	virtual bool Damage(int str, float angle) = 0;
 	static HRESULT InitModelLoad();  //	モデル読み込み
 	//モデル情報取得
 	THING* C3DObj::GetAnimeModel(void);
 	//THING GetAnimeModel(int index);
 	NormalModelData GetNormalModel(int index) {	return NormalModel[index];}
 	//NormalModelFile GetNormal(int index);
-	CUserinterface::CHARATYPE type;			// 敵の種類
+	int m_Type;			// 敵の種類
 	//	終了処理
 	static void Model_Finalize(void);
 	static void NormalModel_Finalize(NormalModelData *DeleteNormalModel);
@@ -165,6 +173,7 @@ public:
 	static JUDGE m_Judge_player;
 	static JUDGE Judgement_GetPlayer(void) { return m_Judge_player; }
 	int m_ObjectType;
+	int m_WeponType;
 	// マップ二次元配列用
 	int m_Mapx;
 	int m_Mapz;
@@ -182,8 +191,8 @@ public:
 	void PlayerVsWall(JUDGE *player_judge, Sphere *m_PlayerColision);
 
 	static void Collision_AnimeVSAnime(JUDGE *player_judge, Sphere *m_PlayerEnemyColision, JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
-	static 	PLAYERTURN turn;
-	ENEMYTURN enemyturn;
+
+	
 protected:
 	D3DXMATRIX m_mtxWorld;			//	ワールド変換用行列
 	D3DXMATRIX m_mtxTranslation;	//	移動行列

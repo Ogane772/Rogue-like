@@ -60,12 +60,7 @@ void CObjectLadder::Draw(void)
 	}
 }
 
-bool CObjectLadder::Damage(int str)
+bool CObjectLadder::Damage(int str, float angle)
 {
 	return 0;
-}
-
-void CObjectLadder::Damage(void)
-{
-
 }

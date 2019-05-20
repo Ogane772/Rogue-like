@@ -8,7 +8,6 @@
 //===================================
 // íËêî
 //===================================
-#define OBJECT_MAX (10)
 
 class CObjectLadder : public CObject
 {
@@ -23,8 +22,7 @@ public:
 	void Finalize(void);
 	void Update(void);
 	void Draw(void);
-	bool Damage(int str);
-	void Damage(void);
+	bool Damage(int str, float angle);
 
 private:
 	int type;

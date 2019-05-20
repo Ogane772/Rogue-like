@@ -113,7 +113,7 @@ void CCamera::Update(void)
 	C3DObj *getplayer = CPlayer::Get_Player();
 							//g_Came_at = (g_front * g_length) + g_Cposition;
 							// 攻撃時以外はカメラをプレイヤーに追従
-	if (getplayer->turn != CPlayer::PLAYER_ACT)
+	if (getplayer->Get_PlayerTurn() != CPlayer::PLAYER_ACT)
 	{
 		m_At = (m_Front * m_AtLength) + getplayer->Get_Position();
 		m_CameraPos = getplayer->Get_Position();

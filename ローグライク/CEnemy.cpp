@@ -39,8 +39,8 @@ int CEnemy::TurnCount = 0;
 bool CEnemy::attackflag = false;
 CEnemy::ENEMY_Data CEnemy::m_EnemyData[]
 {
-	//名前 HP STR DEF EXP GOLD　TYPE
-	{ "スライムだろ" , 20.0f, 4, 0, 5, 5,CUserinterface::SRAIM },
+	//名前 HP STR DEF EXP GOLD 出現開始フロア 出現終わりフロア
+	{ "スライム！！" , 20.0f, 4, 0, 5, 5,1,3 },
 };
 //=============================================================================
 //	生成
@@ -102,9 +102,13 @@ void CEnemy::EnemyTurnEnd(void)
 	{	
 		enemy = CEnemy::Get_Enemy(i);
 		//誰もエネミーがいなくてもターン終了時
-		if (m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->turn == CPlayer::PLAYER_TURN_END)
+		if (m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END)
 		{
 			TurnCount++;
+			if (TurnCount % 10 == 0 && TurnCount != 0)
+			{
+				getplayer->Player_OnakaDown();
+			}
 			CPlayer::Player_NextTurn();
 			if (TurnCount % 50 == 49)
 			{
@@ -122,16 +126,19 @@ void CEnemy::EnemyTurnEnd(void)
 		{
 			continue;
 		}
-		if (enemy->enemyturn == ENEMY_TURN_END)
+		if (enemy->Get_EnemyTurn() == ENEMY_TURN_END)
 		{
 			turnend_count++;
 		}
 		// 敵全員のターンが終了
-		if (turnend_count == m_EnemyMaxNum && getplayer->turn == CPlayer::PLAYER_TURN_END)
+		if (turnend_count == m_EnemyMaxNum && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END)
 		{
 			TurnCount++;
 			CPlayer::Player_NextTurn();
-
+			if (TurnCount % 10 == 0 && TurnCount != 0)
+			{
+				getplayer->Player_OnakaDown();
+			}
 			// 数ターンごとにランダムで敵を生成
 			if (TurnCount % 50 == 49)
 			{

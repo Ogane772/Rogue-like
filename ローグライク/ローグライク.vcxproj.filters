@@ -13,201 +13,327 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\親クラス">
+      <UniqueIdentifier>{8d4d3728-4d60-47d6-93b4-571b0144c6c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\親クラス">
+      <UniqueIdentifier>{28d22a95-25cd-497e-84b3-3107518fbd91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\画像">
+      <UniqueIdentifier>{f12cec12-4619-4567-a766-8fc3f82c2c46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\画像">
+      <UniqueIdentifier>{2823fc0e-d4e9-409b-9986-504b58cd567f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\エネミー">
+      <UniqueIdentifier>{df72aa6d-b0b1-43f4-94f2-b68735743896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\エネミー">
+      <UniqueIdentifier>{01fc0561-0449-47e6-b43d-dd45b5284f79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\ゲームシーン">
+      <UniqueIdentifier>{b8a46d63-f934-4551-bf68-2511ae54d9c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\ゲームシーン">
+      <UniqueIdentifier>{59898f97-ec79-4ee2-9ac4-c023142c20f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\マップ">
+      <UniqueIdentifier>{0840be4c-aeb4-476a-a0b4-5c2785ba867b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\マップ">
+      <UniqueIdentifier>{b3640a54-79bc-40fb-949e-ec729821f92f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\オブジェクト">
+      <UniqueIdentifier>{5d3e1947-e2ee-4b80-8533-9b2f19eb5db6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\オブジェクト">
+      <UniqueIdentifier>{ba5fe435-3aee-49f8-9cbf-449cae5a5886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{d1849f8a-16ce-4e1e-95d1-785c31357216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\UI">
+      <UniqueIdentifier>{80b0ae90-5bf5-42a9-94b0-d97ccd472000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\プレイヤー">
+      <UniqueIdentifier>{086596f8-6b97-429b-902d-a562777e868d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\プレイヤー">
+      <UniqueIdentifier>{ff0dea61-60e6-44f7-a556-3c502723265e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\インプット">
+      <UniqueIdentifier>{687a1665-0289-4aca-9464-234c192fcbdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\インプット">
+      <UniqueIdentifier>{08530ad0-55f4-414c-94e9-8bc5a22118b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\コモン">
+      <UniqueIdentifier>{01a58cea-c07d-4bf6-9f7b-a683341960dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\コモン">
+      <UniqueIdentifier>{67545ba6-60d5-439e-9e0d-4d498d77e886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\装備">
+      <UniqueIdentifier>{7599bc04-df4c-48ba-9fb3-a9bc6d7220bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\装備">
+      <UniqueIdentifier>{19eb1d85-3d48-4fb1-8d59-d36e7d9a05b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="C3DObj.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CGameObj.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="debug_font.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CSkinAnimation.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CTexture.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="system_timer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="exp.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="fede.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="gamepad.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="sound.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\親クラス</Filter>
     </ClCompile>
     <ClCompile Include="C2DObj.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\親クラス</Filter>
     </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\親クラス</Filter>
     </ClCompile>
     <ClCompile Include="CCamera.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\親クラス</Filter>
     </ClCompile>
-    <ClCompile Include="Cplayer.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="exp.cpp">
+      <Filter>ソース ファイル\画像</Filter>
     </ClCompile>
-    <ClCompile Include="collision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="stage.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="userinterface.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="map.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="wall.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CLight.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="meshfield.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="CTexture.cpp">
+      <Filter>ソース ファイル\画像</Filter>
     </ClCompile>
     <ClCompile Include="bilboard.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\画像</Filter>
     </ClCompile>
     <ClCompile Include="CEnemy.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\エネミー</Filter>
     </ClCompile>
     <ClCompile Include="CEnemy_Srime.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\エネミー</Filter>
     </ClCompile>
-    <ClCompile Include="CObject.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="CGameObj.cpp">
+      <Filter>ソース ファイル\親クラス</Filter>
     </ClCompile>
-    <ClCompile Include="CObject_Ladder.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Attack.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="title.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="rezult.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="CLight.cpp">
+      <Filter>ソース ファイル\親クラス</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\ゲームシーン</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソース ファイル\ゲームシーン</Filter>
+    </ClCompile>
+    <ClCompile Include="rezult.cpp">
+      <Filter>ソース ファイル\ゲームシーン</Filter>
+    </ClCompile>
+    <ClCompile Include="fede.cpp">
+      <Filter>ソース ファイル\ゲームシーン</Filter>
+    </ClCompile>
+    <ClCompile Include="stage.cpp">
+      <Filter>ソース ファイル\マップ</Filter>
+    </ClCompile>
+    <ClCompile Include="wall.cpp">
+      <Filter>ソース ファイル\マップ</Filter>
+    </ClCompile>
+    <ClCompile Include="meshfield.cpp">
+      <Filter>ソース ファイル\マップ</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>ソース ファイル\マップ</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject.cpp">
+      <Filter>ソース ファイル\オブジェクト</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソース ファイル\ゲームシーン</Filter>
+    </ClCompile>
+    <ClCompile Include="userinterface.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Cplayer.cpp">
+      <Filter>ソース ファイル\プレイヤー</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>ソース ファイル\インプット</Filter>
+    </ClCompile>
+    <ClCompile Include="gamepad.cpp">
+      <Filter>ソース ファイル\インプット</Filter>
+    </ClCompile>
+    <ClCompile Include="Attack.cpp">
+      <Filter>ソース ファイル\コモン</Filter>
+    </ClCompile>
+    <ClCompile Include="collision.cpp">
+      <Filter>ソース ファイル\コモン</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkinAnimation.cpp">
+      <Filter>ソース ファイル\コモン</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_font.cpp">
+      <Filter>ソース ファイル\コモン</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル\コモン</Filter>
+    </ClCompile>
+    <ClCompile Include="system_timer.cpp">
+      <Filter>ソース ファイル\コモン</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject_Ladder.cpp">
+      <Filter>ソース ファイル\オブジェクト</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject_Yakusou.cpp">
+      <Filter>ソース ファイル\オブジェクト</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_Sword.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_Sheld.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_Ring.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_BigSword.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_Reipia.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_Meisu.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_Rance.cpp">
+      <Filter>ソース ファイル\装備</Filter>
+    </ClCompile>
+    <ClCompile Include="CWepon_Ax.cpp">
+      <Filter>ソース ファイル\装備</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C3DObj.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CGameObj.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="debug_font.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CSkinAnimation.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CTexture.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="system_timer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="exp.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="fade.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="gamepad.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="sound.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="C2DObj.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\親クラス</Filter>
     </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="C3DObj.h">
+      <Filter>ヘッダー ファイル\親クラス</Filter>
     </ClInclude>
     <ClInclude Include="CCamera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Cplayer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="collision.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="stage.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="userinterface.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="map.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="wall.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CLight.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="meshfield.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\親クラス</Filter>
     </ClInclude>
     <ClInclude Include="bilboard.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\画像</Filter>
+    </ClInclude>
+    <ClInclude Include="exp.h">
+      <Filter>ヘッダー ファイル\画像</Filter>
+    </ClInclude>
+    <ClInclude Include="CTexture.h">
+      <Filter>ヘッダー ファイル\画像</Filter>
     </ClInclude>
     <ClInclude Include="CEnemy.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\エネミー</Filter>
     </ClInclude>
     <ClInclude Include="CEnemy_Srime.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\エネミー</Filter>
     </ClInclude>
-    <ClInclude Include="CObject.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="CGameObj.h">
+      <Filter>ヘッダー ファイル\親クラス</Filter>
     </ClInclude>
-    <ClInclude Include="CObject_Ladder.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="CLight.h">
+      <Filter>ヘッダー ファイル\親クラス</Filter>
     </ClInclude>
-    <ClInclude Include="Attack.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="title.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="rezult.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="fade.h">
+      <Filter>ヘッダー ファイル\ゲームシーン</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\ゲームシーン</Filter>
+    </ClInclude>
+    <ClInclude Include="rezult.h">
+      <Filter>ヘッダー ファイル\ゲームシーン</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>ヘッダー ファイル\ゲームシーン</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>ヘッダー ファイル\マップ</Filter>
+    </ClInclude>
+    <ClInclude Include="meshfield.h">
+      <Filter>ヘッダー ファイル\マップ</Filter>
+    </ClInclude>
+    <ClInclude Include="wall.h">
+      <Filter>ヘッダー ファイル\マップ</Filter>
+    </ClInclude>
+    <ClInclude Include="stage.h">
+      <Filter>ヘッダー ファイル\マップ</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject.h">
+      <Filter>ヘッダー ファイル\オブジェクト</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject_Ladder.h">
+      <Filter>ヘッダー ファイル\オブジェクト</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダー ファイル\ゲームシーン</Filter>
+    </ClInclude>
+    <ClInclude Include="userinterface.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Cplayer.h">
+      <Filter>ヘッダー ファイル\プレイヤー</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>ヘッダー ファイル\インプット</Filter>
+    </ClInclude>
+    <ClInclude Include="gamepad.h">
+      <Filter>ヘッダー ファイル\インプット</Filter>
+    </ClInclude>
+    <ClInclude Include="Attack.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="collision.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="CSkinAnimation.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_font.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="system_timer.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject_Yakusou.h">
+      <Filter>ヘッダー ファイル\オブジェクト</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_Sword.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_Sheld.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_Ring.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_BigSword.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_Reipia.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_Meisu.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_Rance.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="CWepon_Ax.h">
+      <Filter>ヘッダー ファイル\装備</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
