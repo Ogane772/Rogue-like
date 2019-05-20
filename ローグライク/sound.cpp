@@ -36,6 +36,9 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	{ "asset/sounds/se/playerdamage_se.wav",0 },
 	{ "asset/sounds/se/enemy_damage_se.wav",0 },
 	{ "asset/sounds/se/floor_se.wav",0 },
+	{ "asset/sounds/se/miss_se.wav",0 },
+	{ "asset/sounds/se/cursor_se.wav",0 },
+	{ "asset/sounds/se/cursorok_se.wav",0 }
 };
 
 //=============================================================================

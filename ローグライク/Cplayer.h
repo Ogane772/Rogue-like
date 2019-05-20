@@ -14,13 +14,71 @@
 #define PLAYER_STR (6)
 #define PLAYER_HEAL (m_MaxHp / 5000)	//歩いたときの回復量
 #define WALK_COUNT (9) //ウォークカウント基礎値
+#define MAX_GOLD (9999)//最大のお金	
+#define MAX_ONAKA (100) //おなかの最大値
+#define WAIT_FRAME (50) //アイテム取得時の待機時間
+#define WAIT_ITEM_FRAME (90) //アイテム使用時の待機時間
+#define ITEM_EFFECT_FRAME (45)//アイテムの効果発動フレーム
+#define MAX_ITEM (13)	//所持アイテム最大数
+#define MAX_WEPON (3)	//所持装備数
 //0.25 19 
 //0.5 9
 class CPlayer :public C3DObj
 {
 
 public:
-
+	typedef enum {
+		PLAYER_FIRST,			// 階を移動した時の最初の処理	
+		PLAYER_STANDBY,			// HPの回復などを行う
+		PLAYER_KEY_INPUT,		// 入力待ち
+		PLAYER_WINDOW,			// コマンドウィンドウを開いてるとき
+		PLAYER_WINDOW_STATUS,	// コマンドウィンドウの能力確認時
+		PLAYER_WINDOW_ASIMOTO,	// コマンドウィンドウの足元確認
+		PLAYER_WINDOW_ITEM,	    // コマンドウィンドウの道具確認
+		PLAYER_SERECT_UI,		// 梯子,アイテムなどの選択
+		PLAYER_DESTROY,			// プレイヤーがやられる
+		PLAYER_ITEM_EFFECT,		// アイテム使用時
+		PLAYER_ITEM_WAIT,		// アイテム取得時の待機時間
+		PLAYER_ITEM_ASIMOTO,	// アイテムを置いたとき
+		PLAYER_ACT,				// 行動中
+		PLAYER_ACT_END,			// 行動終了
+		PLAYER_MOVE,			// 移動中
+		PLAYER_MOVE_END,		// 移動終了
+		PLAYER_TURN_END,		// ターン終了
+		PLAYER_NONE
+	}PLAYERTURN;
+	typedef enum {
+		CURSOL_LEFT_TOP,
+		CURSOL_RIGHT_TOP,
+		CURSOL_LEFT_DOWN,
+		CURSOL_RIGHT_DOWN,
+	}CURSOR_NUMBER;
+	typedef enum {
+		WEPON,//装備
+		ITEM,//使用アイテム
+	}ITEMTYPE;
+	//アイテム選択時の選択肢
+	typedef enum {
+		EFFECT_ITEM,//アイテム使用
+		ASIMOTO_ITEM,//その場に置く
+		TIPS_ITEM,//説明
+	}ITEMWINDOW;
+	//装備番号
+	typedef enum {
+		WEPON_NUMBER,//武器格納番号
+		SHELD_NUMBER,//盾格納番号
+		RING_NUMBER,//指輪格納番号
+	}WEPON_SOUBINUMBER;
+	typedef enum {
+		TIPS_WEPON,
+	}WEPONWINDOW;
+	//武器変数
+	typedef struct {
+		int wepon_str;
+		int wepon_def;
+		int wepon_type;
+		int wepon_purasu_number;
+	}PLAYER_WEPON;
 	CPlayer();
 	~CPlayer();
 
@@ -33,8 +91,25 @@ public:
 	static CPlayer *PlayerCreate(void);
 	static const Sphere* Player_GetCollision(void) { return &m_Colision; }
 	static const Sphere* Player_GetEnemyCollision(void) { return &m_EnemyColision; }
+	static PLAYER_WEPON* GetPlayerWeponData(int index) { return &player_wepon[index]; }
 	static void Player_NextTurn(void);
-	bool Damage(int str);
+	bool Damage(int str, float angle);
+	void Player_OnakaDown(void); //おなかを減らす
+	int Get_PlayerOnaka(void) { return m_Onaka; }
+	int Get_CursorNumber(void) { return m_CursorNumber; }
+	int Get_TimeCursorNumber(void) { return m_TimeCursorNumber; }
+	int Get_PlayerTurn(void) { return m_Turn; }
+	int Get_PlayerNextExp(int index) { return m_PlayerLvData[index].lvup_exp; }
+	int Get_PlayerWeponStock(int index) { return m_WeponStock[index]; }
+	int Get_PlayerItemStock(int index) { return m_ItemStock[index]; }
+	int Get_PlayerItemStockType(int index) { return m_ItemStockType[index]; }
+	int Get_PlayerAllItemStock(int index) { return m_AllItemStock[index]; }
+	void Set_PlayerTurn(int turn) { m_Turn = turn; }
+	bool Get_WMode(void) { return m_Wmode; }
+	bool Get_TurboMode(void) { return turbo; }
+	bool Get_ItemOn(void) { return m_ItemOn; }
+	bool Get_ItemTips(void) { return m_ItemTips; }
+	bool Get_NextItemPage(void) { return m_NextItemPage; }
 	bool Get_DrawCheck(void) { return alive; }
 	bool ExpGoldCheck(int exp, int gold);		// 獲得経験値とお金処理
 	static C3DObj *Get_Player(void);
@@ -46,25 +121,43 @@ protected:
 	bool m_DrawCheck;			//	描画フラグ
 private:
 	typedef struct {
-		int lv,		 
+		int lv,
 			lvup_exp,//レベルアップに必要な経験値
-			maxhp,   
+			maxhp,
 			str,
 			def;
 	}Player_LvData;
 	void Initialize(void);	//	初期化
+	void Player_First(void);
+	void Player_Standby(void);
+	void Player_KeyInput(void);
+	void Player_WindowMode(void);
+	void Player_SelectUi(void);
+	void Player_SelectItem(void);
+	void Player_ItemEffect(void);//アイテムの使用、使用効果
+	void Player_ItemAsimoto(void);//アイテムを足元に置く処理
+	void Player_CollisionUpdate(void);
+	void Player_TurboMove(void);
 	void Player_Move(void);
 	void Player_MoveChenge(int MoveType);			//	移動処理の準備
+	void Player_TurboMoveChenge(int MoveType);			//	移動処理の準備
 	void Player_lefttopMove(void);
 	void Player_righttopMove(void);
 	void Player_leftbottomMove(void);
 	void Player_rightbottomMove(void);
+	void Player_TurbolefttopMove(void);
+	void Player_TurborighttopMove(void);
+	void Player_TurboleftbottomMove(void);
+	void Player_TurborightbottomMove(void);
 	void Player_GamepadMove(void);			//	ゲームパッドの移動処理
 	void AngleChange(float Angle);	//	方向変換
 	void ControllerAngleChange(int index);	//	コントローラーの方向変換
 	void Player_Act(void);
 	void Player_Destroy(void);
 	void Player_Check(void);//プレイヤーの当たり判定
+	void Player_WeponChenge(int wepon_type, int wepondata_number);//武器の装備 引数　武器のタイプ、装備する場所
+	void Player_W_WeponChenge(int wepon_type);//両手武器の装備 引数　武器のタイプ、装備する場所
+	void Player_ItemSort(void);//使用アイテム削除自、アイテムを前に詰める
 	bool JoyDevice_IsTrigger(int nKey);//コントローラーのトリガー処理
 	int m_PadDirection;
 	enum
@@ -81,20 +174,34 @@ private:
 		DIRE_N,
 
 	};//　方向
-
-
-	static CPlayer *m_pPlayer;
-
+	int m_WeponStock[MAX_WEPON];//取得装備を格納
+	int m_ItemStock[MAX_ITEM];//取得アイテムを格納
+	int m_AllItemStock[MAX_WEPON + MAX_ITEM];//全取得アイテムを格納
+	int m_ItemStockType[MAX_WEPON + MAX_ITEM];//取得アイテムのタイプ格納
+	int m_Wait_frame;//フレーム待機時間
+	int m_Onaka;
+	int m_MaxOnaka;
+	int m_CursorNumber;//ウィンドウカーソル位置
+	int m_TimeCursorNumber;//アイテム選択時のウィンドウカーソル位置
+	int m_AllWeponStock;//装備をいくつ持ってるか格納
+	int m_Add_cursor;//もし2ページ目を開いてたら足す
+	static 	int m_Turn;
 	int m_DrawCount;
+	bool m_Wmode;//両手武器を持ってるときはtrue
+	bool m_ItemOn;//アイテムを選択したらtrue
+	bool m_ItemTips;//アイテム説明フラグ
+	bool m_NoItem;//置いたときにアイテムを取らないようにする
+	bool m_NextItemPage;//所持アイテムウィンドウが2ページ目ならtrue
 	bool right_trigger = false;
 	bool left_trigger = false;
 	bool right_on;//右スティック入力確認
+
+	bool turbo;//高速化フラグ
 
 	static Sphere m_Colision;		// 当たり判定
 	
 	int charatype;		// キャラクターの種類
 
-	
 	D3DXVECTOR3 walkpos;	// 移動する場合の目的地セット
 
 	D3DXVECTOR3 vecplayer;
@@ -105,9 +212,10 @@ private:
 	static int start_m_Mapx;
 
 	static Player_LvData m_PlayerLvData[];
+	static PLAYER_WEPON player_wepon[3];
 };
 
 
 
-#endif // !
+#endif
 

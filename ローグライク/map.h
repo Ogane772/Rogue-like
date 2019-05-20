@@ -7,6 +7,7 @@
 //===================================
 #define MAX_MAPWIDTH (100)
 #define MAX_MAPHEIGHT (100)
+#define MAX_MAP (3)	//ÅãŠK
 //#define GroupWidth  (3)		// ‰¡‚Ì’ZŒaƒOƒ‹[ƒv”
 //#define GroupHeight (2)		// c‚Ì’ZŒaƒOƒ‹[ƒv”
 
@@ -22,7 +23,9 @@ public:
 		NOTHAVE,
 		HAVEPLAYER,
 		HAVEENEMY,
+		HAVELADDER,
 		HAVEITEM,
+		HAVEWEPON,
 		HAVEMAPNONE
 	}HAVEMAP;
 
@@ -54,6 +57,7 @@ public:
 	static void Map_Draw(void);
 
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
+	static void Map_SetHaveData(int z, int x, HAVEMAP have) { g_map[z][x].have = have; }
 	static void Map_SetData(int z, int x,int alpha) { g_map[z][x].alpha = alpha; }
 private:
 	//static int g_TexWood2;

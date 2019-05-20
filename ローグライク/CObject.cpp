@@ -10,7 +10,9 @@
 
 #include "CObject.h"
 #include "CObject_Ladder.h"
+#include "CObject_Yakusou.h"
 #include "exp.h"
+#include "map.h"
 #include "sound.h"
 #define _CRTDBG_MAP_ALLOC
 
@@ -18,7 +20,6 @@
 //=============================================================================
 //	定数定義
 //=============================================================================
-#define ORNAMENT_HITSTOP (100)
 
 //=============================================================================
 //	静的変数
@@ -27,6 +28,13 @@
 //=============================================================================
 //	生成
 //=============================================================================
+CObject::OBJECT_Data CObject::m_ObjectData[]
+{
+	//名前 使用時の説明文 開始出現フロア 終わり出現フロア
+	{ "NOITEM" ,"未使用","未使用", 0, 0 },
+	{ "梯子" , 0,"未使用","エラー", MAX_MAP },
+	{ "やくそう" ,"HPが小回復した！","HPを小回復する", 0, MAX_MAP },
+};
 int CObject::m_ObjectNum[TYPE_MAX] = {};
 
 CObject::CObject()
@@ -44,10 +52,15 @@ CObject::CObject(int ObjectType)
 
 void CObject::Create(int object_type, int x, int z)
 {
+	CObjectLadder *pladder;
+	CObjectYakusou *pyakusou;
 	switch (object_type)
 	{
 	case TYPE_LADDER:
-		CObjectLadder *pladder = new CObjectLadder(x, z);
+		pladder = new CObjectLadder(x, z);
+		break;
+	case TYPE_YAKUSOU:
+		pyakusou = new CObjectYakusou(x, z);
 		break;
 	}
 }
@@ -63,16 +76,6 @@ void CObject::Object_Finalize(int Index)
 CObject::~CObject()
 {
 	m_ObjectNum[TYPE_ALL]--;
-}
-
-void CObject::ObjectDamage(void)
-{
-	m_Hp--;
-	if (m_Hp <= 0)
-	{
-		m_TimeKeep = m_FrameCount;
-	}
-
 }
 
 C3DObj *CObject::Get_Object(int index)

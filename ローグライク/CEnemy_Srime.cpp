@@ -50,7 +50,7 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 	m_EnemyMyColision.position = m_Position;
 	m_EnemyMyColision.radius = ENEMY_RADIUS;
 	enemyturn = ENEMY_WAIT;
-	type = enemy_data.type;
+	m_Type = TYPE_SRIME;
 	m_MaxHp = enemy_data.Hp;
 	m_Hp = m_MaxHp;
 	m_Str = enemy_data.str;
@@ -93,9 +93,7 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 void CEnemy_Srime::Update(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
-	
-	
-	
+		
 	m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
 	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
 	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
@@ -106,10 +104,12 @@ void CEnemy_Srime::Update(void)
 	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 	m_mtxWorld *= m_mtxTranslation;
 
-	switch (getplayer->turn)
+	switch (getplayer->Get_PlayerTurn())
 	{
 	case CPlayer::PLAYER_KEY_INPUT:
 	case CPlayer::PLAYER_SERECT_UI:
+	case CPlayer::PLAYER_WINDOW:
+	case CPlayer::PLAYER_ITEM_WAIT:
 		// なにもしない
 		break;
 
@@ -117,7 +117,10 @@ void CEnemy_Srime::Update(void)
 	case CPlayer::PLAYER_ACT_END:
 	case CPlayer::PLAYER_MOVE_END:
 	case CPlayer::PLAYER_TURN_END:
-		Enemy_AI();
+		if (!m_Judge_player.HitItem)
+		{
+			Enemy_AI();
+		}
 		break;
 	}
 	// AI処理
@@ -127,10 +130,7 @@ void CEnemy_Srime::Update(void)
 
 void CEnemy_Srime::Draw(void)
 {
-	/*DebugFont_Draw(2, 80, "エネミー座標 X %.1f Y %.1f Z %.1f", g_enemy[0].pos.x, g_enemy[0].pos.y, g_enemy[0].pos.z);
-	DebugFont_Draw(2, 110, "エネミー座標番地 Z %.0f  X %.0f (%d ～ %d)", (g_enemy[0].pos.z - 247.5f) / -5, (g_enemy[0].pos.x + 247.5f) / 5, 0, 99);
-	DebugFont_Draw(2, 140, "エネミー座標 X %.1f Y %.1f Z %.1f", g_enemy[1].pos.x, g_enemy[1].pos.y, g_enemy[1].pos.z);
-	DebugFont_Draw(2, 170, "エネミー座標番地 Z %.0f  X %.0f (%d ～ %d)", (g_enemy[1].pos.z - 247.5f) / -5, (g_enemy[1].pos.x + 247.5f) / 5, 0, 99);*/
+	
 	CBilboard::Shadow_Draw(m_mtxWorld, m_Position);
 	DrawDX_Normal(m_mtxWorld, &Normal_model);
 	//DebugFont_Draw(0, 300, "エネミー nanawalk = %d", nanawalk);
@@ -162,6 +162,7 @@ void CEnemy_Srime::Draw(void)
 void CEnemy_Srime::Enemy_AI(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
+	bool turbo = getplayer->Get_TurboMode();
 	// ターンが終わってる敵の数をカウント
 	
 	// ワンフレームに攻撃できる敵をカウント
@@ -425,7 +426,14 @@ void CEnemy_Srime::Enemy_AI(void)
 				vecenemy = m_Front;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -458,11 +466,25 @@ void CEnemy_Srime::Enemy_AI(void)
 				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 				m_mtxWorld *= m_mtxTranslation;
 
-				walkf= 100 + WALK_COUNT - 4;
+				if (turbo)
+				{
+					walkf = 100;
+				}
+				else
+				{
+					walkf = 100 + WALK_COUNT - 4;
+				}
 				vecenemy = m_Front;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -499,7 +521,14 @@ void CEnemy_Srime::Enemy_AI(void)
 				vecenemy = m_Right;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -531,12 +560,25 @@ void CEnemy_Srime::Enemy_AI(void)
 
 				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
 				m_mtxWorld *= m_mtxTranslation;
-
-				walkf= 100 + WALK_COUNT - 4;
+				if(turbo)
+				{
+					walkf = 100;
+				}
+				else
+				{
+					walkf = 100 + WALK_COUNT - 4;
+				}
 				vecenemy = m_Right;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -578,7 +620,14 @@ void CEnemy_Srime::Enemy_AI(void)
 				vec2enemy = m_Right;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -620,7 +669,14 @@ void CEnemy_Srime::Enemy_AI(void)
 				vec2enemy = m_Right;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -662,7 +718,14 @@ void CEnemy_Srime::Enemy_AI(void)
 				vec2enemy = m_Right;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -704,7 +767,14 @@ void CEnemy_Srime::Enemy_AI(void)
 				vec2enemy = m_Right;
 				enemyturn = ENEMY_MOVE;
 
-				Enemy_Move();
+				if (turbo)
+				{
+					Enemy_TurboMove();
+				}
+				else
+				{
+					Enemy_Move();
+				}
 				break;
 			}
 		}
@@ -712,7 +782,14 @@ void CEnemy_Srime::Enemy_AI(void)
 		// 移動中
 		//===================================================
 	case ENEMY_MOVE:
-		Enemy_Move();
+		if (turbo)
+		{
+			Enemy_TurboMove();
+		}
+		else
+		{
+			Enemy_Move();
+		}
 		break;
 
 		//===================================================
@@ -917,7 +994,7 @@ void CEnemy_Srime::Enemy_Act(void)
 	if (attackframe == 5)
 	{
 		// 向いてる方向、攻撃力、攻撃したキャラの名前を渡す
-		CAttack::Attack_EnemyUpdate(type, rand() % m_Str + 3);
+		CAttack::Attack_EnemyUpdate(m_Type, m_Str, m_Angle);
 	}
 	//プレイヤーが死んだら表示時間延長
 	if (attackframe == 20 && getplayer->Get_Hp() <= 0)
@@ -931,62 +1008,62 @@ void CEnemy_Srime::Enemy_Act(void)
 		attackframe = 0;
 		if (getplayer->Get_Hp() <= 0)
 		{
-			turn = PLAYER_DESTROY;
+			getplayer->Set_PlayerTurn(CPlayer::PLAYER_DESTROY);
 		}
 	}
 }
 
-/*高速の時	
-void CEnemy_Srime::Enemy_Move(void)
+/*高速の時*/
+
+void CEnemy_Srime::Enemy_TurboMove(void)
 {
-	if (walkf<= 4)
+	if (walkf <= 4)
 	{
-	m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
-	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-	
-	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-	m_Position += vecenemy * 1.0f;
-	
-	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-	m_mtxWorld *= m_mtxTranslation;
-	
-	// 当たり判定の設定
-	//g_player.col.position = g_player.pos;
-	walkf++;
-	if (walkf== 5)
-	enemyturn = ENEMY_MOVE_END;
+		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+		m_Position += vecenemy * 1.0f;
+
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+		m_mtxWorld *= m_mtxTranslation;
+
+		// 当たり判定の設定
+		//g_player.col.position = g_player.pos;
+		walkf++;
+		if (walkf == 5)
+			enemyturn = ENEMY_MOVE_END;
 	}
 	
-	if (walkf>= 96)
+	if (walkf >= 96)
 	{
-	m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
-	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-	
-	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-	m_Position -= vecenemy * 1.0f;
-	
-	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-	m_mtxWorld *= m_mtxTranslation;
-	
-	// 当たり判定の設定
-	//g_player.col.position = g_player.pos;
-	walkf--;
-	if (walkf== 95)
-	enemyturn = ENEMY_MOVE_END;
+		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+		m_Position -= vecenemy * 1.0f;
+
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+		m_mtxWorld *= m_mtxTranslation;
+
+		// 当たり判定の設定
+		//g_player.col.position = g_player.pos;
+		walkf--;
+		if (walkf == 95)
+			enemyturn = ENEMY_MOVE_END;
 	}
 	
 	if (walkf== 56)
-	Enemy_lefttopMove();
+	Enemy_TurbolefttopMove();
 	if (walkf== 40)
-	Enemy_leftbottomMove();
+	Enemy_TurboleftbottomMove();
 	if (walkf== 30)
-	Enemy_rightbottomMove();
+	Enemy_TurborightbottomMove();
 	if (walkf== 24)
-	Enemy_righttopMove();
+	Enemy_TurborighttopMove();
 }
-*/
 
 void CEnemy_Srime::Enemy_Move(void)
 {
@@ -1126,11 +1203,139 @@ void CEnemy_Srime::Enemy_rightbottomMove(void)
 	}
 }
 
-bool CEnemy_Srime::Damage(int str)
+void CEnemy_Srime::Enemy_TurbolefttopMove(void)
+{
+	if (nanawalk <= 4)
+	{
+		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+		m_Position += vecenemy * 1.0f;
+
+		m_Position -= vec2enemy * 1.0f;
+
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+		m_mtxWorld *= m_mtxTranslation;
+		nanawalk++;
+
+		if (nanawalk == 5)
+			enemyturn = ENEMY_MOVE_END;
+	}
+}
+
+void CEnemy_Srime::Enemy_TurborighttopMove(void)
+{
+	if (nanawalk <= 4)
+	{
+		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+		m_Position += vecenemy * 1.0f;
+
+		m_Position += vec2enemy * 1.0f;
+
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+		m_mtxWorld *= m_mtxTranslation;
+		nanawalk++;
+
+		if (nanawalk == 5)
+			enemyturn = ENEMY_MOVE_END;
+	}
+}
+
+void CEnemy_Srime::Enemy_TurboleftbottomMove(void)
+{
+	if (nanawalk <= 4)
+	{
+		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+		m_Position -= vecenemy * 1.0f;
+
+		m_Position -= vec2enemy * 1.0f;
+
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+		m_mtxWorld *= m_mtxTranslation;
+		nanawalk++;
+
+		if (nanawalk == 5)
+			enemyturn = ENEMY_MOVE_END;
+	}
+}
+
+void CEnemy_Srime::Enemy_TurborightbottomMove(void)
+{
+	if (nanawalk <= 4)
+	{
+		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+		m_Position -= vecenemy * 1.0f;
+
+		m_Position += vec2enemy * 1.0f;
+
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+		m_mtxWorld *= m_mtxTranslation;
+		nanawalk++;
+
+		if (nanawalk == 5)
+			enemyturn = ENEMY_MOVE_END;
+	}
+}
+
+bool CEnemy_Srime::Damage(int str, float angle)
 {
 	// 後にダメージエフェクトを作成
-	Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
-	PlaySound(ENEMYDAMAGE_SE);
+	if (str > 0)
+	{
+		Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
+		PlaySound(ENEMYDAMAGE_SE);
+	}
+	else//攻撃がミスの時
+	{
+		PlaySound(MISS_SE);
+	}
+	//攻撃を受けた方に向く
+	if (angle == 4.8f)
+	{
+		m_Angle = 1.6f;
+	}
+	if (angle == 0.0f)
+	{
+		m_Angle = 3.2f;
+	}
+	if (angle == 1.6f)
+	{
+		m_Angle = 4.8f;
+	}
+	if (angle == 3.2f)
+	{
+		m_Angle = 0.0f;
+	}
+	if (angle == 0.8f)
+	{
+		m_Angle = 4.0f;
+	}
+	if (angle == 2.4f)
+	{
+		m_Angle = 5.6f;
+	}
+	if (angle == 4.0f)
+	{
+		m_Angle = 0.8f;
+	}
+	if (angle == 5.6f)
+	{
+		m_Angle = 2.4f;
+	}
 	// 後にダメージ計算式を作成
 	m_Hp -= str;
 	// 体力が0以下で倒れる
@@ -1146,6 +1351,6 @@ void CEnemy_Srime::Enemy_Destroy(void)
 {
 	alive = false;
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	type = CUserinterface::CHARATYPENONE;
+	m_Type = CUserinterface::CHARATYPENONE;
 	delete this;
 }

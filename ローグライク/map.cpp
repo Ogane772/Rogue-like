@@ -8,7 +8,7 @@
 #include <memory.h>
 #include "CObject.h"
 #include "stage.h"
-
+#include "CWepon.h"
 int CMap::GroupWidth;
 int CMap::GroupHeight;
 //int CMap::g_TexWood2;
@@ -18,6 +18,7 @@ void CMap::Map_Initialize(void)
 {
 	CEnemy::DeleteAllEnemy();
 	CObject::DeleteAllObject();
+	CWepon::DeleteAllWepon();
 	int i = 0, j = 0;
 	//g_TexWood2 = -1;
 	if (CStage::Stage_GetLevel() == 1)
@@ -1219,10 +1220,106 @@ void CMap::Map_Create(void)
 	{
 		lposX = rand() % 100;
 		lposZ = rand() % 100;
-	} while (g_map[lposZ][lposX].type != 1);
-	//g_map[pposZ][pposX].have = HAVEPLAYER;
-	CObject::Create(CObject::TYPE_LADDER, lposX, lposZ);;
-
+	} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+	g_map[lposZ][lposX].have = HAVELADDER;
+	CObject::Create(CObject::TYPE_LADDER, lposX, lposZ);
+	//===================================================
+	// アイテムを生成
+	//===================================================
+	int setitem = rand() % 3;
+	for (int i = 0; i < 12; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEITEM;
+		CObject::Create(CObject::TYPE_YAKUSOU, lposX, lposZ);
+	}
+	//===================================================
+	// 装備を生成
+	//===================================================
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_SWORD, lposX, lposZ);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_SHELD, lposX, lposZ);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_BIGSWORD, lposX, lposZ);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_REIPIA, lposX, lposZ);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_RANCE, lposX, lposZ);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_AX, lposX, lposZ);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_MEISU, lposX, lposZ);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		do
+		{
+			lposX = rand() % 100;
+			lposZ = rand() % 100;
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(CWepon::TYPE_RING, lposX, lposZ);
+	}
 	//===================================================
 	// プレイヤーの初期位置を決める
 	//===================================================
@@ -1232,7 +1329,7 @@ void CMap::Map_Create(void)
 	{
 		pposX = rand() % 100;
 		pposZ = rand() % 100;
-	} while (g_map[pposZ][pposX].type != 1);
+	} while (g_map[pposZ][pposX].type != 1 && g_map[pposZ][pposX].have == NOTHAVE);
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetPos(pposZ, pposX);
 
@@ -1241,7 +1338,7 @@ void CMap::Map_Create(void)
 	//===================================================
 	// 敵生成数の誤差
 	//int setenemy = rand() % 3;
-	int setenemy = 3;
+	int setenemy = 1;
 	for (int i = 0; i < setenemy; i++)
 	//for (int i = 0; i < 1; i++)	// デバッグ用
 	{
@@ -1251,10 +1348,11 @@ void CMap::Map_Create(void)
 		{
 			eposX = rand() % MAX_MAPWIDTH;
 			eposZ = rand() % MAX_MAPHEIGHT;
-		} while (g_map[eposZ][eposX].type != 1 || g_map[eposZ][eposX].have != NOTHAVE);
+		} while (g_map[eposZ][eposX].type != 1 && g_map[eposZ][eposX].have == NOTHAVE);
 		g_map[eposZ][eposX].have = HAVEENEMY;
 		CEnemy::Create(CEnemy::TYPE_SRIME,eposX, eposZ);
 	}
+	g_map[pposZ][pposX].have = NOTHAVE;
 	/*do
 	{
 		eposX = rand() % MAX_MAPWIDTH;

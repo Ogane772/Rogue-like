@@ -33,9 +33,22 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/player_icon.png",8,8 },
 	{ "asset/texture/enemy_icon.png",8,8 },
 	{ "asset/texture/ladder_icon.png",8,8 },
+	{ "asset/texture/item_icon.png",8,8 },
 	{ "asset/texture/Gage.png",250,40 },
 	{ "asset/texture/HP_Gage.png",250,40 },
 	{ "asset/texture/HP_Gage_2.png",250,40 },
+	{ "asset/texture/cursor.png",139,192 },
+	{ "asset/texture/cursor_gry.png",139,192 },
+	{ "asset/texture/swordicon.png",200,200 },
+	{ "asset/texture/bigswordicon.png",200,200 },
+	{ "asset/texture/reipiaicon.png",200,200 },
+	{ "asset/texture/yariicon.png",200,200 },
+	{ "asset/texture/meisuicon.png",200,200 },
+	{ "asset/texture/onoicon.png",200,200 },
+	{ "asset/texture/sheldicon.png",200,200 },
+	{ "asset/texture/ringicon.png",200,200 },
+	{ "asset/texture/largewindow.png",175,334 },
+	{ "asset/texture/yakusou.png",200,200 },
 };
 
 int CTexture::TEXTURE_MAX = sizeof(CTexture::TEXTURE_FILES) / sizeof(TEXTURE_FILES[0]);
