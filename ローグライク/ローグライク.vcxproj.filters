@@ -46,9 +46,6 @@
     <Filter Include="ヘッダー ファイル\オブジェクト">
       <UniqueIdentifier>{5d3e1947-e2ee-4b80-8533-9b2f19eb5db6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\オブジェクト">
-      <UniqueIdentifier>{ba5fe435-3aee-49f8-9cbf-449cae5a5886}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\UI">
       <UniqueIdentifier>{d1849f8a-16ce-4e1e-95d1-785c31357216}</UniqueIdentifier>
     </Filter>
@@ -78,6 +75,9 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\装備">
       <UniqueIdentifier>{19eb1d85-3d48-4fb1-8d59-d36e7d9a05b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\オブジェクト">
+      <UniqueIdentifier>{ba5fe435-3aee-49f8-9cbf-449cae5a5886}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

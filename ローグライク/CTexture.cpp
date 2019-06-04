@@ -49,6 +49,7 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/ringicon.png",200,200 },
 	{ "asset/texture/largewindow.png",175,334 },
 	{ "asset/texture/yakusou.png",200,200 },
+	{ "asset/texture/maru.png",1284,720 },
 };
 
 int CTexture::TEXTURE_MAX = sizeof(CTexture::TEXTURE_FILES) / sizeof(TEXTURE_FILES[0]);

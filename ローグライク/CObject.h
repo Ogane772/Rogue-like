@@ -12,17 +12,20 @@ class CObject :virtual public C3DObj
 {
 public:
 	typedef struct {
+		int object_type;
 		char object_name[MAX_NAME];
 		char object_effect[OBJECT_MAXTIPS];//オブジェクト使用文
 		char object_tips[OBJECT_MAXTIPS];//オブジェクト説明文
 		int first_floor;//出現開始フロア
 		int end_floor;//出現終わりフロア
+		int itemchance;//アイテム出現率
 	}OBJECT_Data;
 	typedef enum {
 		TYPE_ALL = 0,
 
 		TYPE_LADDER,//梯子
 		TYPE_YAKUSOU,//薬草
+		TYPE_ZAXTUSOU,//雑草
 		OBJECTTYPE_NONE
 	}OBJECTTYPE;
 
@@ -36,6 +39,7 @@ public:
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
 
+	static int Get_ITEMDATAMAX(void) { return m_ITEMDATA_MAX; }
 	static OBJECT_Data* Get_Item_Data(int index) { return &m_ObjectData[index]; }
 	static int Get_ObjectNum(int OrnamType) { return m_ObjectNum[OrnamType]; }
 	static int Get_ObjectIndex(int EnemyType) { return m_ObjectNum[EnemyType] - 1; }
@@ -53,7 +57,7 @@ protected:
 
 private:
 	static int m_ObjectNum[TYPE_MAX];
-
+	static int m_ITEMDATA_MAX;//アイテムデータの最大数
 	static OBJECT_Data m_ObjectData[];
 };
 #endif

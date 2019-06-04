@@ -43,6 +43,7 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 
 	TurnCount = 0;
 
+	m_WeponType = enemy_data.wepon_type;
 	add_time = 0;
 	alive = true;
 	rival_flag = false;
@@ -163,6 +164,8 @@ void CEnemy_Srime::Enemy_AI(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
 	bool turbo = getplayer->Get_TurboMode();
+	std::random_device rd;
+	std::mt19937 mt(rd());
 	// ターンが終わってる敵の数をカウント
 	
 	// ワンフレームに攻撃できる敵をカウント
@@ -217,8 +220,8 @@ void CEnemy_Srime::Enemy_AI(void)
 				// フロア内の目的地を決める
 				do
 				{
-					m_Goalz = rand() % MAX_MAPHEIGHT;
-					m_Goalx = rand() % MAX_MAPWIDTH;
+					m_Goalz = mt() % MAX_MAPHEIGHT;
+					m_Goalx = mt() % MAX_MAPWIDTH;
 				} while (CMap::Map_GetData(m_Goalz, m_Goalx).type != 1 &&
 					CMap::Map_GetData(m_Goalz, m_Goalx).type != 3 ||
 					CMap::Map_GetData(m_Goalz, m_Goalx).Group != CMap::Map_GetData(m_Mapz, m_Mapx).Group ||
@@ -281,8 +284,8 @@ void CEnemy_Srime::Enemy_AI(void)
 					// フロア内の目的地を決める
 					do
 					{
-						m_Goalz = rand() % MAX_MAPHEIGHT;
-						m_Goalx = rand() % MAX_MAPWIDTH;
+						m_Goalz = mt() % MAX_MAPHEIGHT;
+						m_Goalx = mt() % MAX_MAPWIDTH;
 					} while (CMap::Map_GetData(m_Goalz, m_Goalx).type != 1 &&
 						CMap::Map_GetData(m_Goalz, m_Goalx).type != 3 ||
 						CMap::Map_GetData(m_Goalz, m_Goalx).Group != CMap::Map_GetData(m_Mapz, m_Mapx).Group ||
@@ -994,7 +997,7 @@ void CEnemy_Srime::Enemy_Act(void)
 	if (attackframe == 5)
 	{
 		// 向いてる方向、攻撃力、攻撃したキャラの名前を渡す
-		CAttack::Attack_EnemyUpdate(m_Type, m_Str, m_Angle);
+		CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Angle);
 	}
 	//プレイヤーが死んだら表示時間延長
 	if (attackframe == 20 && getplayer->Get_Hp() <= 0)
@@ -1291,7 +1294,7 @@ void CEnemy_Srime::Enemy_TurborightbottomMove(void)
 	}
 }
 
-bool CEnemy_Srime::Damage(int str, float angle)
+bool CEnemy_Srime::Damage(int str, float angle, int week_type)
 {
 	// 後にダメージエフェクトを作成
 	if (str > 0)

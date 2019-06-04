@@ -59,7 +59,7 @@ void CWeponReipia::Draw(void)
 	}
 }
 
-bool CWeponReipia::Damage(int str, float angle)
+bool CWeponReipia::Damage(int str, float angle, int week_type)
 {
 	return 0;
 }

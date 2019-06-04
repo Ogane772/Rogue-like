@@ -13,6 +13,8 @@
 #include "CSkinAnimation.h"
 #include "collision.h"
 #include "userinterface.h"
+#include <iostream>
+#include <random>
 //死亡時リターンする数値
 #define DEATH (true)//死んだらtrue
 #define NORMAL (false)
@@ -123,6 +125,7 @@ public:
 	virtual int Get_PlayerNextExp(int index) { return 0; } //次のレベルまでの必要経験値を取得
 	virtual void Player_OnakaDown(void) {}; //プレイヤーのおなかを減らす
 	virtual int Get_PlayerOnaka(void) { return 0; }//プレイヤーのおなか取得
+	virtual bool Get_DarkFlag(void) { return 0; };
 	virtual bool Get_WMode(void) { return 0; }//プレイヤーが両手持ちか取得
 	virtual bool ExpGoldCheck(int exp, int gold) { return 0; }//プレイヤーの経験とお金チェック
 	virtual bool Get_TurboMode(void) { return 0; }//ターボモード取得
@@ -158,7 +161,7 @@ public:
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
 	virtual bool Get_DrawCheck(void) = 0;
-	virtual bool Damage(int str, float angle) = 0;
+	virtual bool Damage(int str, float angle, int week_type) = 0;
 	static HRESULT InitModelLoad();  //	モデル読み込み
 	//モデル情報取得
 	THING* C3DObj::GetAnimeModel(void);
@@ -192,7 +195,6 @@ public:
 
 	static void Collision_AnimeVSAnime(JUDGE *player_judge, Sphere *m_PlayerEnemyColision, JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
 
-	
 protected:
 	D3DXMATRIX m_mtxWorld;			//	ワールド変換用行列
 	D3DXMATRIX m_mtxTranslation;	//	移動行列

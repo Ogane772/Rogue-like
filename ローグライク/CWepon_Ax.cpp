@@ -59,7 +59,7 @@ void CWeponAx::Draw(void)
 	}
 }
 
-bool CWeponAx::Damage(int str, float angle)
+bool CWeponAx::Damage(int str, float angle, int week_type)
 {
 	return 0;
 }

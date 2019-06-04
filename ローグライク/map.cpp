@@ -9,6 +9,8 @@
 #include "CObject.h"
 #include "stage.h"
 #include "CWepon.h"
+#include <iostream>
+#include <random>
 int CMap::GroupWidth;
 int CMap::GroupHeight;
 //int CMap::g_TexWood2;
@@ -88,13 +90,15 @@ void CMap::Map_Create(void)
 	//===================================================
 	// フロアをGroupHeight * GroupWidth個生成
 	//===================================================
+	std::random_device rd;
+	std::mt19937 mt(rd());
 	int i;
 	int h, w;
 	for (i = 0; i < GroupHeight * GroupWidth; i++)
 	{
 		
 		// フロア始点z軸
-		int z = rand() % (MAX_MAPHEIGHT / GroupHeight * (i / GroupWidth + 1));
+		int z = mt() % (MAX_MAPHEIGHT / GroupHeight * (i / GroupWidth + 1));
 		// 乱数のやり直しチェック
 		if (z <= 4 + MAX_MAPHEIGHT / GroupHeight * (i / GroupWidth) ||
 			z >= MAX_MAPHEIGHT / GroupHeight * (i / GroupWidth + 1) - 10)
@@ -107,8 +111,7 @@ void CMap::Map_Create(void)
 
 			// フロア始点x軸 
 			// ミス
-			int x = rand() % (MAX_MAPWIDTH / GroupWidth * (i % GroupWidth + 1));
-	//		int x = rand() % (MAX_MAPWIDTH / GroupWidth * ((i + 1) % GroupWidth + 1));
+			int x = mt() % (MAX_MAPWIDTH / GroupWidth * (i % GroupWidth + 1));
 			// 乱数のやり直しチェック
 			if (x <= 4 + (MAX_MAPWIDTH / GroupWidth * (i % GroupWidth)) ||
 				x >= MAX_MAPWIDTH / GroupWidth * (i % GroupWidth + 1) - 10)
@@ -119,10 +122,10 @@ void CMap::Map_Create(void)
 			else
 			{
 				// フロアの縦の長さ4～8
-				int height = rand() % 5 + 4 + z;
+				int height = mt() % 5 + 4 + z;
 
 				// フロアの横の長さ4～8
-				int width = rand() % 5 + 4 + x;
+				int width = mt() % 5 + 4 + x;
 
 				//while (z <= height)
 				for (h = z; h <= height; h++)
@@ -146,7 +149,7 @@ void CMap::Map_Create(void)
 					// 右と下に作成
 					if (i == 0)	
 					{
-						int rightgate = (rand() % (height - z - 1)) + 1;
+						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
 						g_map[rightgate + z][width].use = true;
 
@@ -157,7 +160,7 @@ void CMap::Map_Create(void)
 							g_map[rightgate + z][path].use = true;
 						}
 
-						int bottomgate = (rand() % (width - x - 1)) + 1;
+						int bottomgate = (mt() % (width - x - 1)) + 1;
 						g_map[height][bottomgate + x].type = 3;
 						g_map[height][bottomgate + x].use = true;
 
@@ -172,7 +175,7 @@ void CMap::Map_Create(void)
 					else if (i + GroupWidth == GroupHeight * GroupWidth)
 					{
 						
-						int rightgate = (rand() % (height - z - 1)) + 1;
+						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
 						g_map[rightgate + z][width].use = true;
 
@@ -183,7 +186,7 @@ void CMap::Map_Create(void)
 							g_map[rightgate + z][path].use = true;
 						}
 
-						int topgate = (rand() % (width - x - 1)) + 1;
+						int topgate = (mt() % (width - x - 1)) + 1;
 						g_map[z][topgate + x].type = 3;
 						g_map[z][topgate + x].use = true;
 
@@ -243,7 +246,7 @@ void CMap::Map_Create(void)
 					// 右と上と下に作成
 					else
 					{
-						int rightgate = (rand() % (height - z - 1)) + 1;
+						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
 						g_map[rightgate + z][width].use = true;
 
@@ -254,7 +257,7 @@ void CMap::Map_Create(void)
 							g_map[rightgate + z][path].use = true;
 						}
 
-						int bottomgate = (rand() % (width - x - 1)) + 1;
+						int bottomgate = (mt() % (width - x - 1)) + 1;
 						g_map[height][bottomgate + x].type = 3;
 						g_map[height][bottomgate + x].use = true;
 
@@ -265,7 +268,7 @@ void CMap::Map_Create(void)
 							g_map[path][bottomgate + x].use = true;
 						}
 
-						int topgate = (rand() % (width - x - 1)) + 1;
+						int topgate = (mt() % (width - x - 1)) + 1;
 						g_map[z][topgate + x].type = 3;
 						g_map[z][topgate + x].use = true;
 
@@ -326,7 +329,7 @@ void CMap::Map_Create(void)
 					if (i == GroupWidth - 1)
 					{
 						// 左と下に作成
-						int bottomgate = (rand() % (width - x - 1)) + 1;
+						int bottomgate = (mt() % (width - x - 1)) + 1;
 						g_map[height][bottomgate + x].type = 3;
 						g_map[height][bottomgate + x].use = true;
 
@@ -337,7 +340,7 @@ void CMap::Map_Create(void)
 							g_map[path][bottomgate + x].use = true;
 						}
 
-						int leftgate = (rand() % (height - z - 1)) + 1;
+						int leftgate = (mt() % (height - z - 1)) + 1;
 						g_map[leftgate + z][x].type = 3;
 						g_map[leftgate + z][x].use = true;
 
@@ -392,7 +395,7 @@ void CMap::Map_Create(void)
 					else if (i == GroupHeight * GroupWidth - 1) 
 					{
 						// 左と上に作成
-						int leftgate = (rand() % (height - z - 1)) + 1;
+						int leftgate = (mt() % (height - z - 1)) + 1;
 						g_map[leftgate + z][x].type = 3;
 						g_map[leftgate + z][x].use = true;
 
@@ -444,7 +447,7 @@ void CMap::Map_Create(void)
 							g_map[leftgate + z][path].use = true;
 						}
 
-						int topgate = (rand() % (width - x - 1)) + 1;
+						int topgate = (mt() % (width - x - 1)) + 1;
 						g_map[z][topgate + x].type = 3;
 						g_map[z][topgate + x].use = true;
 
@@ -499,7 +502,7 @@ void CMap::Map_Create(void)
 					else
 					{
 						// 左と上と下に作成
-						int leftgate = (rand() % (height - z - 1)) + 1;
+						int leftgate = (mt() % (height - z - 1)) + 1;
 						g_map[leftgate + z][x].type = 3;
 						g_map[leftgate + z][x].use = true;
 
@@ -551,7 +554,7 @@ void CMap::Map_Create(void)
 							g_map[leftgate + z][path].use = true;
 						}
 
-						int bottomgate = (rand() % (width - x - 1)) + 1;
+						int bottomgate = (mt() % (width - x - 1)) + 1;
 						g_map[height][bottomgate + x].type = 3;
 						g_map[height][bottomgate + x].use = true;
 
@@ -562,7 +565,7 @@ void CMap::Map_Create(void)
 							g_map[path][bottomgate + x].use = true;
 						}
 
-						int topgate = (rand() % (width - x - 1)) + 1;
+						int topgate = (mt() % (width - x - 1)) + 1;
 						g_map[z][topgate + x].type = 3;
 						g_map[z][topgate + x].use = true;
 
@@ -621,7 +624,7 @@ void CMap::Map_Create(void)
 					if (i < GroupWidth)
 					{
 						// 右と左と下に作成
-						int leftgate = (rand() % (height - z - 1)) + 1;
+						int leftgate = (mt() % (height - z - 1)) + 1;
 						g_map[leftgate + z][x].type = 3;
 						g_map[leftgate + z][x].use = true;
 
@@ -673,7 +676,7 @@ void CMap::Map_Create(void)
 							g_map[leftgate + z][path].use = true;
 						}
 
-						int bottomgate = (rand() % (width - x - 1)) + 1;
+						int bottomgate = (mt() % (width - x - 1)) + 1;
 						g_map[height][bottomgate + x].type = 3;
 						g_map[height][bottomgate + x].use = true;
 
@@ -684,7 +687,7 @@ void CMap::Map_Create(void)
 							g_map[path][bottomgate + x].use = true;
 						}
 
-						int rightgate = (rand() % (height - z - 1)) + 1;
+						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
 						g_map[rightgate + z][width].use = true;
 
@@ -698,7 +701,7 @@ void CMap::Map_Create(void)
 					else if(i >(GroupHeight - 1) * GroupWidth)
 					{
 						// 右と左と上に作成
-						int rightgate = (rand() % (height - z - 1)) + 1;
+						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
 						g_map[rightgate + z][width].use = true;
 
@@ -709,7 +712,7 @@ void CMap::Map_Create(void)
 							g_map[rightgate + z][path].use = true;
 						}
 
-						int topgate = (rand() % (width - x - 1)) + 1;
+						int topgate = (mt() % (width - x - 1)) + 1;
 						g_map[z][topgate + x].type = 3;
 						g_map[z][topgate + x].use = true;
 
@@ -761,7 +764,7 @@ void CMap::Map_Create(void)
 							g_map[path][topgate + x].use = true;
 						}
 
-						int leftgate = (rand() % (height - z - 1)) + 1;
+						int leftgate = (mt() % (height - z - 1)) + 1;
 						g_map[leftgate + z][x].type = 3;
 						g_map[leftgate + z][x].use = true;
 
@@ -816,7 +819,7 @@ void CMap::Map_Create(void)
 					else
 					{
 						// 全方向に作成
-						int rightgate = (rand() % (height - z - 1)) + 1;
+						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
 						g_map[rightgate + z][width].use = true;
 
@@ -827,7 +830,7 @@ void CMap::Map_Create(void)
 							g_map[rightgate + z][path].use = true;
 						}
 
-						int topgate = (rand() % (width - x - 1)) + 1;
+						int topgate = (mt() % (width - x - 1)) + 1;
 						g_map[z][topgate + x].type = 3;
 						g_map[z][topgate + x].use = true;
 
@@ -879,7 +882,7 @@ void CMap::Map_Create(void)
 							g_map[path][topgate + x].use = true;
 						}
 
-						int leftgate = (rand() % (height - z - 1)) + 1;
+						int leftgate = (mt() % (height - z - 1)) + 1;
 						g_map[leftgate + z][x].type = 3;
 						g_map[leftgate + z][x].use = true;
 
@@ -931,7 +934,7 @@ void CMap::Map_Create(void)
 							g_map[leftgate + z][path].use = true;
 						}
 
-						int bottomgate = (rand() % (width - x - 1)) + 1;
+						int bottomgate = (mt() % (width - x - 1)) + 1;
 						g_map[height][bottomgate + x].type = 3;
 						g_map[height][bottomgate + x].use = true;
 
@@ -1216,110 +1219,22 @@ void CMap::Map_Create(void)
 	//===================================================
 	int lposX;
 	int lposZ;
+	std::uniform_int_distribution<int> random(0, 99);
 	do
 	{
-		lposX = rand() % 100;
-		lposZ = rand() % 100;
+		lposX = random(mt);
+		lposZ = random(mt);
 	} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
 	g_map[lposZ][lposX].have = HAVELADDER;
 	CObject::Create(CObject::TYPE_LADDER, lposX, lposZ);
 	//===================================================
 	// アイテムを生成
 	//===================================================
-	int setitem = rand() % 3;
-	for (int i = 0; i < 12; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEITEM;
-		CObject::Create(CObject::TYPE_YAKUSOU, lposX, lposZ);
-	}
+	MapItemSet();
 	//===================================================
 	// 装備を生成
 	//===================================================
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_SWORD, lposX, lposZ);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_SHELD, lposX, lposZ);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_BIGSWORD, lposX, lposZ);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_REIPIA, lposX, lposZ);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_RANCE, lposX, lposZ);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_AX, lposX, lposZ);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_MEISU, lposX, lposZ);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		do
-		{
-			lposX = rand() % 100;
-			lposZ = rand() % 100;
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
-		CWepon::Create(CWepon::TYPE_RING, lposX, lposZ);
-	}
+	MapWeponSet();
 	//===================================================
 	// プレイヤーの初期位置を決める
 	//===================================================
@@ -1327,8 +1242,8 @@ void CMap::Map_Create(void)
 	int pposZ;
 	do
 	{
-		pposX = rand() % 100;
-		pposZ = rand() % 100;
+		pposX = random(mt);
+		pposZ = random(mt);
 	} while (g_map[pposZ][pposX].type != 1 && g_map[pposZ][pposX].have == NOTHAVE);
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetPos(pposZ, pposX);
@@ -1337,7 +1252,6 @@ void CMap::Map_Create(void)
 	// 敵を生成 GroupWidth * GroupHeight - 0～2体生成
 	//===================================================
 	// 敵生成数の誤差
-	//int setenemy = rand() % 3;
 	int setenemy = 1;
 	for (int i = 0; i < setenemy; i++)
 	//for (int i = 0; i < 1; i++)	// デバッグ用
@@ -1346,23 +1260,13 @@ void CMap::Map_Create(void)
 		int eposZ;
 		do
 		{
-			eposX = rand() % MAX_MAPWIDTH;
-			eposZ = rand() % MAX_MAPHEIGHT;
+			eposX = mt() % MAX_MAPWIDTH;
+			eposZ = mt() % MAX_MAPHEIGHT;
 		} while (g_map[eposZ][eposX].type != 1 && g_map[eposZ][eposX].have == NOTHAVE);
 		g_map[eposZ][eposX].have = HAVEENEMY;
 		CEnemy::Create(CEnemy::TYPE_SRIME,eposX, eposZ);
 	}
 	g_map[pposZ][pposX].have = NOTHAVE;
-	/*do
-	{
-		eposX = rand() % MAX_MAPWIDTH;
-		eposZ = rand() % MAX_MAPHEIGHT;
-	} while (g_map[eposZ][eposX].type != 1 || g_map[eposZ][eposX].have != NOTHAVE);
-	g_map[eposZ][eposX].have = HAVEENEMY;
-	Enemy_Create(eposZ, eposX);*/
-	// メモリの解放
-	//free(base_g_map);
-	//free(g_map);
 }
 
 void CMap::Map_Finalize(void)
@@ -1375,4 +1279,75 @@ void CMap::Map_Finalize(void)
 void CMap::Map_Draw(void)
 {
 
+}
+
+void CMap::MapItemSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
+	int setitem = mt() % 3 + 4;
+	int itemdrop_number[100] = { 0 };//アイテムドロップ率格納
+	int kakuritu_start = 0;//どの配列番号から数えるか
+	int lposX;
+	int lposZ;
+	int i, j, k;
+	//その階で出るアイテムを検索し確率を代入していく
+	for (j = 0; j<CObject::Get_ITEMDATAMAX(); j++)
+	{
+		if (CObject::Get_Item_Data(j)->first_floor <= CStage::Stage_GetLevel() &&
+			CObject::Get_Item_Data(j)->end_floor >= CStage::Stage_GetLevel())
+		{
+			for (k = kakuritu_start; k < kakuritu_start + CObject::Get_Item_Data(j)->itemchance; k++)
+			{
+				if (itemdrop_number[k] == 0)
+				{
+					itemdrop_number[k] = CObject::Get_Item_Data(j)->object_type;
+				}
+			}
+			kakuritu_start += CObject::Get_Item_Data(j)->itemchance;
+		}
+	}
+	//もしも100％埋まってなかったら空きに雑草を置いておく
+	for (k = 0; k < 100; k++)
+	{
+		if (itemdrop_number[k] == 0)
+		{
+			itemdrop_number[k] = CObject::TYPE_ZAXTUSOU;
+		}
+	}
+	//乱数で取得した分だけアイテムを配置する
+	for (i = 0; i < setitem; i++)
+	{
+		do
+		{
+			lposX = random(mt);
+			lposZ = random(mt);
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEITEM;
+		CObject::Create(itemdrop_number[random(mt)], lposX, lposZ);
+	}
+}
+
+void CMap::MapWeponSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
+	std::uniform_int_distribution<int> randomwepon(1, 8);
+	int setitem = mt() % 3 + 4;
+	int lposX;
+	int lposZ;
+	int i;
+
+	for (i = 0; i < setitem; i++)
+	{
+		do
+		{
+			lposX = random(mt);
+			lposZ = random(mt);
+		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+		g_map[lposZ][lposX].have = HAVEWEPON;
+		CWepon::Create(randomwepon(mt), lposX, lposZ);
+	}
 }

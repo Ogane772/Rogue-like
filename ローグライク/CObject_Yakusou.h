@@ -17,14 +17,14 @@ public:
 	//===================================
 	// オブジェクト構造体
 	//===================================
-	CObjectYakusou(int x, int z);
+	CObjectYakusou(int x, int z, int object_type);
 	~CObjectYakusou();
 
-	void Initialize(int x, int z);
+	void Initialize(int x, int z, int object_type);
 	void Finalize(void);
 	void Update(void);
 	void Draw(void);
-	bool Damage(int str, float angle);
+	bool Damage(int str, float angle, int week_type);
 
 private:
 	int type;

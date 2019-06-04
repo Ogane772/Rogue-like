@@ -59,7 +59,7 @@ void CWeponRance::Draw(void)
 	}
 }
 
-bool CWeponRance::Damage(int str, float angle)
+bool CWeponRance::Damage(int str, float angle, int week_type)
 {
 	return 0;
 }
