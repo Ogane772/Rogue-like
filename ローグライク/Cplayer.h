@@ -93,7 +93,7 @@ public:
 	static const Sphere* Player_GetEnemyCollision(void) { return &m_EnemyColision; }
 	static PLAYER_WEPON* GetPlayerWeponData(int index) { return &player_wepon[index]; }
 	static void Player_NextTurn(void);
-	bool Damage(int str, float angle);
+	bool Damage(int str, float angle, int week_type);
 	void Player_OnakaDown(void); //おなかを減らす
 	int Get_PlayerOnaka(void) { return m_Onaka; }
 	int Get_CursorNumber(void) { return m_CursorNumber; }
@@ -105,6 +105,7 @@ public:
 	int Get_PlayerItemStockType(int index) { return m_ItemStockType[index]; }
 	int Get_PlayerAllItemStock(int index) { return m_AllItemStock[index]; }
 	void Set_PlayerTurn(int turn) { m_Turn = turn; }
+	bool Get_DarkFlag(void) { return m_DarkFlag; }
 	bool Get_WMode(void) { return m_Wmode; }
 	bool Get_TurboMode(void) { return turbo; }
 	bool Get_ItemOn(void) { return m_ItemOn; }
@@ -195,6 +196,7 @@ private:
 	bool right_trigger = false;
 	bool left_trigger = false;
 	bool right_on;//右スティック入力確認
+	bool m_DarkFlag;//暗闇の通路にいたらtrue
 
 	bool turbo;//高速化フラグ
 

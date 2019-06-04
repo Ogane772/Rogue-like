@@ -120,7 +120,11 @@ void CUserinterface::UI_Update(void)
 
 void CUserinterface::UI_Draw(void)
 {
-	//DebugFont_Draw(200, 180, "g_text.Age   = %d", g_text.Age);
+	C3DObj *getplayer = CPlayer::Get_Player();
+	if (getplayer->Get_DarkFlag())
+	{
+		Sprite_Draw(TEX_WINDOW_MARU, 0.0f, 0.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WINDOW_MARU), (float)Texture_GetHeight(TEX_WINDOW_MARU), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	}
 	CommandWindow_Draw();
 	ItemWindow_Draw();
 	StatusWindow_Draw();
@@ -230,6 +234,39 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 	g_text.hitchara = hitchara;
 	g_text.damage = damage;
 	g_text.act = act;
+	if (type > 0)
+	{
+		g_text.type = type;
+	}
+	//エネミーデータから名前と経験値をもらうのでｰ1する
+	if (hitchara > 1)
+	{
+		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
+		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	if (chara > 1)
+	{
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+}
+
+void CUserinterface::UI_TextCreate(int week_type,CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.hitchara = hitchara;
+	g_text.damage = damage;
+	g_text.act = act;
+	g_text.attribute_type = week_type;
 	if (type > 0)
 	{
 		g_text.type = type;
@@ -872,7 +909,36 @@ void CUserinterface::UI_TextDraw(void)
 							}
 							else
 							{
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに%dダメージ与えた!", g_text.name, g_text.damage);
+								//文字列の長さを調べその長さ分次の文のXを足す
+								int len = strlen(g_text.name);
+								int add_x = 0;
+								if (g_text.damage < 10)
+								{
+									add_x = 1;
+								}
+								else if (g_text.damage >= 10 && g_text.damage <= 99)
+								{
+									add_x = 2;
+								}
+								else if (g_text.damage >= 100)
+								{
+									add_x = 3;
+								}
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに", g_text.name);
+								//相性によってダメージ文字色変更
+								if (g_text.attribute_type == WEEK_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == NORMAL_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == RESIST_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+								}
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ダメージ与えた!");
 							}
 						}
 						//ここからウィンドウに表示する文字、自分の場所までスクロールする
@@ -928,7 +994,36 @@ void CUserinterface::UI_TextDraw(void)
 							}
 							else if (g_text.damage > 0)
 							{
-								UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに%dダメージ与えた!", g_text.name, g_text.damage);
+								//文字列の長さを調べその長さ分次の文のXを足す
+								int len = strlen(g_text.name);
+								int add_x = 0;
+								if (g_text.damage < 10)
+								{
+									add_x = 1;
+								}
+								else if (g_text.damage >= 10 && g_text.damage <= 99)
+								{
+									add_x = 2;
+								}
+								else if (g_text.damage >= 100)
+								{
+									add_x = 3;
+								}
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに", g_text.name);
+								//相性によってダメージ文字色変更
+								if (g_text.attribute_type == WEEK_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == NORMAL_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == RESIST_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+								}
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ダメージ与えた!");
 							}
 							if (getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
 							{
@@ -1047,7 +1142,36 @@ void CUserinterface::UI_TextDraw(void)
 						}
 						else
 						{
-							UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに%dダメージ与えた!", g_text.player_name, g_text.damage);
+							//文字列の長さを調べその長さ分次の文のXを足す
+							int len = strlen(g_text.player_name);
+							int add_x = 0;
+							if (g_text.damage < 10)
+							{
+								add_x = 1;
+							}
+							else if (g_text.damage >= 10 && g_text.damage <= 99)
+							{
+								add_x = 2;
+							}
+							else if (g_text.damage >= 100)
+							{
+								add_x = 3;
+							}
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに", g_text.player_name);
+							//相性によってダメージ文字色変更
+							if (g_text.attribute_type == WEEK_TYPE)
+							{
+								UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+							}
+							if (g_text.attribute_type == NORMAL_TYPE)
+							{
+								UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+							}
+							if (g_text.attribute_type == RESIST_TYPE)
+							{
+								UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+							}
+							UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 42), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ダメージ与えた!");
 						}
 					}
 					break;

@@ -12,11 +12,9 @@
 #include "CEnemy.h"
 #include "CEnemy_Srime.h"
 #include "Cplayer.h"
-#include "common.h"
-#include "CTexture.h"
 #include "map.h"
 #include "sound.h"
-#include "exp.h"
+#include "CWepon.h"
 #include "wall.h"
 #define _CRTDBG_MAP_ALLOC
 #define ENEMY_FIELDMAX (60.0f)//フィールドに沸けるEnemy最大数
@@ -40,7 +38,7 @@ bool CEnemy::attackflag = false;
 CEnemy::ENEMY_Data CEnemy::m_EnemyData[]
 {
 	//名前 HP STR DEF EXP GOLD 出現開始フロア 出現終わりフロア
-	{ "スライム！！" , 20.0f, 4, 0, 5, 5,1,3 },
+	{ CWepon::TYPE_SWORD,"スライム！！" , 20.0f, 4, 0, 5, 5,1,3 },
 };
 //=============================================================================
 //	生成
@@ -89,6 +87,8 @@ void CEnemy::Enemy_Finalize(int Index)
 
 void CEnemy::EnemyTurnEnd(void)
 {
+	std::random_device rd;
+	std::mt19937 mt(rd());
 	int i;
 	int turnend_count;//ターンエンドカウント
 	int eposX;
@@ -114,8 +114,8 @@ void CEnemy::EnemyTurnEnd(void)
 			{
 				do
 				{
-					eposX = rand() % MAX_MAPWIDTH;
-					eposZ = rand() % MAX_MAPHEIGHT;
+					eposX = mt() % MAX_MAPWIDTH;
+					eposZ = mt() % MAX_MAPHEIGHT;
 				} while (CMap::Map_GetData(eposZ, eposX).type != 1);
 
 				Create(TYPE_SRIME, eposX, eposZ);
@@ -144,8 +144,8 @@ void CEnemy::EnemyTurnEnd(void)
 			{
 				do
 				{
-					eposX = rand() % MAX_MAPWIDTH;
-					eposZ = rand() % MAX_MAPHEIGHT;
+					eposX = mt() % MAX_MAPWIDTH;
+					eposZ = mt() % MAX_MAPHEIGHT;
 				} while (CMap::Map_GetData(eposZ, eposX).type != 1);
 
 				//Create(TYPE_SRIME, eposX, eposZ);

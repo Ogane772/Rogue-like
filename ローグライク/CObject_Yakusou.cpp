@@ -11,9 +11,9 @@
 //	ê∂ê¨
 //=============================================================================
 
-CObjectYakusou::CObjectYakusou(int x, int z) :CObject(TYPE_YAKUSOU), C3DObj(C3DObj::TYPE_OBJECT)
+CObjectYakusou::CObjectYakusou(int x, int z, int object_type) :CObject(object_type), C3DObj(C3DObj::TYPE_OBJECT)
 {
-	Initialize(x, z);
+	Initialize(x, z, object_type);
 }
 
 //=============================================================================
@@ -25,12 +25,12 @@ CObjectYakusou::~CObjectYakusou()
 
 }
 
-void CObjectYakusou::Initialize(int x, int z)
+void CObjectYakusou::Initialize(int x, int z, int object_type)
 {
 	alive = true;
 	m_Mapz = z;
 	m_Mapx = x;
-	type = TYPE_YAKUSOU;
+	type = object_type;
 	m_Position = D3DXVECTOR3(-247.5f + x * 5 - 2.5f, 0.0f, 247.5f - z * 5 - 1.0f);
 	map_drawflag = false;
 }
@@ -61,7 +61,7 @@ void CObjectYakusou::Draw(void)
 	}
 }
 
-bool CObjectYakusou::Damage(int str, float angle)
+bool CObjectYakusou::Damage(int str, float angle, int week_type)
 {
 	return 0;
 }

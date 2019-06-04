@@ -59,7 +59,7 @@ void CWeponMeisu::Draw(void)
 	}
 }
 
-bool CWeponMeisu::Damage(int str, float angle)
+bool CWeponMeisu::Damage(int str, float angle, int week_type)
 {
 	return 0;
 }

@@ -11,13 +11,14 @@ class CWepon :virtual public C3DObj
 {
 public:
 	typedef struct {
+		int type;
 		char Wepon_name[MAX_NAME];
 		char Wepon_effect[WEPON_MAXTIPS];//オブジェクト説明文
 		int str;
 		int	def;
 		int first_floor;//出現開始フロア
 		int end_floor;//出現終わりフロア
-		int type;
+		int weponchance;//装備出現率
 	}Wepon_Data;
 	typedef enum {
 		TYPE_ALL = 0,

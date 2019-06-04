@@ -6,10 +6,9 @@
 
 #ifndef _ENEMY_H_
 #define _ENEMY_H_
+#define ENEMY_MAX (100)
 #include "C3DObj.h"
 #include "userinterface.h"
-#define ENEMY_MAX (100)
-
 class CEnemy :virtual public C3DObj
 {
 public:
@@ -39,7 +38,7 @@ public:
 
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
-	virtual bool Damage(int str, float angle) = 0;
+	virtual bool Damage(int str, float angle, int week_type) = 0;
 
 	void Enemy_Finalize(int Index);
 	static void EnemyTurnEnd(void);
@@ -60,6 +59,7 @@ public:
 	static void EnemyVsWall(JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
 protected:
 	typedef struct {
+		int wepon_type;
 		char enemy_name[MAX_NAME];
 		float Hp;				
 		int str,
@@ -88,7 +88,7 @@ protected:
 	static int TurnCount;
 
 	int m_EnemyIndex;	
-
+	
 	static int m_EnemyEnableNum;
 	static int m_EnemyNum[TYPE_MAX];//各エネミーの総数
 private:

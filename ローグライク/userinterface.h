@@ -62,6 +62,7 @@ public:
 		int gold;				// 獲得金
 		int type;				// 種類
 		int purasu_number;		// 装備の+値
+		int attribute_type;			// 耐性タイプ
 		D3DXVECTOR2 pos;
 		
 		char player_name[MAX_NAME];
@@ -70,7 +71,12 @@ public:
 		bool alive;
 		bool lv_up;							//レベルアップしたらtrue
 	}TEXT;
-
+	//耐性の結果
+	enum ATTRIBUTE_TYPE{
+		WEEK_TYPE,
+		NORMAL_TYPE,
+		RESIST_TYPE,
+	};
 	//後で改良しないと使い物にならない
 	static void UI_Initialize(void);
 	static void UI_Finalize(void);
@@ -83,6 +89,7 @@ public:
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act);
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type);//アイテム用
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, int purasu_number);//装備用
+	static void UI_TextCreate(int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
 
 	static void UI_Delete(void);

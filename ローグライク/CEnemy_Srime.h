@@ -33,7 +33,7 @@ public:
 	void Enemy_TurborighttopMove(void);
 	void Enemy_TurboleftbottomMove(void);
 	void Enemy_TurborightbottomMove(void);
-	bool Damage(int str, float angle);
+	bool Damage(int str, float angle, int week_type);
 	void Enemy_Destroy(void);
 };
 #endif 

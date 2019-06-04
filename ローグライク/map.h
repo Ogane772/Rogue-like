@@ -55,12 +55,13 @@ public:
 	static void Map_Create(void);
 	static void Map_Finalize(void);
 	static void Map_Draw(void);
-
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
 	static void Map_SetHaveData(int z, int x, HAVEMAP have) { g_map[z][x].have = have; }
 	static void Map_SetData(int z, int x,int alpha) { g_map[z][x].alpha = alpha; }
 private:
 	//static int g_TexWood2;
+	static void MapItemSet(void);//マップにアイテム配置処理
+	static void MapWeponSet(void);//マップに装備配置処理
 	static MAP **g_map, *base_g_map;
 
 	static int GroupWidth;

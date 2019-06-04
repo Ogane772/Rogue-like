@@ -59,7 +59,7 @@ void CWeponBigSword::Draw(void)
 	}
 }
 
-bool CWeponBigSword::Damage(int str, float angle)
+bool CWeponBigSword::Damage(int str, float angle, int week_type)
 {
 	return 0;
 }
