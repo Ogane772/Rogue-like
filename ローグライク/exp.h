@@ -2,7 +2,9 @@
 #define EXP_H_
 enum Effect
 {
-	HIT,//“–‚½‚è”»’èŒó•â
+	HIT,
+	HIT_WEEK,
+	HIT_RESIST,
 };
 void Exp_Init(void);
 void Exp_Update(void);

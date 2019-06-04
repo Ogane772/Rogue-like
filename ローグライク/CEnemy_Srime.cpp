@@ -1496,7 +1496,18 @@ bool CEnemy_Srime::Damage(int str, float angle, int week_type)
 	// 後にダメージエフェクトを作成
 	if (str > 0)
 	{
-		Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
+		if (week_type == CUserinterface::NORMAL_TYPE)
+		{
+			Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
+		}
+		if (week_type == CUserinterface::WEEK_TYPE)
+		{
+			Exp_Set(HIT_WEEK, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
+		}
+		if (week_type == CUserinterface::RESIST_TYPE)
+		{
+			Exp_Set(HIT_RESIST, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
+		}
 		PlaySound(ENEMYDAMAGE_SE);
 	}
 	else//攻撃がミスの時
