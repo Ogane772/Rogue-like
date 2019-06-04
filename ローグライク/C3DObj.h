@@ -194,7 +194,7 @@ public:
 	void PlayerVsWall(JUDGE *player_judge, Sphere *m_PlayerColision);
 
 	static void Collision_AnimeVSAnime(JUDGE *player_judge, Sphere *m_PlayerEnemyColision, JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
-
+	static void Collision_EnemyVSEnemy(JUDGE *enemy_judge, Sphere *m_EnemyMyColision, JUDGE *enemy2_judge, Sphere *m_Enemy2MyColision);
 protected:
 	D3DXMATRIX m_mtxWorld;			//	ワールド変換用行列
 	D3DXMATRIX m_mtxTranslation;	//	移動行列
