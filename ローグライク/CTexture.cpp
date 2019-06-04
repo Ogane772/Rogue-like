@@ -28,6 +28,8 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/5F.png",1284,720 },
 	{ "asset/texture/shadow000.png",128,128 },
 	{ "asset/texture/effect_hit.png",960,240 },
+	{ "asset/texture/effect_hit_week.png",960,240 },
+	{ "asset/texture/effect_hit_resist.png",960,240 },
 	{ "asset/texture/rezult.png",1920,1080 },
 	{ "asset/texture/message_window.png",845,154 },
 	{ "asset/texture/player_icon.png",8,8 },
