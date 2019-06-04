@@ -75,7 +75,7 @@ protected:
 	int m_Goalx;
 	// 通路通過中か
 	bool m_Goway;
-
+	bool get_turbo;
 	float velocity;
 	
 	static bool attackflag; //エネミーが攻撃中ならtrue

@@ -1252,7 +1252,7 @@ void CMap::Map_Create(void)
 	// 敵を生成 GroupWidth * GroupHeight - 0～2体生成
 	//===================================================
 	// 敵生成数の誤差
-	int setenemy = 1;
+	int setenemy = 5;
 	for (int i = 0; i < setenemy; i++)
 	//for (int i = 0; i < 1; i++)	// デバッグ用
 	{

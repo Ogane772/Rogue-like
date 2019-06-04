@@ -43,6 +43,7 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 
 	TurnCount = 0;
 
+	get_turbo = false;
 	m_WeponType = enemy_data.wepon_type;
 	add_time = 0;
 	alive = true;
@@ -163,13 +164,13 @@ void CEnemy_Srime::Draw(void)
 void CEnemy_Srime::Enemy_AI(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
-	bool turbo = getplayer->Get_TurboMode();
 	std::random_device rd;
 	std::mt19937 mt(rd());
+	get_turbo = getplayer->Get_TurboMode();
 	// ターンが終わってる敵の数をカウント
-	
+
 	// ワンフレームに攻撃できる敵をカウント
-	
+
 	// 攻撃待ちカウント
 	int enemyturncount = 0;
 	// プレイヤーが移動するか移動以外の行動が終わった場合エネミーも移動する
@@ -179,7 +180,70 @@ void CEnemy_Srime::Enemy_AI(void)
 		// 現在地の更新
 		//m_Mapz = (m_Position.z - 247.5f) / -5;
 		//m_Mapx = (m_Position.x + 247.5f) / 5;
+		C3DObj *enemy;
+		C3DObj *enemy2;
 
+		// 
+		for (int i = 0; i < MAX_GAMEOBJ; i++)
+		{
+			enemy = CEnemy::Get_Enemy(i);
+
+			if (enemy)
+			{
+				if (i != MAX_GAMEOBJ - 1)
+				{
+					for (int e = 0; e < MAX_GAMEOBJ; e++)
+					{
+						enemy2 = CEnemy::Get_Enemy(e);
+						if (enemy2)
+							C3DObj::Collision_EnemyVSEnemy(&enemy->m_Judge_enemy, &enemy->m_EnemyMyColision, &enemy2->m_Judge_enemy, &enemy2->m_EnemyMyColision);
+
+					}
+				}
+			}
+		}
+
+		// ?????Z?????????
+
+		for (int i = 0; i < MAX_GAMEOBJ; i++)
+		{
+			enemy = CEnemy::Get_Enemy(i);
+			if (enemy)
+			{
+				// ?W???b?W?G?l?~?[???
+				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz - 1)
+					m_Judge_enemy.HitBottom = true;
+
+				// ?W???b?W?G?l?~?[???
+				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz + 1)
+					m_Judge_enemy.HitTop = true;
+
+				// ?W???b?W?G?l?~?[??E
+				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz)
+					m_Judge_enemy.HitRight = true;
+
+				// ?W???b?W?G?l?~?[???
+				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz)
+					m_Judge_enemy.HitLeft = true;
+
+				// ?W???b?W?G?l?~?[?????
+				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz - 1)
+					m_Judge_enemy.HitTopLeft = true;
+
+				// ?W???b?W?G?l?~?[?????
+				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz + 1)
+					m_Judge_enemy.HitBottomLeft = true;
+
+				// ?W???b?W?G?l?~?[??E??    
+				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz + 1)
+					m_Judge_enemy.HitBottomRight = true;
+
+				// ?W???b?W?G?l?~?[??E??
+				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz - 1)
+					m_Judge_enemy.HitTopRight = true;
+
+			}
+		}
 		// 通路での斜め攻撃防止
 		if (CMap::Map_GetData(m_Mapz, m_Mapx).type != 2 || !m_Judge_enemy.Hitnaname)
 		{
@@ -306,43 +370,47 @@ void CEnemy_Srime::Enemy_AI(void)
 					m_Goalz = m_Mapz - 1;
 					m_Goalx = m_Mapx;
 				}
-				else// 正面に壁があった場合右か左へ(後ろには戻らない基本行き止まりはないので)
+				// 左へ
+				else if (!m_Judge_enemy.HitLeft)
 				{
-					// 左へ
-					if (CMap::Map_GetData(m_Mapz, m_Mapx - 1).type == 2)
-					{
-						m_Goalz = m_Mapz;
-						m_Goalx = m_Mapx - 1;
-					}
-					else// 右へ
-					{
-						m_Goalz = m_Mapz;
-						m_Goalx = m_Mapx + 1;
-					}
+					m_Goalz = m_Mapz;
+					m_Goalx = m_Mapx - 1;
+				}
+				else if (!m_Judge_enemy.HitRight)// 右へ
+				{
+					m_Goalz = m_Mapz;
+					m_Goalx = m_Mapx + 1;
+				}
+				else if (!m_Judge_enemy.HitBottom)
+				{
+					m_Goalz = m_Mapz - 1;
+					m_Goalx = m_Mapx;
 				}
 			}
 
 			// 右に進んでる場合
 			if (m_Angle == 1.6f)
 			{
-				if (!m_Judge_enemy.HitRight)
+				if (!m_Judge_enemy.HitRight)// 右へ
 				{
 					m_Goalz = m_Mapz;
 					m_Goalx = m_Mapx + 1;
 				}
-				else// 正面に壁があった場合右か左へ(後ろには戻らない基本行き止まりはないので)
+				// 
+				else if (!m_Judge_enemy.HitTop)
 				{
-					// 上へ
-					if (CMap::Map_GetData(m_Mapz - 1, m_Mapx).type == 2)
-					{
-						m_Goalz = m_Mapz - 1;
-						m_Goalx = m_Mapx;
-					}
-					else// 下へ
-					{
-						m_Goalz = m_Mapz + 1;
-						m_Goalx = m_Mapx;
-					}
+					m_Goalz = m_Mapz - 1;
+					m_Goalx = m_Mapx;
+				}
+				else if (!m_Judge_enemy.HitBottom)// 右へ
+				{
+					m_Goalz = m_Mapz + 1;
+					m_Goalx = m_Mapx;
+				}
+				else if (!m_Judge_enemy.HitLeft)
+				{
+					m_Goalz = m_Mapz;
+					m_Goalx = m_Mapx - 1;
 				}
 			}
 
@@ -354,43 +422,47 @@ void CEnemy_Srime::Enemy_AI(void)
 					m_Goalz = m_Mapz + 1;
 					m_Goalx = m_Mapx;
 				}
-				else// 正面に壁があった場合右か左へ(後ろには戻らない基本行き止まりはないので)
+				// 左へ
+				else if (!m_Judge_enemy.HitRight)
 				{
-					// 右へ
-					if (CMap::Map_GetData(m_Mapz, m_Mapx + 1).type == 2)
-					{
-						m_Goalz = m_Mapz;
-						m_Goalx = m_Mapx + 1;
-					}
-					else// 左へ
-					{
-						m_Goalz = m_Mapz;
-						m_Goalx = m_Mapx - 1;
-					}
+					m_Goalz = m_Mapz;
+					m_Goalx = m_Mapx + 1;
+				}
+				else if (!m_Judge_enemy.HitLeft)// 右へ
+				{
+					m_Goalz = m_Mapz;
+					m_Goalx = m_Mapx - 1;
+				}
+				else if (!m_Judge_enemy.HitTop)
+				{
+					m_Goalz = m_Mapz - 1;
+					m_Goalx = m_Mapx;
 				}
 			}
 
 			// 左に進んでる場合
 			if (m_Angle == 4.8f)
 			{
-				if (!m_Judge_enemy.HitLeft)
+				if (!m_Judge_enemy.HitLeft)// 右へ
 				{
 					m_Goalz = m_Mapz;
 					m_Goalx = m_Mapx - 1;
 				}
-				else// 正面に壁があった場合右か左へ(後ろには戻らない基本行き止まりはないので)
+				// 左へ
+				else if (!m_Judge_enemy.HitBottom)
 				{
-					// 下へ
-					if (CMap::Map_GetData(m_Mapz + 1, m_Mapx).type == 2)
-					{
-						m_Goalz = m_Mapz + 1;
-						m_Goalx = m_Mapx;
-					}
-					else// 上へ
-					{
-						m_Goalz = m_Mapz - 1;
-						m_Goalx = m_Mapx;
-					}
+					m_Goalz = m_Mapz + 1;
+					m_Goalx = m_Mapx;
+				}
+				else if (!m_Judge_enemy.HitTop)// 右へ
+				{
+					m_Goalz = m_Mapz - 1;
+					m_Goalx = m_Mapx;
+				}
+				else if (!m_Judge_enemy.HitRight)
+				{
+					m_Goalz = m_Mapz;
+					m_Goalx = m_Mapx + 1;
 				}
 			}
 		}
@@ -399,44 +471,21 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 上移動
 		//===================================================
-		if (!m_Judge_enemy.HitTop)
+		if (m_Goalz < m_Mapz && m_Goalx == m_Mapx)
 		{
-			if (m_Goalz < m_Mapz && m_Goalx == m_Mapx)
+			if (!m_Judge_enemy.HitTop)
 			{
-				m_Angle = 0.0f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position += m_Front * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapz -= 1;
-				//g_player.col.position = g_player.walkpos;
-
-				m_Position -= m_Front * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				walkf = 0;
-				vecenemy = m_Front;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_TopMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitTopLeft)
+			{
+				Enemy_TopLeftMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitTopRight)
+			{
+				Enemy_TopRightMoveCheck();
 				break;
 			}
 		}
@@ -444,50 +493,21 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 下移動
 		//===================================================
-		if (!m_Judge_enemy.HitBottom)
+		if (m_Goalz > m_Mapz && m_Goalx == m_Mapx)
 		{
-			if (m_Goalz > m_Mapz && m_Goalx == m_Mapx)
+			if (!m_Judge_enemy.HitBottom)
 			{
-				m_Angle = 3.2f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position -= m_Front * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapz += 1;
-
-				m_Position += m_Front * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				if (turbo)
-				{
-					walkf = 100;
-				}
-				else
-				{
-					walkf = 100 + WALK_COUNT - 4;
-				}
-				vecenemy = m_Front;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_BottomMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitBottomRight)
+			{
+				Enemy_BottomRightMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitBottomLeft)
+			{
+				Enemy_BottomLeftMoveCheck();
 				break;
 			}
 		}
@@ -495,43 +515,21 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 右移動
 		//===================================================
-		if (!m_Judge_enemy.HitRight)
+		if (m_Goalz == m_Mapz && m_Goalx > m_Mapx)
 		{
-			if (m_Goalz == m_Mapz && m_Goalx > m_Mapx)
+			if (!m_Judge_enemy.HitRight)
 			{
-				m_Angle = 1.6f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position += m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapx += 1;
-
-				m_Position -= m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				walkf= 0;
-				vecenemy = m_Right;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_RightMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitTopRight)
+			{
+				Enemy_TopRightMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitBottomRight)
+			{
+				Enemy_BottomRightMoveCheck();
 				break;
 			}
 		}
@@ -539,49 +537,21 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 左移動
 		//===================================================
-		if (!m_Judge_enemy.HitLeft)
+		if (m_Goalz == m_Mapz && m_Goalx < m_Mapx)
 		{
-			if (m_Goalz == m_Mapz && m_Goalx < m_Mapx)
+			if (!m_Judge_enemy.HitLeft)
 			{
-				m_Angle = 4.8f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position -= m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapx -= 1;
-
-				m_Position += m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-				if(turbo)
-				{
-					walkf = 100;
-				}
-				else
-				{
-					walkf = 100 + WALK_COUNT - 4;
-				}
-				vecenemy = m_Right;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_LeftMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitBottomLeft)
+			{
+				Enemy_BottomLeftMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitTopLeft)
+			{
+				Enemy_TopLeftMoveCheck();
 				break;
 			}
 		}
@@ -589,48 +559,21 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 左上移動
 		//===================================================
-		if (!m_Judge_enemy.HitTopLeft)
+		if (m_Goalz < m_Mapz && m_Goalx < m_Mapx)
 		{
-			if (m_Goalz < m_Mapz && m_Goalx < m_Mapx)
+			if (!m_Judge_enemy.HitTopLeft)
 			{
-				m_Angle = 5.6f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position += m_Front * 5.0f;
-				m_Position -= m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapz -= 1;
-				m_Mapx -= 1;
-
-				m_Position -= m_Front * 5.0f;
-				m_Position += m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				walkf= 56;
-				nanawalk = 0;
-				vecenemy = m_Front;
-				vec2enemy = m_Right;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_TopLeftMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitLeft)
+			{
+				Enemy_LeftMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitTop)
+			{
+				Enemy_TopMoveCheck();
 				break;
 			}
 		}
@@ -638,48 +581,21 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 左下移動
 		//===================================================
-		if (!m_Judge_enemy.HitBottomLeft)
+		if (m_Goalz > m_Mapz && m_Goalx < m_Mapx)
 		{
-			if (m_Goalz > m_Mapz && m_Goalx < m_Mapx)
+			if (!m_Judge_enemy.HitBottomLeft)
 			{
-				m_Angle = 4.0f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position -= m_Front * 5.0f;
-				m_Position -= m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapz += 1;
-				m_Mapx -= 1;
-
-				m_Position += m_Front * 5.0f;
-				m_Position += m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				walkf= 40;
-				nanawalk = 0;
-				vecenemy = m_Front;
-				vec2enemy = m_Right;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_BottomLeftMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitBottom)
+			{
+				Enemy_BottomMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitLeft)
+			{
+				Enemy_LeftMoveCheck();
 				break;
 			}
 		}
@@ -687,48 +603,21 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 右下移動
 		//===================================================
-		if (!m_Judge_enemy.HitBottomRight)
+		if (m_Goalz > m_Mapz && m_Goalx > m_Mapx)
 		{
-			if (m_Goalz > m_Mapz && m_Goalx > m_Mapx)
+			if (!m_Judge_enemy.HitBottomRight)
 			{
-				m_Angle = 2.4f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position -= m_Front * 5.0f;
-				m_Position += m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapz += 1;
-				m_Mapx += 1;
-
-				m_Position += m_Front * 5.0f;
-				m_Position -= m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				walkf= 30;
-				nanawalk = 0;
-				vecenemy = m_Front;
-				vec2enemy = m_Right;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_BottomRightMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitRight)
+			{
+				Enemy_RightMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitRight)
+			{
+				Enemy_RightMoveCheck();
 				break;
 			}
 		}
@@ -736,56 +625,32 @@ void CEnemy_Srime::Enemy_AI(void)
 		//===================================================
 		// 右上移動
 		//===================================================
-		if (!m_Judge_enemy.HitTopRight)
+		if (m_Goalz < m_Mapz && m_Goalx > m_Mapx)
 		{
-			if (m_Goalz < m_Mapz && m_Goalx > m_Mapx)
+			if (!m_Judge_enemy.HitTopRight)
 			{
-				m_Angle = 0.8f;
-
-				m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
-				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-				m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-				m_Position += m_Front * 5.0f;
-				m_Position += m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				// 当たり判定の設定
-				m_EnemyMyColision.position = m_Position;
-				m_Mapz -= 1;
-				m_Mapx += 1;
-
-				m_Position -= m_Front * 5.0f;
-				m_Position -= m_Right * 5.0f;
-
-				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-				m_mtxWorld *= m_mtxTranslation;
-
-				walkf= 24;
-				nanawalk = 0;
-				vecenemy = m_Front;
-				vec2enemy = m_Right;
-				enemyturn = ENEMY_MOVE;
-
-				if (turbo)
-				{
-					Enemy_TurboMove();
-				}
-				else
-				{
-					Enemy_Move();
-				}
+				Enemy_TopRightMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitTop)
+			{
+				Enemy_TopMoveCheck();
+				break;
+			}
+			else if (!m_Judge_enemy.HitRight)
+			{
+				Enemy_RightMoveCheck();
 				break;
 			}
 		}
+
+		enemyturn = ENEMY_MOVE_END;
+		break;
 		//===================================================
 		// 移動中
 		//===================================================
 	case ENEMY_MOVE:
-		if (turbo)
+		if (get_turbo)
 		{
 			Enemy_TurboMove();
 		}
@@ -1291,6 +1156,338 @@ void CEnemy_Srime::Enemy_TurborightbottomMove(void)
 
 		if (nanawalk == 5)
 			enemyturn = ENEMY_MOVE_END;
+	}
+}
+
+void CEnemy_Srime::Enemy_LeftMoveCheck(void)
+{
+	m_Angle = 4.8f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position -= m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapx -= 1;
+
+	m_Position += m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	if (get_turbo)
+	{
+		walkf = 100;
+	}
+	else
+	{
+		walkf = 100 + WALK_COUNT - 4;
+	}
+	vecenemy = m_Right;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
+	}
+}
+
+void CEnemy_Srime::Enemy_RightMoveCheck(void)
+{
+	m_Angle = 1.6f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position += m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapx += 1;
+
+	m_Position -= m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	walkf = 0;
+	vecenemy = m_Right;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
+	}
+}
+
+void CEnemy_Srime::Enemy_BottomMoveCheck(void)
+{
+	m_Angle = 3.2f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position -= m_Front * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapz += 1;
+
+	m_Position += m_Front * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	if (get_turbo)
+	{
+		walkf = 100;
+	}
+	else
+	{
+		walkf = 100 + WALK_COUNT - 4;
+	}
+	vecenemy = m_Front;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
+	}
+}
+
+void CEnemy_Srime::Enemy_TopMoveCheck(void)
+{
+
+	m_Angle = 0.0f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position += m_Front * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapz -= 1;
+	//g_player.col.position = g_player.walkpos;
+
+	m_Position -= m_Front * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	walkf = 0;
+	vecenemy = m_Front;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
+	}
+
+}
+
+void CEnemy_Srime::Enemy_TopLeftMoveCheck(void)
+{
+	m_Angle = 5.6f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position += m_Front * 5.0f;
+	m_Position -= m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapz -= 1;
+	m_Mapx -= 1;
+
+	m_Position -= m_Front * 5.0f;
+	m_Position += m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	walkf = 56;
+	nanawalk = 0;
+	vecenemy = m_Front;
+	vec2enemy = m_Right;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
+	}
+}
+
+void CEnemy_Srime::Enemy_TopRightMoveCheck(void)
+{
+	m_Angle = 0.8f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position += m_Front * 5.0f;
+	m_Position += m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapz -= 1;
+	m_Mapx += 1;
+
+	m_Position -= m_Front * 5.0f;
+	m_Position -= m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	walkf = 24;
+	nanawalk = 0;
+	vecenemy = m_Front;
+	vec2enemy = m_Right;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
+	}
+}
+
+void CEnemy_Srime::Enemy_BottomLeftMoveCheck(void)
+{
+	m_Angle = 4.0f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position -= m_Front * 5.0f;
+	m_Position -= m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapz += 1;
+	m_Mapx -= 1;
+
+	m_Position += m_Front * 5.0f;
+	m_Position += m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	walkf = 40;
+	nanawalk = 0;
+	vecenemy = m_Front;
+	vec2enemy = m_Right;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
+	}
+}
+void CEnemy_Srime::Enemy_BottomRightMoveCheck(void)
+{
+	m_Angle = 2.4f;
+
+	m_Rotation = D3DXVECTOR3(0, m_Angle, 0);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+	m_Position -= m_Front * 5.0f;
+	m_Position += m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	// 当たり判定の設定
+	m_EnemyMyColision.position = m_Position;
+	m_Mapz += 1;
+	m_Mapx += 1;
+
+	m_Position += m_Front * 5.0f;
+	m_Position -= m_Right * 5.0f;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+
+	walkf = 30;
+	nanawalk = 0;
+	vecenemy = m_Front;
+	vec2enemy = m_Right;
+	enemyturn = ENEMY_MOVE;
+
+	if (get_turbo)
+	{
+		Enemy_TurboMove();
+	}
+	else
+	{
+		Enemy_Move();
 	}
 }
 

@@ -457,7 +457,70 @@ void C3DObj::Collision_AnimeVSAnime(JUDGE *player_judge, Sphere *m_PlayerEnemyCo
 	}
 }
 
+void C3DObj::Collision_EnemyVSEnemy(JUDGE *enemy_judge, Sphere *m_EnemyMyColision, JUDGE *enemy2_judge, Sphere *m_Enemy2MyColision)
+{
 
+	if (Collision_IsHitStoS(m_Enemy2MyColision, m_EnemyMyColision))
+	{
+
+		if (Collision_IsHitTopStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitTop = true;
+			enemy2_judge->HitBottom = true;
+		}
+
+		if (Collision_IsHitBottomStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitBottom = true;
+			enemy2_judge->HitTop = true;
+		}
+
+		if (Collision_IsHitLeftStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitLeft = true;
+			enemy2_judge->HitRight = true;
+		}
+
+		if (Collision_IsHitRightStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitRight = true;
+			enemy2_judge->HitLeft = true;
+		}
+
+		// ??????
+		if (Collision_IsHitLeftTopStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitTopLeft = true;
+			enemy2_judge->HitBottomRight = true;
+			enemy_judge->Hitnaname = true;
+			enemy2_judge->Hitnaname = true;
+		}
+
+		if (Collision_IsHitLeftBottomStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitBottomLeft = true;
+			enemy2_judge->HitTopRight = true;
+			enemy_judge->Hitnaname = true;
+			enemy2_judge->Hitnaname = true;
+		}
+
+		if (Collision_IsHitRightTopStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitTopRight = true;
+			enemy2_judge->HitBottomLeft = true;
+			enemy_judge->Hitnaname = true;
+			enemy2_judge->Hitnaname = true;
+		}
+
+		if (Collision_IsHitRightBottomStoS(m_Enemy2MyColision, m_EnemyMyColision))
+		{
+			enemy_judge->HitBottomRight = true;
+			enemy2_judge->HitTopLeft = true;
+			enemy_judge->Hitnaname = true;
+			enemy2_judge->Hitnaname = true;
+		}
+	}
+}
 //=============================================================================
 // モデル描画  アニメーション有
 //=============================================================================
