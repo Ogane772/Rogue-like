@@ -8,6 +8,10 @@
 #define MAX_MAPWIDTH (100)
 #define MAX_MAPHEIGHT (100)
 #define MAX_MAP (3)	//最上階
+#define MAP_FLOOR_CENTER (25)	// フロアを全体の真ん中に持ってくための調整
+
+#define MAP_AXIS_MAX (4)		// 各軸の最大フロア数
+
 //#define GroupWidth  (3)		// 横の短径グループ数
 //#define GroupHeight (2)		// 縦の短径グループ数
 
@@ -53,6 +57,7 @@ public:
 	static void Map_Initialize(void);
 	// テクスチャ番号、横の長さ、縦の長さ、横四角数、縦四角数  ,ポジション
 	static void Map_Create(void);
+	static void Map_CreateOneFloor(void);	// 一部屋デバッグ用
 	static void Map_Finalize(void);
 	static void Map_Draw(void);
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
@@ -62,6 +67,10 @@ private:
 	//static int g_TexWood2;
 	static void MapItemSet(void);//マップにアイテム配置処理
 	static void MapWeponSet(void);//マップに装備配置処理
+	static void MapPlayerSet(void);//マップにプレイヤー配置処理
+	static void MapEnemySet(void);//マップにエネミー配置処理
+	static void MapLadderSet(void);//マップに階段配置処理
+
 	static MAP **g_map, *base_g_map;
 
 	static int GroupWidth;

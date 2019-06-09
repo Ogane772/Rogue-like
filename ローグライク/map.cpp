@@ -57,27 +57,48 @@ void CMap::Map_Initialize(void)
 			
 		}
 	}*/
-
-	for (i = 0; i < MAX_MAPHEIGHT; i++)
+	for (int z = 0; z < MAX_MAPHEIGHT; z++)
 	{
 
-		for (j = 0; j < MAX_MAPWIDTH; j++)
+		for (int x = 0; x < MAX_MAPWIDTH; x++)
 		{
-			g_map[i][j].type = 0;		// 足場無し
-			g_map[i][j].have = NOTHAVE;
-			g_map[i][j].use = false;
-			g_map[i][j].Cxwall = false;
-			g_map[i][j].Czwall = false;
-			g_map[i][j].Cxtopwall = false;
-			g_map[i][j].Cxbotwall = false;
-			g_map[i][j].CzRwall = false;
-			g_map[i][j].CzLwall = false;
-			g_map[i][j].pos = D3DXVECTOR3(-247.5f, 0.0f, 247.5f);
-			g_map[i][j].pos.x += j * 5.0f;
-			g_map[i][j].pos.z += -i * 5.0f;
-			g_map[i][j].alpha = 0;
+			g_map[z][x].type = 0;		// 足場無し
+			g_map[z][x].have = NOTHAVE;
+			g_map[z][x].use = false;
+			g_map[z][x].Cxwall = false;
+			g_map[z][x].Czwall = false;
+			g_map[z][x].Cxtopwall = false;
+			g_map[z][x].Cxbotwall = false;
+			g_map[z][x].CzRwall = false;
+			g_map[z][x].CzLwall = false;
+			g_map[z][x].pos = D3DXVECTOR3(-247.5f, 0.0f, 247.5f);
+			g_map[z][x].pos.x += x * 5.0f;
+			g_map[z][x].pos.z += -z * 5.0f;
 			//g_map[z][x].Group = x / GroupWidth;
-			g_map[i][j].Group = (i / (MAX_MAPHEIGHT / GroupHeight) * GroupWidth) + (j / (MAX_MAPWIDTH / GroupWidth) + 1);	// グループ付け
+			g_map[z][x].Group = 0;	// グループ付け
+
+		}
+	}
+	for (i = 0; i < MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight; i++)
+	{
+
+		for (j = 0; j < MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth; j++)
+		{
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].type = 0;		// 足場無し
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].have = NOTHAVE;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].use = false;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].Cxwall = false;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].Czwall = false;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].Cxtopwall = false;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].Cxbotwall = false;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].CzRwall = false;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].CzLwall = false;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].pos = D3DXVECTOR3(-247.5f, 0.0f, 247.5f);
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].pos.x += j * 5.0f;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].pos.z += -i * 5.0f;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].alpha = 0;
+			//g_map[z][x].Group = x / GroupWidth;
+			g_map[i + (MAX_MAPHEIGHT - MAX_MAPHEIGHT / MAP_AXIS_MAX * GroupHeight) / 2][j + (MAX_MAPWIDTH - MAX_MAPWIDTH / MAP_AXIS_MAX * GroupWidth) / 2].Group = (i / (MAX_MAPWIDTH / MAP_AXIS_MAX) * GroupWidth) + (j / (MAX_MAPWIDTH / MAP_AXIS_MAX) + 1);	// グループ付け
 
 		}
 	}
@@ -92,16 +113,17 @@ void CMap::Map_Create(void)
 	//===================================================
 	std::random_device rd;
 	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
 	int i;
 	int h, w;
 	for (i = 0; i < GroupHeight * GroupWidth; i++)
 	{
 		
 		// フロア始点z軸
-		int z = mt() % (MAX_MAPHEIGHT / GroupHeight * (i / GroupWidth + 1));
+		int z = mt() % (MAX_MAPHEIGHT / MAP_AXIS_MAX * (i / GroupWidth + 1));
 		// 乱数のやり直しチェック
-		if (z <= 4 + MAX_MAPHEIGHT / GroupHeight * (i / GroupWidth) ||
-			z >= MAX_MAPHEIGHT / GroupHeight * (i / GroupWidth + 1) - 10)
+		if (z <= 4 + MAX_MAPHEIGHT / MAP_AXIS_MAX * (i / GroupWidth) ||
+			z >= MAX_MAPHEIGHT / MAP_AXIS_MAX * (i / GroupWidth + 1) - 5)
 		{
 			i--;
 			continue;
@@ -111,16 +133,23 @@ void CMap::Map_Create(void)
 
 			// フロア始点x軸 
 			// ミス
-			int x = mt() % (MAX_MAPWIDTH / GroupWidth * (i % GroupWidth + 1));
+			int x = mt() % (MAX_MAPWIDTH / MAP_AXIS_MAX * (i % GroupWidth + 1));
 			// 乱数のやり直しチェック
-			if (x <= 4 + (MAX_MAPWIDTH / GroupWidth * (i % GroupWidth)) ||
-				x >= MAX_MAPWIDTH / GroupWidth * (i % GroupWidth + 1) - 10)
+			if (x <= 4 + (MAX_MAPWIDTH / MAP_AXIS_MAX * (i % GroupWidth)) ||
+				x >= MAX_MAPWIDTH / MAP_AXIS_MAX * (i % GroupWidth + 1) - 5)
 			{
 				i--;
 				continue;
 			}
 			else
 			{
+				// 軸ごとのフロア数によってフロアの位置を調整
+				if(GroupHeight < MAP_AXIS_MAX)
+					z += MAX_MAPHEIGHT / MAP_AXIS_MAX / (GroupHeight - 1);
+				if (GroupWidth < MAP_AXIS_MAX)
+					x += MAX_MAPWIDTH / MAP_AXIS_MAX / (GroupWidth - 1);
+
+
 				// フロアの縦の長さ4～8
 				int height = mt() % 5 + 4 + z;
 
@@ -1217,16 +1246,7 @@ void CMap::Map_Create(void)
 	//===================================================
 	// 梯子を生成
 	//===================================================
-	int lposX;
-	int lposZ;
-	std::uniform_int_distribution<int> random(0, 99);
-	do
-	{
-		lposX = random(mt);
-		lposZ = random(mt);
-	} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-	g_map[lposZ][lposX].have = HAVELADDER;
-	CObject::Create(CObject::TYPE_LADDER, lposX, lposZ);
+	MapLadderSet();
 	//===================================================
 	// アイテムを生成
 	//===================================================
@@ -1238,35 +1258,13 @@ void CMap::Map_Create(void)
 	//===================================================
 	// プレイヤーの初期位置を決める
 	//===================================================
-	int pposX;
-	int pposZ;
-	do
-	{
-		pposX = random(mt);
-		pposZ = random(mt);
-	} while (g_map[pposZ][pposX].type != 1 && g_map[pposZ][pposX].have == NOTHAVE);
-	g_map[pposZ][pposX].have = HAVEPLAYER;
-	CPlayer::Player_SetPos(pposZ, pposX);
-
+	MapPlayerSet();
 	//===================================================
 	// 敵を生成 GroupWidth * GroupHeight - 0～2体生成
 	//===================================================
-	// 敵生成数の誤差
-	int setenemy = 5;
-	for (int i = 0; i < setenemy; i++)
-	//for (int i = 0; i < 1; i++)	// デバッグ用
-	{
-		int eposX;
-		int eposZ;
-		do
-		{
-			eposX = mt() % MAX_MAPWIDTH;
-			eposZ = mt() % MAX_MAPHEIGHT;
-		} while (g_map[eposZ][eposX].type != 1 && g_map[eposZ][eposX].have == NOTHAVE);
-		g_map[eposZ][eposX].have = HAVEENEMY;
-		CEnemy::Create(CEnemy::TYPE_SRIME,eposX, eposZ);
-	}
-	g_map[pposZ][pposX].have = NOTHAVE;
+	MapEnemySet();
+
+	//g_map[pposZ][pposX].have = NOTHAVE;
 }
 
 void CMap::Map_Finalize(void)
@@ -1350,4 +1348,165 @@ void CMap::MapWeponSet(void)
 		g_map[lposZ][lposX].have = HAVEWEPON;
 		CWepon::Create(randomwepon(mt), lposX, lposZ);
 	}
+}
+
+void CMap::Map_CreateOneFloor(void)
+{
+	for (int z = 45; z < 55; z++)
+	{
+
+		for (int x = 45; x < 55; x++)
+		{
+			g_map[z][x].type = 1;	
+			g_map[z][x].use = false;
+	
+		}
+
+
+	}
+
+
+	for (int z = 45; z < 55; z++)
+	{
+
+		for (int x = 45; x < 55; x++)
+		{
+			//===================================================
+			// フロア
+			//===================================================
+			if (g_map[z][x].type == 1)
+			{
+
+				//===================================================
+				// フロア上壁作成
+				//===================================================
+				if (!g_map[z][x].Cxwall&&g_map[z - 1][x].type == 0)
+				{
+					int Xwallwidth = 0;
+					for (int Xwall = 0; g_map[z][x + Xwall].type == 1; Xwall++)
+					{
+						g_map[z][x + Xwall].Cxwall = true;
+						Xwallwidth++;
+					}
+					//MeshWall_Create(g_TexWood, 50, 10, 50, 10, D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));		//上壁
+					//						    1マス*5											// -220
+					CWall::MeshWall_Create(CTexture::TEX_WOOD, Xwallwidth * 5, 10, Xwallwidth * 5, 10, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z][x + Xwallwidth - 1].pos.x) / 2, 0.0f, g_map[z][x].pos.z + 2.5f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));		//上壁
+				}
+
+				//===================================================
+				// フロア下壁作成
+				//===================================================
+				if (!g_map[z][x].Cxwall&&g_map[z + 1][x].type == 0)
+				{
+					int Xwallwidth = 0;
+					for (int Xwall = 0; g_map[z][x + Xwall].type == 1; Xwall++)
+					{
+						g_map[z][x + Xwall].Cxwall = true;
+						Xwallwidth++;
+					}
+					//MeshWall_Create(g_TexWood, 50, 10, 50, 10, D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));		//下壁
+					//						    1マス*5											// -220
+					CWall::MeshWall_Create(CTexture::TEX_WOOD, Xwallwidth * 5, 10, Xwallwidth * 5, 10, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z][x + Xwallwidth - 1].pos.x) / 2, 0.0f, g_map[z][x].pos.z - 2.5f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));		//下壁
+				}
+
+				//===================================================
+				// フロア左壁作成
+				//===================================================
+				if (!g_map[z][x].Czwall&&g_map[z][x - 1].type == 0)
+				{
+					int Zwallwidth = 0;
+					for (int Zwall = 0; g_map[z + Zwall][x].type == 1; Zwall++)
+					{
+						g_map[z + Zwall][x].Czwall = true;
+						Zwallwidth++;
+					}
+					//MeshWall_Create(g_TexWood, 50, 10, 50, 10, D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));		//左壁
+					//						    1マス*5											// -220
+					CWall::MeshWall_Create(CTexture::TEX_WOOD, Zwallwidth * 5, 10, Zwallwidth * 5, 10, D3DXVECTOR3(g_map[z][x].pos.x - 2.5f, 0.0f, (g_map[z][x].pos.z + g_map[z + Zwallwidth - 1][x].pos.z) / 2), D3DXVECTOR3(1.0f, 0.0f, 0.0f));		//左壁
+				}
+
+				//===================================================
+				// フロア右壁作成
+				//===================================================
+				if (!g_map[z][x].Czwall&&g_map[z][x + 1].type == 0)
+				{
+					int Zwallwidth = 0;
+					for (int Zwall = 0; g_map[z + Zwall][x].type == 1; Zwall++)
+					{
+						g_map[z + Zwall][x].Czwall = true;
+						Zwallwidth++;
+					}
+					//MeshWall_Create(g_TexWood, 50, 10, 50, 10, D3DXVECTOR3(0.0f, 0.0f, 25.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));		//右壁
+					//						    1マス*5											// -220
+					CWall::MeshWall_Create(CTexture::TEX_WOOD, Zwallwidth * 5, 10, Zwallwidth * 5, 10, D3DXVECTOR3(g_map[z][x].pos.x + 2.5f, 0.0f, (g_map[z][x].pos.z + g_map[z + Zwallwidth - 1][x].pos.z) / 2), D3DXVECTOR3(-1.0f, 0.0f, 0.0f));		//右壁
+				}
+			}
+
+		}
+
+
+	}
+	
+	MapLadderSet();
+	MapItemSet();
+	MapWeponSet();
+	//MapEnemySet();
+	MapPlayerSet();
+
+}
+
+void CMap::MapPlayerSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+
+	int pposX;
+	int pposZ;
+	std::uniform_int_distribution<int> random(0, 99);
+	do
+	{
+		pposX = random(mt);
+		pposZ = random(mt);
+	} while (g_map[pposZ][pposX].type != 1 && g_map[pposZ][pposX].have == NOTHAVE);
+	g_map[pposZ][pposX].have = HAVEPLAYER;
+	CPlayer::Player_SetPos(pposZ, pposX);
+}
+
+void CMap::MapEnemySet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
+	// 敵生成数の誤差
+	int setenemy = 5;
+	for (int i = 0; i < setenemy; i++)
+		//for (int i = 0; i < 1; i++)	// デバッグ用
+	{
+		int eposX;
+		int eposZ;
+		do
+		{
+			eposX = mt() % MAX_MAPWIDTH;
+			eposZ = mt() % MAX_MAPHEIGHT;
+		} while (g_map[eposZ][eposX].type != 1 && g_map[eposZ][eposX].have == NOTHAVE);
+		g_map[eposZ][eposX].have = HAVEENEMY;
+		CEnemy::Create(CEnemy::TYPE_SRIME, eposX, eposZ);
+	}
+}
+
+void CMap::MapLadderSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+
+	int lposX;
+	int lposZ;
+	std::uniform_int_distribution<int> random(0, 99);
+	do
+	{
+		lposX = random(mt);
+		lposZ = random(mt);
+	} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
+	g_map[lposZ][lposX].have = HAVELADDER;
+	CObject::Create(CObject::TYPE_LADDER, lposX, lposZ);
 }
