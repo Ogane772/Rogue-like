@@ -69,8 +69,8 @@ void Game_Initialize(void)
 	CBilboard::Shadow_Init();
 	CMeshField::MeshField_Init();
 	CWall::MeshWall_Init();
+	CUserinterface::UI_NameInitialize();
 	Exp_Init();
-	CUserinterface::UI_Initialize();
 	//Number_Initialize(3);
 	CMap::Map_Initialize();
 	CMeshField::MeshField_Create(CTexture::TEX_KUSA, 500, 500, 100, 100, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1–Ê  = 5.0f * 5.0f

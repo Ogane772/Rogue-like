@@ -207,6 +207,18 @@
     <ClCompile Include="CWepon_Ax.cpp">
       <Filter>ソース ファイル\装備</Filter>
     </ClCompile>
+    <ClCompile Include="title_menu.cpp">
+      <Filter>ソース ファイル\ゲームシーン</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery.cpp">
+      <Filter>ソース ファイル\ゲームシーン</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject_Kaki.cpp">
+      <Filter>ソース ファイル\オブジェクト</Filter>
+    </ClCompile>
+    <ClCompile Include="save_load.cpp">
+      <Filter>ソース ファイル\コモン</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C2DObj.h">
@@ -334,6 +346,18 @@
     </ClInclude>
     <ClInclude Include="CWepon_Ax.h">
       <Filter>ヘッダー ファイル\装備</Filter>
+    </ClInclude>
+    <ClInclude Include="title_menu.h">
+      <Filter>ヘッダー ファイル\ゲームシーン</Filter>
+    </ClInclude>
+    <ClInclude Include="gallery.h">
+      <Filter>ヘッダー ファイル\ゲームシーン</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject_Kaki.h">
+      <Filter>ヘッダー ファイル\オブジェクト</Filter>
+    </ClInclude>
+    <ClInclude Include="save_load.h">
+      <Filter>ヘッダー ファイル\コモン</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

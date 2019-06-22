@@ -74,6 +74,12 @@ void Exp_Set(int exp_number, float x, float y, float z, float size, float rotati
 	case HIT:
 		Exp_Create(x, y, z, size, rotation, CTexture::TEX_HIT,4, 4, 960 / 4, 240, 4);
 		break;
+	case HIT_WEEK:
+		Exp_Create(x, y, z, size, rotation, CTexture::TEX_HIT_WEEK, 4, 4, 960 / 4, 240, 4);
+		break;
+	case HIT_RESIST:
+		Exp_Create(x, y, z, size, rotation, CTexture::TEX_HIT_RESIST, 4, 4, 960 / 4, 240, 4);
+		break;
 	}
 }
 

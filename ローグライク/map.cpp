@@ -27,10 +27,10 @@ void CMap::Map_Initialize(void)
 	//g_TexWood2 = -1;
 	if (CStage::Stage_GetLevel() == 1)
 	{
-		GroupWidth  = 2;
+		GroupWidth = 2;
 		GroupHeight = 2;
 	}
-	
+
 	if (CStage::Stage_GetLevel() == 2)
 	{
 		GroupWidth = 3;
@@ -49,16 +49,16 @@ void CMap::Map_Initialize(void)
 	base_g_map = (MAP*)malloc(sizeof(MAP) * MAX_MAPHEIGHT * MAX_MAPWIDTH);
 
 	DeletePassageNum = GroupHeight * GroupWidth / 3;
-	for (i = 0; i < MAX_MAPHEIGHT; i++) 
+	for (i = 0; i < MAX_MAPHEIGHT; i++)
 	{
 		g_map[i] = base_g_map + i * MAX_MAPWIDTH;
 	}
 
 	/*for (int i = 0; i < MAX_MAPHEIGHT; i++) {
-		for (int j = 0; j < MAX_MAPWIDTH; j++) {
-			g_map[i][j] = i * MAX_MAPWIDTH + j;
-			
-		}
+	for (int j = 0; j < MAX_MAPWIDTH; j++) {
+	g_map[i][j] = i * MAX_MAPWIDTH + j;
+
+	}
 	}*/
 	for (int z = 0; z < MAX_MAPHEIGHT; z++)
 	{
@@ -77,7 +77,7 @@ void CMap::Map_Initialize(void)
 			g_map[z][x].pos = D3DXVECTOR3(-247.5f, 0.0f, 247.5f);
 			g_map[z][x].pos.x += x * 5.0f;
 			g_map[z][x].pos.z += -z * 5.0f;
-			g_map[z][x].passageNum= 0;
+			g_map[z][x].passageNum = 0;
 			//g_map[z][x].Group = x / GroupWidth;
 			g_map[z][x].Group = 0;	// グループ付け
 
@@ -124,7 +124,7 @@ void CMap::Map_Create(void)
 	int h, w;
 	for (i = 0; i < GroupHeight * GroupWidth; i++)
 	{
-		
+
 
 		// フロア始点z軸
 		int z = mt() % (MAX_MAPHEIGHT / MAP_AXIS_MAX * (i / GroupWidth + 1));
@@ -151,14 +151,14 @@ void CMap::Map_Create(void)
 			else
 			{
 				// 軸ごとのフロア数によってフロアの位置を調整
-				if(GroupHeight < MAP_AXIS_MAX)
+				if (GroupHeight < MAP_AXIS_MAX)
 					z += MAX_MAPHEIGHT / MAP_AXIS_MAX / (GroupHeight - 1);
 				if (GroupWidth < MAP_AXIS_MAX)
 					x += MAX_MAPWIDTH / MAP_AXIS_MAX / (GroupWidth - 1);
 
 
 				// フロアの縦の長さ4～13
-				int height = floorsize(mt)+ z;
+				int height = floorsize(mt) + z;
 				floorsize(mt);
 				floorsize(mt);
 				floorsize(mt);
@@ -179,7 +179,7 @@ void CMap::Map_Create(void)
 
 					//while (x <= width)
 					// フロア作成
-					for(w = x;w <= width;w++)
+					for (w = x; w <= width; w++)
 					{
 						g_map[h][w].type = 1;
 						g_map[h][w].use = true;
@@ -192,7 +192,7 @@ void CMap::Map_Create(void)
 				if (i % GroupWidth == 0)
 				{
 					// 右と下に作成
-					if (i == 0)	
+					if (i == 0)
 					{
 						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
@@ -219,7 +219,7 @@ void CMap::Map_Create(void)
 					// 右と上に作成
 					else if (i + GroupWidth == GroupHeight * GroupWidth)
 					{
-						
+
 						int rightgate = (mt() % (height - z - 1)) + 1;
 						g_map[rightgate + z][width].type = 3;
 						g_map[rightgate + z][width].use = true;
@@ -263,7 +263,7 @@ void CMap::Map_Create(void)
 								// 通路を結合 
 								if (bottom < topgate + x)
 								{
-									for (int bond = topgate + x;bond != bottom;bond--)
+									for (int bond = topgate + x; bond != bottom; bond--)
 									{
 										g_map[path][bond].type = 2;
 										g_map[path][bond].use = true;
@@ -283,7 +283,7 @@ void CMap::Map_Create(void)
 							g_map[path][topgate + x].type = 2;
 							g_map[path][topgate + x].use = true;
 
-							
+
 						}
 
 
@@ -365,8 +365,8 @@ void CMap::Map_Create(void)
 							g_map[path][topgate + x].use = true;
 						}
 					}
-					
-					
+
+
 				}
 
 				if (i % GroupWidth == GroupWidth - 1)
@@ -437,7 +437,7 @@ void CMap::Map_Create(void)
 							g_map[leftgate + z][path].use = true;
 						}
 					}
-					else if (i == GroupHeight * GroupWidth - 1) 
+					else if (i == GroupHeight * GroupWidth - 1)
 					{
 						// 左と上に作成
 						int leftgate = (mt() % (height - z - 1)) + 1;
@@ -743,7 +743,7 @@ void CMap::Map_Create(void)
 							g_map[rightgate + z][path].use = true;
 						}
 					}
-					else if(i >(GroupHeight - 1) * GroupWidth)
+					else if (i >(GroupHeight - 1) * GroupWidth)
 					{
 						// 右と左と上に作成
 						int rightgate = (mt() % (height - z - 1)) + 1;
@@ -991,8 +991,8 @@ void CMap::Map_Create(void)
 						}
 					}
 				}
-			}	
-		}	
+			}
+		}
 	}
 	// 決めた足場に沿って壁を配置
 	//===================================================
@@ -1111,16 +1111,16 @@ void CMap::Map_CreateOneFloor(void)
 
 		for (int x = 47; x < 53; x++)
 		{
-			g_map[z][x].type = 1;	
+			g_map[z][x].type = 1;
 			g_map[z][x].use = false;
-	
+
 		}
 
 
 	}
 
 
-	
+
 	MapWallSet();
 	//MapLadderSet();
 	//MapItemSet();
@@ -1147,13 +1147,31 @@ void CMap::MapPlayerSet(void)
 	CPlayer::Player_SetPos(pposZ, pposX);
 }
 
+void CMap::WorpPlayerSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+
+	int pposX;
+	int pposZ;
+	std::uniform_int_distribution<int> random(0, 99);
+	do
+	{
+		pposX = random(mt);
+		pposZ = random(mt);
+	} while (g_map[pposZ][pposX].type != 1 && g_map[pposZ][pposX].have == NOTHAVE);
+	g_map[pposZ][pposX].have = HAVEPLAYER;
+	CPlayer::Player_SetWorpPos(pposZ, pposX);
+}
+
+
 void CMap::MapEnemySet(void)
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	// 敵生成数の誤差
-	int setenemy = 5;
+	int setenemy = 1;
 	for (int i = 0; i < setenemy; i++)
 		//for (int i = 0; i < 1; i++)	// デバッグ用
 	{
@@ -1417,7 +1435,7 @@ void CMap::Map_Create_B(void)
 	int h, w;
 
 
-	
+
 
 	g_deletepassage = (DELETEPASSAGE*)malloc(sizeof(DELETEPASSAGE) * (GroupHeight * GroupWidth) / 3);
 	for (i = 0; i < GroupHeight * GroupWidth; i++)
@@ -1933,7 +1951,7 @@ void CMap::Map_Create_B(void)
 						int bottomgate = (mt() % (width - x - 1)) + 1;
 						g_map[height][bottomgate + x].type = 3;
 						g_map[height][bottomgate + x].use = true;
-						g_map[height][bottomgate + x].passageNum = (GroupWidth + GroupWidth - 1) * (i / GroupWidth  + 1);
+						g_map[height][bottomgate + x].passageNum = (GroupWidth + GroupWidth - 1) * (i / GroupWidth + 1);
 
 						// 下通路の作成
 						for (int path = height + 1; g_map[path - 1][bottomgate + x].Group == i + 1; path++)
@@ -2415,7 +2433,7 @@ void CMap::MapdeletePassage(int passagenum)
 				g_map[z][x].type = 0;
 				g_map[z][x].use = false;
 			}
-				
+
 			if (g_map[z][x].passageNum == passagenum && g_map[z][x].type == 3)
 				g_map[z][x].type = 1;
 		}

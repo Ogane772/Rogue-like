@@ -63,15 +63,17 @@ public:
 	static void Map_CreateOneFloor(void);	// 一部屋デバッグ用
 	static void Map_Finalize(void);
 	static void Map_Draw(void);
+	static void MapPlayerSet(void);//マップにプレイヤー配置処理
+	static void WorpPlayerSet(void);//ワープ時のプレイヤー配置処理
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
 	static void Map_SetHaveData(int z, int x, HAVEMAP have) { g_map[z][x].have = have; }
-	static void Map_SetData(int z, int x,int alpha) { g_map[z][x].alpha = alpha; }
+	static void Map_SetData(int z, int x, int alpha) { g_map[z][x].alpha = alpha; }
 private:
 	//static int g_TexWood2;
 	static void MapWallSet(void);//マップに壁配置処理
 	static void MapItemSet(void);//マップにアイテム配置処理
 	static void MapWeponSet(void);//マップに装備配置処理
-	static void MapPlayerSet(void);//マップにプレイヤー配置処理
+	
 	static void MapEnemySet(void);//マップにエネミー配置処理
 	static void MapLadderSet(void);//マップに階段配置処理
 

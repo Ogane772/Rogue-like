@@ -16,6 +16,7 @@ public:
 	static void BilBoard_ChangeMapPos(float sizeX, float sizeY, D3DCOLOR color);
 
 	static void Shadow_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos);
+	static void Hukidasi_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos, int texture);
 	static void Shadow_Finalize(void);
 	//エフェクト用ビルボード
 	static void BillBoard_Exp_Draw(float x, float y, float z, int texture_index, int anime_pattan, float size, float rotation, int tx, int ty, int width_patan, int counter, int animetime);

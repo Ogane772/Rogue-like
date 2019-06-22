@@ -21,6 +21,8 @@
 #include "system_timer.h"
 #include "debug_font.h"
 #include "gamepad.h"
+#include "CObject.h"
+#include "CWepon.h"
 #include "fade.h"
 #include "sound.h"
 //#include "CGameObj.h"
@@ -32,7 +34,7 @@
 #include "userInterface.h"
 #include "CEnemy.h"
 #include "CCamera.h"
-
+#include "save_load.h"
 //=============================================================================
 //	定数定義
 //=============================================================================
@@ -257,7 +259,8 @@ bool Begin(HINSTANCE hInstance, HWND hWnd)
 	// フェードの初期化
 	Fade_Initialize();
 
-
+	//ロード
+	Load();
 
 	//	システムタイマーの初期化
 	SystemTimer_Initialize();
@@ -280,9 +283,12 @@ bool Begin(HINSTANCE hInstance, HWND hWnd)
 	// フレーム固定用計測時間
 	//g_StaticFrameTime = SystemTimer_GetTime();
 
+	//CSVの読み込み
+	CObject::ObjectDataInit();
+	CWepon::WeponDataInit();
+	CEnemy::EnemyDataInit();
 
-	C3DObj::InitModelLoad();
-
+	CUserinterface::UI_Initialize();
 											//CCamera::Camera_Create();				//	カメラ生成					//	地面生成																									//CMeshField_Cylinder::MeshField_Cylinder_Create(CTexture::TEX_FLORR, 10.0f, SYLINDERSIZE, 20, 1,true);	//	内カベ生成
 
 
@@ -382,6 +388,8 @@ void End(void)
 	// シーン終了処理
 	Scene_Finalize();
 
+	CUserinterface::UI_Finalize();
+
 	C3DObj::DeleteAll();			//	3Dオブジェクト全消去
 	CGameObj::DeleteAll2D();			//	2Dオブジェクト全消去
 	C3DObj::Model_Finalize();
@@ -395,7 +403,7 @@ void End(void)
 	// スプライトの開放
 	//Sprite_Finalize();
 	C2DObj::Sprite_Finalize();
-
+	DebugFont_Finalize();
 	// キーボード終了処理
 	Keyboard_Finalize();
 	//ゲームパッド終了処理
