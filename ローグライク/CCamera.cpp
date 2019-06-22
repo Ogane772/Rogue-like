@@ -115,8 +115,8 @@ void CCamera::Update(void)
 							// 攻撃時以外はカメラをプレイヤーに追従
 	if (getplayer->Get_PlayerTurn() != CPlayer::PLAYER_ACT)
 	{
-		m_At = (m_Front * m_AtLength) + getplayer->Get_Position();
-		m_CameraPos = getplayer->Get_Position();
+		m_At = (m_Front * m_AtLength) + D3DXVECTOR3(getplayer->Get_Position().x, 0.0f, getplayer->Get_Position().z);
+		m_CameraPos = D3DXVECTOR3(getplayer->Get_Position().x, 0.0f, getplayer->Get_Position().z);
 
 		if (!view)
 		{

@@ -12,7 +12,9 @@
 #define PLAYER_RECOVERY (100)				// 自然回復 = MAXHP / PLAYER_RECOVERY
 #define PLAYER_MAXHP (500)
 #define PLAYER_STR (6)
-#define PLAYER_HEAL (m_MaxHp / 5000)	//歩いたときの回復量
+#define PLAYER_HEAL (300)	//歩いたときの回復量
+#define PLAYER_HIGH_HEAL (100)	//ヒールフラグONの時の歩いたときの回復量
+#define PLAYER_RING_HEAL (15) //癒しの指輪の+値増加値
 #define WALK_COUNT (9) //ウォークカウント基礎値
 #define MAX_GOLD (9999)//最大のお金	
 #define MAX_ONAKA (100) //おなかの最大値
@@ -21,6 +23,15 @@
 #define ITEM_EFFECT_FRAME (45)//アイテムの効果発動フレーム
 #define MAX_ITEM (13)	//所持アイテム最大数
 #define MAX_WEPON (3)	//所持装備数
+//プレイヤーの向き
+#define UP_ANGLE (3.2f)
+#define LEFT_ANGLE (1.6f)
+#define DOWN_ANGLE (0.0f)
+#define RIGHT_ANGLE (4.8f)
+#define LEFT_TOP_ANGLE (2.4f)
+#define LEFT_DOWN_ANGLE (0.8f)
+#define RIGHT_TOP_ANGLE (4.0f)
+#define RIGHT_DOWN_ANGLE (5.6f)
 //0.25 19 
 //0.5 9
 class CPlayer :public C3DObj
@@ -28,7 +39,8 @@ class CPlayer :public C3DObj
 
 public:
 	typedef enum {
-		PLAYER_FIRST,			// 階を移動した時の最初の処理	
+		PLAYER_FIRST,			// 階を移動した時の最初の処理
+		PLAYER_WORPFIRST,			// ワープした時の最初の処理	
 		PLAYER_STANDBY,			// HPの回復などを行う
 		PLAYER_KEY_INPUT,		// 入力待ち
 		PLAYER_WINDOW,			// コマンドウィンドウを開いてるとき
@@ -39,12 +51,17 @@ public:
 		PLAYER_DESTROY,			// プレイヤーがやられる
 		PLAYER_ITEM_EFFECT,		// アイテム使用時
 		PLAYER_ITEM_WAIT,		// アイテム取得時の待機時間
+		PLAYER_TIME_WAIT,      // 入力不可のプレイヤー待機時間
+		PLAYER_CONDITION_HEAL_WAIT,// 状態異常回復の待機時間
+		PLAYER_SLEEP_WAIT,      // 睡眠状態の待機時間
+		PLAYER_WARP_WAIT,      // ワープ状態の待機時間
 		PLAYER_ITEM_ASIMOTO,	// アイテムを置いたとき
 		PLAYER_ACT,				// 行動中
 		PLAYER_ACT_END,			// 行動終了
 		PLAYER_MOVE,			// 移動中
 		PLAYER_MOVE_END,		// 移動終了
 		PLAYER_TURN_END,		// ターン終了
+		PLAYER_TURN_CONPLETE,		// 倍速鈍足時のターン終了
 		PLAYER_NONE
 	}PLAYERTURN;
 	typedef enum {
@@ -72,6 +89,7 @@ public:
 	typedef enum {
 		TIPS_WEPON,
 	}WEPONWINDOW;
+
 	//武器変数
 	typedef struct {
 		int wepon_str;
@@ -79,11 +97,14 @@ public:
 		int wepon_type;
 		int wepon_purasu_number;
 	}PLAYER_WEPON;
+
+
 	CPlayer();
 	~CPlayer();
 
 
 	static void Player_SetPos(int z, int x);		// 階層ごとにプレイヤーの初期位置を決める
+	static void Player_SetWorpPos(int z, int x);	// ワープ時のプレイヤー位置を決める
 	void Update(void);
 	void Draw(void);
 	void Finalize(void);	//	終了処理
@@ -96,6 +117,7 @@ public:
 	bool Damage(int str, float angle, int week_type);
 	void Player_OnakaDown(void); //おなかを減らす
 	int Get_PlayerOnaka(void) { return m_Onaka; }
+	bool Get_PlayerHealFlag(void) { return m_HealFlag; }
 	int Get_CursorNumber(void) { return m_CursorNumber; }
 	int Get_TimeCursorNumber(void) { return m_TimeCursorNumber; }
 	int Get_PlayerTurn(void) { return m_Turn; }
@@ -110,10 +132,15 @@ public:
 	bool Get_TurboMode(void) { return turbo; }
 	bool Get_ItemOn(void) { return m_ItemOn; }
 	bool Get_ItemTips(void) { return m_ItemTips; }
+	bool Get_NanameFlag(void) { return m_NanameFlag; }
 	bool Get_NextItemPage(void) { return m_NextItemPage; }
 	bool Get_DrawCheck(void) { return alive; }
+	bool Get_GekikaFlag(void) { return m_Gekika; }
+	bool Get_EnemyONFlag(void) { return m_EnemyOn; }
 	bool ExpGoldCheck(int exp, int gold);		// 獲得経験値とお金処理
+	
 	static C3DObj *Get_Player(void);
+	
 	// マップ二次元配列用
 
 	static bool goladder;	// 梯子
@@ -129,7 +156,9 @@ private:
 			def;
 	}Player_LvData;
 	void Initialize(void);	//	初期化
+	int CSV_PlayerLv_Load(Player_LvData* lvdata, const int num);//プレイヤーのレベルテーブル読み込み
 	void Player_First(void);
+	void Player_WorpIn(void);//ワープ時の代入
 	void Player_Standby(void);
 	void Player_KeyInput(void);
 	void Player_WindowMode(void);
@@ -182,10 +211,12 @@ private:
 	int m_Wait_frame;//フレーム待機時間
 	int m_Onaka;
 	int m_MaxOnaka;
+	int m_item_turncount;//持続するアイテムのターンカウント
 	int m_CursorNumber;//ウィンドウカーソル位置
 	int m_TimeCursorNumber;//アイテム選択時のウィンドウカーソル位置
 	int m_AllWeponStock;//装備をいくつ持ってるか格納
 	int m_Add_cursor;//もし2ページ目を開いてたら足す
+	int m_AutoHell;//自動回復力
 	static 	int m_Turn;
 	int m_DrawCount;
 	bool m_Wmode;//両手武器を持ってるときはtrue
@@ -197,8 +228,11 @@ private:
 	bool left_trigger = false;
 	bool right_on;//右スティック入力確認
 	bool m_DarkFlag;//暗闇の通路にいたらtrue
-
+	bool m_NanameFlag;//斜め移動モードの時true
+	bool m_HealFlag;//自動回復高速化フラグ
 	bool turbo;//高速化フラグ
+	bool m_Gekika;//相性激化フラグ
+	bool m_EnemyOn;//エネミー表示フラグ
 
 	static Sphere m_Colision;		// 当たり判定
 	

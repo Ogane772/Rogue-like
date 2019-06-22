@@ -245,6 +245,55 @@ void CBilboard::Shadow_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos)
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
+void CBilboard::Hukidasi_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos, int texture)
+{
+	// 減産合成
+	// アルファテストを使用
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	// アルファテスト合格値を設定
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, 50);
+	// 比較(しきい値 < α値)
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
+	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+	D3DXMATRIX mtxTranslation;
+	D3DXMATRIX mtxRotation;
+	// 
+	D3DXMatrixTranslation(&mtxTranslation, (pos.x - 3.5f * 0.5f) - 0.0f, 2.1f, pos.z - 3.5f * 0.5f);
+	D3DXMatrixRotationYawPitchRoll(&mtxRotation, 0.0f, D3DXToRadian(90), 0.0f);
+	mtxS = mtxRotation * mtxTranslation;
+
+
+
+	CGameObj::m_pD3DDevice->SetTransform(D3DTS_WORLD, &mtxS);
+	CGameObj::m_pD3DDevice->SetTexture(0, CTexture::Texture_GetTexture(texture));
+	CGameObj::m_pD3DDevice->SetFVF(FVF_VERTEX3D);
+	CGameObj::m_pD3DDevice->SetStreamSource(0, g_ShadowVertexBuf, 0, sizeof(Vertex3D));
+	CGameObj::m_pD3DDevice->SetIndices(g_ShadowIndexBuf);
+	CGameObj::m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
+	//CGameObj::m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, g_pVertexBuffer, sizeof(Vertex3D));
+
+
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	/*
+	// アルファテストを使用
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+
+	// アルファテストを使用
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	*/
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+}
+
 void CBilboard::Shadow_Finalize(void)
 {
 	if (g_ShadowIndexBuf)
@@ -276,10 +325,10 @@ void CBilboard::BillBoard_Exp_Draw(float x, float y, float z, int texture_index,
 	float v1 = (float)ty / h + ty2 / h;
 	Vertex3D b_pori[] = {
 		//正面
-		{ D3DXVECTOR3(-0.5f, 0.5f, -0.5f),  D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0,v0) },
-		{ D3DXVECTOR3(0.5f,  0.5f, -0.5f),  D3DCOLOR_RGBA(255, 255, 255, 255),  D3DXVECTOR2(u1,v0) },
-		{ D3DXVECTOR3(-0.5f, -0.5f, -0.5f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0,v1) },
-		{ D3DXVECTOR3(0.5f, -0.5f, -0.5f),  D3DCOLOR_RGBA(255, 255, 255, 255),  D3DXVECTOR2(u1,v1) },
+		{ D3DXVECTOR3(-0.5f, 0.5f, -0.0f),  D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0,v0) },
+		{ D3DXVECTOR3(0.5f,  0.5f, -0.0f),  D3DCOLOR_RGBA(255, 255, 255, 255),  D3DXVECTOR2(u1,v0) },
+		{ D3DXVECTOR3(-0.5f, -0.5f, -0.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0,v1) },
+		{ D3DXVECTOR3(0.5f, -0.5f, -0.0f),  D3DCOLOR_RGBA(255, 255, 255, 255),  D3DXVECTOR2(u1,v1) },
 	};
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);//Zテストを有効か無効か　あると絶対前に書く
@@ -300,6 +349,7 @@ void CBilboard::BillBoard_Exp_Draw(float x, float y, float z, int texture_index,
 	mtxView._41 = 0.0f;
 	mtxView._42 = 0.0f;
 	mtxView._43 = 0.0f;
+
 	D3DXMatrixInverse(&mtxInvV, NULL, &mtxView);
 
 	CGameObj::m_pD3DDevice->SetFVF(FVF_VERTEX3D);

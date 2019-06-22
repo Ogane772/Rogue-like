@@ -29,11 +29,7 @@ C3DObj::MaterialFileData C3DObj::NORMAL_MODEL_FILES[] = {
 };
 //	Žg‚¢‚½‚¢ƒAƒjƒƒ‚ƒfƒ‹‚Ì”‚¾‚¯‘‚­
 C3DObj::MaterialFileData2 C3DObj::ANIME_MODEL_FILES[] = {
-	{ "asset/anime_model/hewplayer_judge->x" },
-	{ "asset/anime_model/small_enemy.x" },
-	{ "asset/anime_model/middle_enemy.x" },
-	{ "asset/anime_model/special_enemy.x" },
-	{ "asset/anime_model/big_enemy.x" },
+	{ "asset/model/player.x" },
 };
 int C3DObj::MODEL_FILES_MAX = sizeof(C3DObj::NORMAL_MODEL_FILES) / sizeof(NORMAL_MODEL_FILES[0]);
 int C3DObj::ANIME_MODEL_FILES_MAX = sizeof(C3DObj::ANIME_MODEL_FILES) / sizeof(ANIME_MODEL_FILES[0]);
@@ -95,20 +91,13 @@ C3DObj::C3DObj(int type)
 //=============================================================================
 C3DObj::~C3DObj()
 {
-	DWORD i;
-	if (Thing.pSphereMeshMaterials)
+	
+	/*
+	if (anime_model.pFrameRoot)
 	{
-		//delete Thing.pSphereMeshMaterials;
-		for (i = 0; i < Thing.dwNumMaterials; i++)
-		{
-			delete[]Thing.pSphereMeshMaterials;
-		}
+		SkinMesh.cHierarchy.DestroyFrame(anime_model.pFrameRoot);
 	}
-	if (Thing.pFrameRoot)
-	{
-		SkinMesh.cHierarchy.DestroyFrame(Thing.pFrameRoot);
-	}
-
+	*/
 	/*if (Thing.pSphereMeshMaterials)
 	{
 	for (DWORD i = 0; i < Thing.dwNumMaterials; i++)
@@ -171,21 +160,21 @@ void C3DObj::DrawAll()
 		if (p3DObj[i])
 		{
 
-			if (!p3DObj[i]->Thing.pFrameRoot)
+			if (!p3DObj[i]->anime_model.pFrameRoot)
 			{
-				//if (VFCulling(&p3DObj[i]->m_Position))
-				//{
+				if (VFCulling(&p3DObj[i]->m_Position))
+				{
 					p3DObj[i]->Draw();
-			//	}
-			//	else
-			//	{
+				}
+				else
+				{
 					//‰æ–ÊŠO‚ÌŽž‚ÍƒeƒNƒXƒ`ƒƒ‚ðXV
-					//p3DObj[i]->SkinMesh.DrawFrame(m_pD3DDevice, p3DObj[i]->Thing_Normal_model.pFrameRoot, &p3DObj[i]->Thing, false);
-			//	}
+					//p3DObj[i]->SkinMesh.DrawFrame(m_pD3DDevice, p3DObj[i]->anime_model.pFrameRoot, &p3DObj[i]->anime_model, false);
+				}
 			}
 			else
 			{
-				if (VFCulling(&p3DObj[i]->Thing.vPosition))
+				if (VFCulling(&p3DObj[i]->m_Position))
 				{
 					p3DObj[i]->Draw();
 					//dc++;
@@ -193,7 +182,7 @@ void C3DObj::DrawAll()
 				else
 				{
 					//‰æ–ÊŠO‚ÌŽž‚ÍƒeƒNƒXƒ`ƒƒ‚ðXV
-					p3DObj[i]->SkinMesh.DrawFrame(m_pD3DDevice, p3DObj[i]->Thing.pFrameRoot, &p3DObj[i]->Thing, false);
+					p3DObj[i]->SkinMesh.DrawFrame(m_pD3DDevice, p3DObj[i]->anime_model.pFrameRoot, &p3DObj[i]->anime_model, false);
 				}
 			}
 		}
@@ -213,7 +202,7 @@ void C3DObj::DeleteAll()
 		if (p3DObj[i])
 		{
 			delete p3DObj[i];
-			//p3DObj[i] = NULL;
+			p3DObj[i] = NULL;
 		}
 	}
 }
@@ -282,6 +271,7 @@ HRESULT C3DObj::InitNormalModelLoad(NormalModelData *pNomalModel, LPSTR szXFileN
 		pNomalModel->pMaterials[i] = d3dxMaterials[i].MatD3D;
 		pNomalModel->pMaterials[i].Ambient = pNomalModel->pMaterials[i].Diffuse;
 		pNomalModel->pTextures[i] = NULL;
+
 		if (d3dxMaterials[i].pTextureFilename != NULL &&
 			lstrlen(d3dxMaterials[i].pTextureFilename) > 0)
 		{
@@ -293,6 +283,7 @@ HRESULT C3DObj::InitNormalModelLoad(NormalModelData *pNomalModel, LPSTR szXFileN
 			}
 		}
 	}
+
 	pD3DXMtrlBuffer->Release();
 
 	return S_OK;
@@ -313,19 +304,33 @@ void C3DObj::NormalModel_Finalize(NormalModelData *DeleteNormalModel)	//	ƒ‚ƒfƒ‹ƒ
 		//ƒIƒuƒWƒFƒNƒg‚ÌƒRƒs[‚ð‚µ‚Ä‚¢‚é‚¹‚¢‚ÅƒGƒ‰[‚ªo‚é‚Ì‚Å’¼Úƒ‚ƒfƒ‹‚ð“Ç‚Þ‚±‚Æ
 		if (DeleteNormalModel->pMesh != NULL)
 		{
-			//DeleteNormalModel->pMesh->Release();
-			//DeleteNormalModel->pMesh = NULL;
+			DeleteNormalModel->pMesh->Release();
+			DeleteNormalModel->pMesh = NULL;
+			delete DeleteNormalModel->pMesh;
 		}
 		if (DeleteNormalModel->pTextures[i] != NULL)
 		{
-			//delete[] DeleteNormalModel->pTextures[i];
+			DeleteNormalModel->pTextures[i]->Release();
+			delete[] DeleteNormalModel->pTextures;
 		}
-		if (DeleteNormalModel->pMaterials != NULL)
+  		if (DeleteNormalModel->pMaterials != NULL)
 		{
-			//delete DeleteNormalModel->pMaterials;
+			DeleteNormalModel->pMaterials = NULL;
+			delete DeleteNormalModel->pMaterials;
 		}
 	}
 }
+
+void C3DObj::AnimeModel_Finalize(THING *DeleteAnimeModel)
+{
+	SKIN_MESH *skinmesh = NULL;
+	skinmesh = new SKIN_MESH();
+	skinmesh->FreeAnim(DeleteAnimeModel->pFrameRoot);
+	skinmesh->Destroy(DeleteAnimeModel);
+	SAFE_RELEASE(DeleteAnimeModel->pAnimController);
+	delete skinmesh;
+}
+
 
 void C3DObj::PlayerVsWall(JUDGE *player_judge, Sphere *m_PlayerColision)
 {
@@ -524,7 +529,7 @@ void C3DObj::Collision_EnemyVSEnemy(JUDGE *enemy_judge, Sphere *m_EnemyMyColisio
 //=============================================================================
 // ƒ‚ƒfƒ‹•`‰æ  ƒAƒjƒ[ƒVƒ‡ƒ“—L
 //=============================================================================
-void C3DObj::DrawDX_Anime(D3DXMATRIX mtxWorld, int type, THING* pNomalModel)
+void C3DObj::DrawDX_Anime(D3DXMATRIX mtxWorld, THING* pNomalModel)
 {
 	//static float fAnimTimeHold = fAnimTime;
 	float fAnimTimeHold = fAnimTime;
@@ -532,8 +537,6 @@ void C3DObj::DrawDX_Anime(D3DXMATRIX mtxWorld, int type, THING* pNomalModel)
 	{
 		fAnimTime += 0.01f;
 	}
-
-	SKIN_MESH::UpdateSphere(m_pD3DDevice, pNomalModel);
 
 	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	//	m_pD3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
@@ -596,7 +599,7 @@ void C3DObj::DrawDX_Normal(D3DXMATRIX mtxWorld, NormalModelData * pNomalModel)
 
 THING* C3DObj::GetAnimeModel(void)
 {
-	return &Thing;
+	return &anime_model;
 }
 
 /*THING C3DObj::GetAnimeModel(int index)
@@ -619,13 +622,13 @@ void C3DObj::Animation_Change(int index, float speed)
 	{
 		TrackDesc.Speed = speed;//ƒ‚[ƒVƒ‡ƒ“ƒXƒs[ƒh
 								//Thing.pAnimController->SetTrackDesc(0, &TrackDesc);//ƒAƒjƒî•ñƒZƒbƒg
-		Thing.pAnimController->SetTrackPosition(0, 0);
-		Thing.pAnimController->SetTrackSpeed(0, TrackDesc.Speed);//ƒAƒjƒî•ñƒZƒbƒg
+		anime_model.pAnimController->SetTrackPosition(0, 0);
+		anime_model.pAnimController->SetTrackSpeed(0, TrackDesc.Speed);//ƒAƒjƒî•ñƒZƒbƒg
 	}
 	if (m_AnimationType != index)
 	{
-		Thing.pAnimController->SetTrackPosition(0, 0);
-		Thing.pAnimController->SetTrackAnimationSet(0, pAnimSet[index]);
+		anime_model.pAnimController->SetTrackPosition(0, 0);
+		anime_model.pAnimController->SetTrackAnimationSet(0, pAnimSet[index]);
 		m_AnimationType = index;
 	}
 

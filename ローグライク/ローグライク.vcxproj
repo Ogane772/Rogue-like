@@ -156,6 +156,7 @@
     <ClCompile Include="CEnemy.cpp" />
     <ClCompile Include="CGameObj.cpp" />
     <ClCompile Include="CLight.cpp" />
+    <ClCompile Include="CObject_Kaki.cpp" />
     <ClCompile Include="CObject_Ladder.cpp" />
     <ClCompile Include="CObject_Yakusou.cpp" />
     <ClCompile Include="collision.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="CEnemy_Srime.cpp" />
     <ClCompile Include="exp.cpp" />
     <ClCompile Include="fede.cpp" />
+    <ClCompile Include="gallery.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamepad.cpp" />
     <ClCompile Include="input.cpp" />
@@ -183,11 +185,13 @@
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="rezult.cpp" />
+    <ClCompile Include="save_load.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="system_timer.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="title_menu.cpp" />
     <ClCompile Include="userinterface.cpp" />
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
@@ -200,6 +204,7 @@
     <ClInclude Include="CEnemy.h" />
     <ClInclude Include="CGameObj.h" />
     <ClInclude Include="CLight.h" />
+    <ClInclude Include="CObject_Kaki.h" />
     <ClInclude Include="CObject_Ladder.h" />
     <ClInclude Include="CObject_Yakusou.h" />
     <ClInclude Include="collision.h" />
@@ -220,6 +225,7 @@
     <ClInclude Include="CEnemy_Srime.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="gallery.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gamepad.h" />
     <ClInclude Include="input.h" />
@@ -227,11 +233,13 @@
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="rezult.h" />
+    <ClInclude Include="save_load.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="system_timer.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="title_menu.h" />
     <ClInclude Include="userinterface.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
