@@ -76,7 +76,9 @@ void Game_Initialize(void)
 	CMeshField::MeshField_Create(CTexture::TEX_KUSA, 500, 500, 100, 100, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1面  = 5.0f * 5.0f
 
 																					// マップ生成
-	CMap::Map_Create();
+	//CMap::Map_CreateOneFloor();
+	//CMap::Map_Create();
+	CMap::Map_Create_B();
 	//XModel_Initialize("asset/model/sraim4x.x" , 0, D3DXVECTOR3(0.0f, 0.5f, 0.0f), 1);	// タイプ1 = スライム回転
 	//XModel_Initialize("asset/model/sraimv2.x", 1, D3DXVECTOR3(0.0f, 5.5f, 0.0f), 1);
 
