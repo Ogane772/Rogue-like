@@ -203,42 +203,32 @@ void CEnemy_Srime::Enemy_AI(void)
 			}
 		}
 
-		// ?????Z?????????
-
 		for (int i = 0; i < MAX_GAMEOBJ; i++)
 		{
 			enemy = CEnemy::Get_Enemy(i);
 			if (enemy)
 			{
-				// ?W???b?W?G?l?~?[???
 				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz - 1)
 					m_Judge_enemy.HitBottom = true;
 
-				// ?W???b?W?G?l?~?[???
 				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz + 1)
 					m_Judge_enemy.HitTop = true;
 
-				// ?W???b?W?G?l?~?[??E
 				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz)
 					m_Judge_enemy.HitRight = true;
 
-				// ?W???b?W?G?l?~?[???
 				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz)
 					m_Judge_enemy.HitLeft = true;
 
-				// ?W???b?W?G?l?~?[?????
 				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz - 1)
 					m_Judge_enemy.HitTopLeft = true;
 
-				// ?W???b?W?G?l?~?[?????
 				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz + 1)
 					m_Judge_enemy.HitBottomLeft = true;
 
-				// ?W???b?W?G?l?~?[??E??    
 				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz + 1)
 					m_Judge_enemy.HitBottomRight = true;
 
-				// ?W???b?W?G?l?~?[??E??
 				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz - 1)
 					m_Judge_enemy.HitTopRight = true;
 
@@ -317,25 +307,25 @@ void CEnemy_Srime::Enemy_AI(void)
 				{
 					// –Ú“I’n‚ğ’Ê˜H‚Ö
 					// ã‚Ì’Ê˜H
-					if (CMap::Map_GetData(m_Mapz - 1, m_Mapx).type == 2)
+					if (CMap::Map_GetData(m_Mapz - 1, m_Mapx).type == 2 && !m_Judge_enemy.HitTop)
 					{
 						m_Goalz = m_Mapz - 1;
 						m_Goalx = m_Mapx;
 					}
 					// ‰º‚Ì’Ê˜H
-					if (CMap::Map_GetData(m_Mapz + 1, m_Mapx).type == 2)
+					if (CMap::Map_GetData(m_Mapz + 1, m_Mapx).type == 2 && !m_Judge_enemy.HitBottom)
 					{
 						m_Goalz = m_Mapz + 1;
 						m_Goalx = m_Mapx;
 					}
 					// ¶‚Ì’Ê˜H
-					if (CMap::Map_GetData(m_Mapz, m_Mapx - 1).type == 2)
+					if (CMap::Map_GetData(m_Mapz, m_Mapx - 1).type == 2 && !m_Judge_enemy.HitLeft)
 					{
 						m_Goalz = m_Mapz;
 						m_Goalx = m_Mapx - 1;
 					}
 					// ‰E‚Ì’Ê˜H
-					if (CMap::Map_GetData(m_Mapz, m_Mapx + 1).type == 2)
+					if (CMap::Map_GetData(m_Mapz, m_Mapx + 1).type == 2 && !m_Judge_enemy.HitRight)
 					{
 						m_Goalz = m_Mapz;
 						m_Goalx = m_Mapx + 1;
