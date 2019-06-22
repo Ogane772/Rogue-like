@@ -152,22 +152,18 @@ HRESULT MY_HIERARCHY::CreateMeshContainer(LPCSTR Name, CONST D3DXMESHDATA* pMesh
 HRESULT MY_HIERARCHY::DestroyFrame(LPD3DXFRAME pFrameToFree) 
 {
 
-    //SAFE_DELETE_ARRAY( pFrameToFree->Name );
-	if (pFrameToFree->Name)
-		delete pFrameToFree->Name;
-	if (pFrameToFree->pMeshContainer)
-		DestroyMeshContainer(pFrameToFree->pMeshContainer);
-	if(pFrameToFree->pFrameFirstChild)
+	SAFE_DELETE_ARRAY(pFrameToFree->Name);
+
+	if (pFrameToFree->pFrameFirstChild)
 	{
 		DestroyFrame(pFrameToFree->pFrameFirstChild);
 	}
-	if(pFrameToFree->pFrameSibling)
+	if (pFrameToFree->pFrameSibling)
 	{
 		DestroyFrame(pFrameToFree->pFrameSibling);
 	}
 
-	SAFE_DELETE( pFrameToFree );
-	//delete pFrameToFree;
+	SAFE_DELETE(pFrameToFree);
 
     return S_OK; 
 }
@@ -176,34 +172,34 @@ HRESULT MY_HIERARCHY::DestroyFrame(LPD3DXFRAME pFrameToFree)
 //メッシュコンテナーを破棄する
 HRESULT MY_HIERARCHY::DestroyMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBase)
 {
-    int iMaterial;
-    MYMESHCONTAINER *pMeshContainer = (MYMESHCONTAINER*)pMeshContainerBase;
+	int iMaterial;
+	MYMESHCONTAINER *pMeshContainer = (MYMESHCONTAINER*)pMeshContainerBase;
 
-    SAFE_DELETE_ARRAY( pMeshContainer->Name );
+	SAFE_DELETE_ARRAY(pMeshContainer->Name);
 	SAFE_RELEASE(pMeshContainer->pSkinInfo);
-    SAFE_DELETE_ARRAY( pMeshContainer->pAdjacency );
-    SAFE_DELETE_ARRAY( pMeshContainer->pMaterials );
+	SAFE_DELETE_ARRAY(pMeshContainer->pAdjacency);
+	SAFE_DELETE_ARRAY(pMeshContainer->pMaterials);
 
-	SAFE_DELETE_ARRAY( pMeshContainer->ppBoneMatrix );
-	
-    if (pMeshContainer->ppTextures != NULL)
-    {
-        for (iMaterial = 0; iMaterial < (signed)pMeshContainer->NumMaterials; iMaterial++)
-        {
-            SAFE_RELEASE( pMeshContainer->ppTextures[iMaterial] );
-        }
-    }
+	SAFE_DELETE_ARRAY(pMeshContainer->ppBoneMatrix);
+
+	if (pMeshContainer->ppTextures != NULL)
+	{
+		for (iMaterial = 0; iMaterial < (signed)pMeshContainer->NumMaterials; iMaterial++)
+		{
+			SAFE_RELEASE(pMeshContainer->ppTextures[iMaterial]);
+		}
+	}
 	SAFE_DELETE_ARRAY(pMeshContainer->ppTextures);
 
-    SAFE_RELEASE( pMeshContainer->MeshData.pMesh );
+	SAFE_RELEASE(pMeshContainer->MeshData.pMesh);
 
-	if(pMeshContainer->pBoneBuffer != NULL)
+	if (pMeshContainer->pBoneBuffer != NULL)
 	{
-		SAFE_RELEASE( pMeshContainer->pBoneBuffer );	
-		SAFE_DELETE_ARRAY( pMeshContainer->pBoneOffsetMatrices );
+		SAFE_RELEASE(pMeshContainer->pBoneBuffer);
+		SAFE_DELETE_ARRAY(pMeshContainer->pBoneOffsetMatrices);
 	}
 
-    SAFE_DELETE( pMeshContainer );
+	SAFE_DELETE(pMeshContainer);
 
     return S_OK;
 }
@@ -295,42 +291,7 @@ HRESULT SKIN_MESH::AllocateAllBoneMatrices( THING* pThing,LPD3DXFRAME pFrame )
     }
     return S_OK;
 }
-//
-HRESULT SKIN_MESH::InitSphere(LPDIRECT3DDEVICE9 pDevice, THING* pThing)
-{
-	// メッシュの外接円の中心と半径を計算する
-	/*D3DXFrameCalculateBoundingSphere(pThing->pFrameRoot, &pThing->Sphere.vCenter,
-		&pThing->Sphere.fRadius);*/
-	// 得られた中心と半径を基にメッシュとしてのスフィアを作成する
-	D3DXCreateSphere(pDevice, pThing->Sphere.fRadius, 5, 5, &pThing->pSphereMesh, NULL);
-	//スフィアメッシュのマテリアル　白色、半透明、光沢強
-	pThing->pSphereMeshMaterials = new D3DMATERIAL9;
-	pThing->pSphereMeshMaterials->Diffuse.r = 1.0f;
-	pThing->pSphereMeshMaterials->Diffuse.g = 1.0f;
-	pThing->pSphereMeshMaterials->Diffuse.b = 1.0f;
-	pThing->pSphereMeshMaterials->Diffuse.a = 0.3f;
-	pThing->pSphereMeshMaterials->Ambient = pThing->pSphereMeshMaterials->Diffuse;
-	pThing->pSphereMeshMaterials->Specular.r = 1.0f;
-	pThing->pSphereMeshMaterials->Specular.g = 1.0f;
-	pThing->pSphereMeshMaterials->Specular.b = 1.0f;
-	pThing->pSphereMeshMaterials->Emissive.r = 0.1f;
-	pThing->pSphereMeshMaterials->Emissive.g = 0.1f;
-	pThing->pSphereMeshMaterials->Emissive.b = 0.1f;
-	pThing->pSphereMeshMaterials->Power = 120.0f;
 
-	return S_OK;
-}
-//
-HRESULT SKIN_MESH::UpdateSphere(LPDIRECT3DDEVICE9 pDevice, THING* pThing)
-{
-/*	D3DXFrameCalculateBoundingSphere(pThing->pFrameRoot, &pThing->Sphere.vCenter,
-		&pThing->Sphere.fRadius);
-	pThing->pSphereMesh->Release();*/
-	D3DXCreateSphere(pDevice, pThing->Sphere.fRadius, 5, 5, &pThing->pSphereMesh, NULL);
-
-	return S_OK;
-}
-//
 HRESULT SKIN_MESH::InitThing(LPDIRECT3DDEVICE9 pDevice,THING *pThing,LPSTR szXFileName)
 {
 
@@ -467,4 +428,27 @@ VOID SKIN_MESH::UpdateFrameMatrices(LPD3DXFRAME pFrameBase, LPD3DXMATRIX pParent
     {
         UpdateFrameMatrices(pFrame->pFrameFirstChild, &pFrame->CombinedTransformationMatrix);
     }
+}
+
+VOID SKIN_MESH::FreeAnim(LPD3DXFRAME pFrame)
+{
+	if (pFrame->pMeshContainer != NULL)
+	{
+		cHierarchy.DestroyMeshContainer(pFrame->pMeshContainer);
+	}
+
+	if (pFrame->pFrameSibling != NULL)
+	{
+		FreeAnim(pFrame->pFrameSibling);
+	}
+
+	if (pFrame->pFrameFirstChild != NULL)
+	{
+		FreeAnim(pFrame->pFrameFirstChild);
+	}
+}
+
+void SKIN_MESH::Destroy(THING *DeleteAnimeModel)
+{
+	cHierarchy.DestroyFrame(DeleteAnimeModel->pFrameRoot);
 }

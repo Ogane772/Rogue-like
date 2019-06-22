@@ -3,7 +3,8 @@
 #include "game.h"
 #include "stage.h"
 #include "rezult.h"
-
+#include "title_menu.h"
+#include "gallery.h"
 
 static SCENE_INDEX g_SceneIndex;
 static SCENE_INDEX g_SceneNextIndex;
@@ -12,6 +13,8 @@ typedef void(*SceneFunc)(void);
 static const SceneFunc g_Initialize[] =
 {
 	 Title_Initialize,
+	 TitleMenu_Initialize,
+	 CGallery::Gallery_Initialize,
 	 CStage::Stage_Initialize,
 	 Game_Initialize,
 	 Rezult_Initialize,
@@ -20,6 +23,8 @@ static const SceneFunc g_Initialize[] =
 static const SceneFunc g_Finalize[] =
 {
 	Title_Finalize,
+	TitleMenu_Finalize,
+	CGallery::Gallery_Finalize,
 	CStage::Stage_Finalize,
 	Game_Finalize,
 	Rezult_Finalize,
@@ -28,6 +33,8 @@ static const SceneFunc g_Finalize[] =
 static const SceneFunc g_Update[] =
 {
 	Title_Update,
+	TitleMenu_Update,
+	CGallery::Gallery_Update,
 	CStage::Stage_Update,
 	Game_Update,
 	Rezult_Update,
@@ -36,6 +43,8 @@ static const SceneFunc g_Update[] =
 static const SceneFunc g_Draw[] =
 {
 	Title_Draw,
+	TitleMenu_Draw,
+	CGallery::Gallery_Draw,
 	CStage::Stage_Draw,
 	Game_Draw,
 	Rezult_Draw,

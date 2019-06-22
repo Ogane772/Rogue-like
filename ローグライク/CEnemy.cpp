@@ -25,21 +25,20 @@
 
 #define CHASE_SPEED (0.015f)
 #define ENEMY_HITSTOP (30)//ヒットストップの長さ
+#define ENEMY_MAX (30)
+#define ENEMY_CSV_NAME "CSV/ENEMY_CSV.csv"
 //=============================================================================
 //	静的変数
 //=============================================================================
 
 //	エネミー移動用構造体
-int CEnemy::m_EnemyNum[TYPE_MAX] = {};
+int CEnemy::m_EnemyNum[TYPE_MAXENEMY] = {};
 int CEnemy::m_EnemyEnableNum = 0;
 int CEnemy::m_EnemyMaxNum = 0;
 int CEnemy::TurnCount = 0;
 bool CEnemy::attackflag = false;
-CEnemy::ENEMY_Data CEnemy::m_EnemyData[]
-{
-	//名前 HP STR DEF EXP GOLD 出現開始フロア 出現終わりフロア
-	{ CWepon::TYPE_SWORD,"スライム！！" , 20.0f, 4, 0, 5, 5,1,3 },
-};
+CEnemy::ENEMY_Data CEnemy::m_EnemyData[ENEMY_MAX] = { 0 };
+int CEnemy::m_ENEMY_MAX;
 //=============================================================================
 //	生成
 //=============================================================================
@@ -68,6 +67,21 @@ CEnemy::~CEnemy()
 	m_EnemyNum[TYPE_ALL]--;
 	//SkinMesh.cHierarchy.DestroyFrame(Thing.pFrameRoot);
 	//SkinMesh.cHierarchy.DestroyMeshContainer()
+}
+
+void CEnemy::EnemyDataInit(void)
+{
+	int i = 0;
+	int end_check = 0;//CSVの行の終わりか確認
+	for (i = 0; i < MAX_WEPON; i++)
+	{//2行目から読むので+1する
+		end_check = CSV_EnemyLoad(&m_EnemyData[i], i + 1);
+		if (m_EnemyData[i].wepon_type == 0)
+		{
+			break;
+		}
+		m_ENEMY_MAX++;
+	}
 }
 
 void CEnemy::Create(int enemy_type, int x, int z)
@@ -102,7 +116,8 @@ void CEnemy::EnemyTurnEnd(void)
 	{	
 		enemy = CEnemy::Get_Enemy(i);
 		//誰もエネミーがいなくてもターン終了時
-		if (m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END)
+		if (getplayer->Get_Condition() <= C3DObj::KURAYAMI_CONDITION && m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END
+			|| getplayer->Get_Condition() >= C3DObj::BAISOKU_CONDITION && m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_CONPLETE)
 		{
 			TurnCount++;
 			if (TurnCount % 10 == 0 && TurnCount != 0)
@@ -131,13 +146,24 @@ void CEnemy::EnemyTurnEnd(void)
 			turnend_count++;
 		}
 		// 敵全員のターンが終了
-		if (turnend_count == m_EnemyMaxNum && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END)
+		if (getplayer->Get_Condition() <= C3DObj::KURAYAMI_CONDITION && turnend_count == m_EnemyMaxNum && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END
+			|| getplayer->Get_Condition() >= C3DObj::BAISOKU_CONDITION && turnend_count == m_EnemyMaxNum && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_CONPLETE)
 		{
 			TurnCount++;
 			CPlayer::Player_NextTurn();
-			if (TurnCount % 10 == 0 && TurnCount != 0)
+			if (!getplayer->Get_PlayerHealFlag())
 			{
-				getplayer->Player_OnakaDown();
+				if (TurnCount % 10 == 0 && TurnCount != 0)
+				{
+					getplayer->Player_OnakaDown();
+				}
+			}
+			else
+			{
+				if (TurnCount % 5 == 0 && TurnCount != 0)
+				{
+					getplayer->Player_OnakaDown();
+				}
 			}
 			// 数ターンごとにランダムで敵を生成
 			if (TurnCount % 50 == 49)
@@ -229,4 +255,32 @@ void CEnemy::DeleteAllEnemy(void)
 			delete enemy;
 		}
 	}
+}
+
+int CEnemy::CSV_EnemyLoad(ENEMY_Data* enemydata, const int num)
+{
+	int cnt = 0;
+	char buf[128];
+	int size = 128;
+	int data[20] = { 0 };
+	FILE* file = NULL;
+
+	if ((file = fopen(ENEMY_CSV_NAME, "r")) == NULL)
+		return -1;
+	//データを読み込む
+	while (fgets(buf, size, file) != NULL && num > ++cnt);
+	fscanf(file, "%d,%[^,],%f,%d,%d,%d,%d,%d,%d,%d", &enemydata->wepon_type, enemydata->enemy_name , &enemydata->Hp, &enemydata->str, &enemydata->def, &enemydata->exp, &enemydata->gold, &enemydata->first_floor, &enemydata->end_floor, &enemydata->enemychance);
+
+	fclose(file);
+
+
+
+	if (num != cnt)
+	{
+		for (cnt = 0; cnt < size; ++cnt)
+			buf[cnt] = 0;
+		return -2;
+	}
+
+	return 0;
 }

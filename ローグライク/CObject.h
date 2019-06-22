@@ -7,13 +7,13 @@
 //===================================
 // 定数
 //===================================
-#define OBJECT_MAXTIPS (99)//説明文の最大長さ
+#define OBJECT_MAXTIPS (399)//説明文の最大長さ
 class CObject :virtual public C3DObj
 {
 public:
 	typedef struct {
 		int object_type;
-		char object_name[MAX_NAME];
+		char object_name[99];
 		char object_effect[OBJECT_MAXTIPS];//オブジェクト使用文
 		char object_tips[OBJECT_MAXTIPS];//オブジェクト説明文
 		int first_floor;//出現開始フロア
@@ -26,6 +26,20 @@ public:
 		TYPE_LADDER,//梯子
 		TYPE_YAKUSOU,//薬草
 		TYPE_ZAXTUSOU,//雑草
+		TYPE_BAIKA,//倍化の種
+		TYPE_DOKUKESI,
+		TYPE_PATTIRI,
+		TYPE_IYASI,
+		TYPE_GEKIKA,
+		TYPE_WARP,
+		TYPE_SIAWASE,
+		TYPE_TOKU_YAKUSOU,
+		TYPE_PUTI_KAKI,
+		TYPE_BIG_KAKI,
+		TYPE_KASOKU,
+		TYPE_YOSOKU,
+		TYPE_TANKEN,
+		TYPE_KENMASOU,
 		OBJECTTYPE_NONE
 	}OBJECTTYPE;
 
@@ -34,7 +48,7 @@ public:
 	~CObject();
 	void Object_Finalize(int Index);
 
-
+	static void ObjectDataInit(void);//CSVの読み込み
 	static void Create(int object_type, int x, int z);
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
@@ -56,8 +70,10 @@ protected:
 	static C3DObj *Get_AllObject(int index);
 
 private:
-	static int m_ObjectNum[TYPE_MAX];
+	static int m_ObjectNum[OBJECTTYPE_NONE];
 	static int m_ITEMDATA_MAX;//アイテムデータの最大数
 	static OBJECT_Data m_ObjectData[];
+
+	static int CSV_ObjectLoad(OBJECT_Data* object, const int num);
 };
 #endif

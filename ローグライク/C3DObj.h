@@ -18,11 +18,12 @@
 //死亡時リターンする数値
 #define DEATH (true)//死んだらtrue
 #define NORMAL (false)
-#define MAX_NAME (30) //名前文字の最大数　全角なので実質15文字まで
+
 //ダメージ計算式 後で武器タイプ補正も入れる
-#define PLAYER_W_DAMAGEKEISAN (str / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
-#define PLAYER_NORMAL_DAMAGEKEISAN (str / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
-#define ENEMY_DAMAGEKEISAN (str / 2) - (enemy->Get_Def() / 4)
+#define PLAYER_W_DAMAGEKEISAN ((str * str2) / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
+#define PLAYER_NORMAL_DAMAGEKEISAN ((str * str2) / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
+#define ENEMY_DAMAGEKEISAN ((str * str2) / 2) - (enemy->Get_Def() / 4)
+#define HITSTOP (30)
 class C3DObj :virtual public CGameObj
 {
 public:
@@ -34,9 +35,15 @@ public:
 		DWORD dwNumMaterials;	// マテリアル総数
 		D3DMATERIAL9* pMaterials;
 		LPDIRECT3DTEXTURE9* pTextures;
-		D3DXVECTOR3 vPosition;
-		int type;						// モデルによって動きを変えるためのタイプ
 	}NormalModelData;
+	typedef enum {
+		NORMAL_CONDITION,
+		SLEEP_CONDITION,//睡眠状態
+		POIZUN_CONDITION,//毒状態
+		KURAYAMI_CONDITION,
+		BAISOKU_CONDITION,
+		DONSOKU_CONDITION,
+	}PLAYER_JYOUTAIIJYOU;
 	typedef struct {
 		bool HitTop;
 		bool HitBottom;
@@ -97,10 +104,8 @@ public:
 	enum ANIME_MODEL
 	{
 		MODELL_ANIME_PLAYER,
-		MODELL_ANIME_SMALL,
-		MODELL_ANIME_MIDDLE,
-		MODELL_ANIME_SPECIAL,
-		MODELL_ANIME_BIG,
+
+
 		ANIME_MODEL_MAX,//アニメモデル最大数
 	}AnimeModelFileData;;
 
@@ -128,36 +133,44 @@ public:
 	virtual bool Get_DarkFlag(void) { return 0; };
 	virtual bool Get_WMode(void) { return 0; }//プレイヤーが両手持ちか取得
 	virtual bool ExpGoldCheck(int exp, int gold) { return 0; }//プレイヤーの経験とお金チェック
+	virtual bool Get_PlayerHealFlag(void) { return 0; };
 	virtual bool Get_TurboMode(void) { return 0; }//ターボモード取得
 	virtual bool Get_ItemOn(void) { return 0; }//アイテム選択を取得
 	virtual bool Get_ItemTips(void) { return 0; }//アイテムを選択から効果を選んだとき
 	virtual bool Get_NextItemPage(void) { return 0; }//所持アイテムウィンドウが2ページ目かどうか返す
+	virtual bool Get_EnemyONFlag(void) { return 0; }//マップ上のエネミーアイコン表示フラグ
 	virtual int Get_PlayerItemStockType(int index) { return 0; }//取得アイテムタイプを取得
 	virtual int Get_PlayerAllItemStock(int index) { return 0; }//全ての取得アイテムを格納
 	virtual int Get_PlayerTurn(void) { return 0; }//プレイヤーのターンモード取得
 	virtual void Set_PlayerTurn(int turn) {}//プレイヤーのターンモードセット
 	virtual int Get_EnemyTurn(void) { return 0; }//エネミーのターンモード取得
 	virtual void Set_EnemyTurn(int turn) {}//エネミーのターンモードセット
+	virtual bool Get_NanameFlag(void) { return 0; }//斜め移動状態を取得
+	virtual bool Get_GekikaFlag(void) { return 0; }//相性激化状態を取得
 	int Get_3DObjIndex() { return m_3DObjIndex; }	// ワークインデックス取得
 	int Get_3DObjType() { return m_3DObjType; }		// 種類取得
 	float Get_Angle(void) { return m_Angle; }	//	角度取得	
 	float Get_Hp(void) { return m_Hp; }		//	HP取得
 	float Get_MaxHp(void) { return m_MaxHp; }		//	最大HP取得
 	int Get_Str(void) { return m_Str; }		//	攻撃力取得
+	float Get_Str2(void) { return m_Str2; }		//	変化攻撃力取得
 	int Get_Def(void) { return m_Def; }		//	防御力取得
 	int Get_Lv(void) { return m_Lv; }		//	レベル取得
 	int Get_Gold(void) { return m_Gold; }		// 所持金取得
 	int Get_Exp(void) { return m_Exp; }		// 経験値取得
 	int Get_Type(void) { return m_Type; }		// エネミータイプ取得
+	int Get_Condition(void) { return m_Condition; }	// 状態取得
 	char* Get_Name(void) { return name; };		// 名前取得
 	bool Get_RivalFlag(void) { return rival_flag; }
 	bool Get_MapDrawFlag(void) { return map_drawflag; }
 	bool Get_EnterFlag(void) { return enter_flag; }
+	
+	void SetCondition(int condition_type) { m_Baisoku_Flag = false; m_Donsoku_Flag = false; m_Condition = condition_type; }
 	void Set_MapDrawFlag(bool type) { map_drawflag = type; }
 	void Set_RivalFlag(bool type) { rival_flag = type; }
 	void Set_EnterFlag(bool type) { enter_flag = type; }
 	void Set_Attack_End(int end) { attack_endframe = end; }
-	
+	void SetTurnCount(int turn) { m_TurnCount = turn; }
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
 	virtual bool Get_DrawCheck(void) = 0;
@@ -172,6 +185,8 @@ public:
 	//	終了処理
 	static void Model_Finalize(void);
 	static void NormalModel_Finalize(NormalModelData *DeleteNormalModel);
+	
+	static void AnimeModel_Finalize(THING *DeleteAnimeModel);
 
 	static JUDGE m_Judge_player;
 	static JUDGE Judgement_GetPlayer(void) { return m_Judge_player; }
@@ -211,24 +226,29 @@ protected:
 	float m_MaxHp;
 	float m_Hp;				//	HP
 	int m_Str;			    // 攻撃力
+	float m_Str2;				// 倍率変化率の攻撃力
 	int m_Def;			    // 防御力
 	int m_Lv;				// レベル
 	int m_Gold;				// 所持金
 	int m_Exp;				// 経験値
+	int m_Condition;			// 状態異常状態格納
 
 	int attack_endframe; // 攻撃終了フレーム
 	int walkf;
 	int attackframe;
 	int nanawalk;
+	int m_TurnCount;	//　経過ターン数主に状態異常の時使う
 	char name[MAX_NAME];			// 名前
 	bool map_drawflag;		// ミニマップに表示するか true=表示
 	bool rival_flag;		// 攻撃相手が死んでたらtrue
 	bool enter_flag;		// エンターが押されたとき
+	bool m_Baisoku_Flag;		// 倍速中の1ターン目はfalse trueの時はターンエンド
+	bool m_Donsoku_Flag;		// 鈍足中の1ターン目はfalse trueの時は操作可能
 	// 描画処理
-	void DrawDX_Anime(D3DXMATRIX mtxWorld, int type, THING* pNomalModel);
+	void DrawDX_Anime(D3DXMATRIX mtxWorld, THING* pNomalModel);
 	void C3DObj::DrawDX_Normal(D3DXMATRIX mtxWorld, NormalModelData* pNomalModel);
 
-
+	static HRESULT InitNormalModelLoad(NormalModelData *pNomalModel, LPSTR szXFileName);//ノーマルモデルの読み込み
 	void Animation_Change(int index, float speed);
 	LPD3DXANIMATIONSET pAnimSet[10];//選択したモデルに10個までのアニメーションをセット
 	D3DXTRACK_DESC TrackDesc;
@@ -238,7 +258,7 @@ protected:
 
 
 	//static THING Thing[];//読み込むモデルの最大数+1
-	THING Thing;//読み込むモデルの最大数+1
+	THING anime_model;//読み込むモデルの最大数+1
 	NormalModelData Normal_model;//読み込むモデルの最大数+1
 	
 	int m_AnimationType;
@@ -264,7 +284,7 @@ private:
 	static int ANIME_MODEL_FILES_MAX;	//	テクスチャ構造体総数
 	static NormalModelData NormalModel[];//読み込むモデルの最大数+1
 	
-	static HRESULT InitNormalModelLoad(NormalModelData *pNomalModel, LPSTR szXFileName);//ノーマルモデルの読み込み
+	
 	int m_3DObjIndex;		//	3Dオブジェクトインデックス
 	int m_3DObjType;		//	3Dオブジェクトタイプ
 	static int m_3DObjNum;	//	ゲームオブジェクト総数
@@ -272,11 +292,14 @@ private:
 	static C3DObj *p3DObj[MAX_GAMEOBJ];
 
 
+	
 	static bool VFCulling(D3DXVECTOR3* pPosition);
 
 	FLOAT fAnimTime = 0.0f;
 	BOOL boPlayAnim = true;
 	//float fAnimTimeHold;
+
+
 };
 
 #endif // !1

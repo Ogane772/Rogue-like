@@ -19,7 +19,8 @@
 #include "CWepon_Ax.h"
 #include "CWepon_Rance.h"
 #define _CRTDBG_MAP_ALLOC
-
+#define MAX_WEPON (99)
+#define WEPON_CSV_NAME "CSV/WEPON_CSV.csv"
 #define new  ::new(_NORMAL_BLOCK, __FILE__, __LINE__)
 //=============================================================================
 //	定数定義
@@ -31,34 +32,25 @@
 //=============================================================================
 //	生成
 //=============================================================================
-CWepon::Wepon_Data CWepon::m_WeponData[]
-{
-	//武器タイプ 名前 使用時の説明文 攻撃力　防御力　開始出現フロア 終わり出現フロア　確率
-	{ TYPE_SWORD,"ただの剣" ,"何の変哲もない剣", 1, 0 ,-1,-1,-1 },
-	{ TYPE_SHELD, "ただの盾" ,"何の変哲もない盾", 0, 1,-1,-1,-1 },
-	{ TYPE_RING,"ただの指輪" ,"何の変哲もない指輪", 1, 1,-1,-1,-1 },
-	{ TYPE_SWORD,"ひのきの棒" ,"木を削った棒", 2, 0,0,3,25 },
-	{ TYPE_SWORD,"マスターソード" ,"伝説の勇者の剣", 10,0, 0,3,25 },
-	{ TYPE_SWORD, "ロトの剣" ,"ロトが使った剣", 10,0, 0,3,25 },
-	{ TYPE_SWORD,"銀河の剣" ,"星の力が込められた剣", 15,0, 0,3,25 },
-	{ TYPE_BIGSWORD,"銅の大剣" ,"銅で作られた大剣", 15,1, 0,3,50 },
-	{ TYPE_BIGSWORD,"銀の大剣" ,"銀で作られた大剣", 16,2, 0,3,50 },
-	{ TYPE_REIPIA,"銅のレイピア" ,"銅で作られたレイピア", 5,0, 0,3,50 },
-	{ TYPE_REIPIA,"銀のレイピア" ,"銀に輝くレイピア", 5,0, 0,3,50 },
-	{ TYPE_MEISU,"メイス" ,"普通のメイス", 6,0, 0,3,50 },
-	{ TYPE_MEISU,"怒りのメイス" ,"怒りが込められたメイス", 9,0, 0,3,50 },
-	{ TYPE_RANCE,"銅のランス" ,"剣に対して強い槍", 12,1, 0,3,50 },
-	{ TYPE_RANCE,"刺突のランス" ,"剣に対して強い鋭い槍", 14,0, 0,3,50 },
-	{ TYPE_AX,"銅の斧" ,"刺突に対して強い銅の斧", 15,1, 0,3,50 },
-	{ TYPE_AX,"銀の斧" ,"刺突に対して強い斧", 15,1, 0,3,50 },
-	{ TYPE_SHELD, "おなべのふた" ,"ないよりはましな盾", 0, 1,0,3,50 },
-	{ TYPE_SHELD, "ミドルシールド" ,"軽くて小さい盾", 0, 2,0,3,50 },
-	{ TYPE_RING,"小さい力の指輪" ,"力が少し上がる指輪", 1, 1,0,3,50 },
-	{ TYPE_RING,"小さい守の指輪" ,"守備が少し上がる指輪", 1, 1,0,3,50 }
-};
+CWepon::Wepon_Data CWepon::m_WeponData[MAX_WEPON] = { 0 };
 //ウェポンデータ最大数を求める
-int CWepon::m_WEPONDATA_MAX = sizeof(CWepon::m_WeponData) / sizeof(m_WeponData[0]);
-int CWepon::m_WeponNum[TYPE_MAX] = {};
+int CWepon::m_WEPONDATA_MAX = 0;
+int CWepon::m_WeponNum[WEPONTYPE_NONE] = {};
+
+void CWepon::WeponDataInit(void)
+{
+	int i = 0;
+	int end_check = 0;//CSVの行の終わりか確認
+	for (i = 0; i < MAX_WEPON; i++)
+	{//2行目から読むので+1する
+		end_check = CSV_Wepon_Load(&m_WeponData[i], i + 1);
+		if (m_WeponData[i].type == 0)
+		{
+			break;
+		}
+		m_WEPONDATA_MAX++;
+	}
+}
 
 CWepon::CWepon()
 {
@@ -187,6 +179,33 @@ C3DObj *CWepon::Get_Map_Wepon(int Index)
 	return NULL;
 }
 
+int CWepon::CSV_Wepon_Load(Wepon_Data* wepondata, const int num)
+{
+	int cnt = 0;
+	char buf[128];
+	int size = 128;
+	int data[20] = { 0 };
+	FILE* file = NULL;
+
+	if ((file = fopen(WEPON_CSV_NAME, "r")) == NULL)
+		return -1;
+	//データを読み込む
+	while (fgets(buf, size, file) != NULL && num > ++cnt);
+	fscanf(file, "%d,%[^,],%[^,],%d,%d,%d,%d,%d,%d,%d", &wepondata->type, wepondata->Wepon_name, wepondata->Wepon_effect, &wepondata->str, &wepondata->def, &wepondata->first_floor, &wepondata->end_floor, &wepondata->weponchance, &wepondata->rare,&wepondata->kantei_type);
+
+	fclose(file);
+
+
+
+	if (num != cnt)
+	{
+		for (cnt = 0; cnt < size; ++cnt)
+			buf[cnt] = 0;
+		return -2;
+	}
+
+	return 0;
+}
 
 
 

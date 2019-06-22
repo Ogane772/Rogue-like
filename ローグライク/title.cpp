@@ -1,12 +1,9 @@
 #include "scene.h"
-#include "input.h"
 #include "fade.h"
 #include "input.h"
-#include "common.h"
 #include "CTexture.h"
 #include "bilboard.h"
-#include "CCamera.h"
-#include "stage.h"
+
 /*======================================================================
 ƒOƒ[ƒoƒ‹•Ï”
 ======================================================================*/
@@ -52,11 +49,7 @@ void Title_Update(void)
 		if (!Fade_IsFade())  
 		{
 			g_bIsFade = false;
-			Scene_Change(SCENE_INDEX_STAGE);
-
-			//Scene_Check();
-			// ŠK‘w‚Ì‰Šú‰»
-			CStage::Stage_SetLevel(0);
+			Scene_Change(SCENE_INDEX_TITLEMENU);
 		}
 	}
 }

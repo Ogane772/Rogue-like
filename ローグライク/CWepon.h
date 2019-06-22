@@ -11,7 +11,7 @@ class CWepon :virtual public C3DObj
 {
 public:
 	typedef struct {
-		int type;
+		int type;//武器タイプ
 		char Wepon_name[MAX_NAME];
 		char Wepon_effect[WEPON_MAXTIPS];//オブジェクト説明文
 		int str;
@@ -19,6 +19,8 @@ public:
 		int first_floor;//出現開始フロア
 		int end_floor;//出現終わりフロア
 		int weponchance;//装備出現率
+		int rare;//武器のレア値
+		int kantei_type;//どの装備か識別する
 	}Wepon_Data;
 	typedef enum {
 		TYPE_ALL = 0,
@@ -34,11 +36,19 @@ public:
 		WEPONTYPE_NONE
 	}WEPONTTYPE;
 
+	typedef enum {
+		TYPE_NONE = 0,
+
+		TYPE_IYASI_RING,
+		WEPON_NAME_NONE
+	}WEPON_NAME_TYPE;
+
 	CWepon();
 	CWepon::CWepon(int WeponType);
 	~CWepon();
 
 	void Wepon_Finalize(int Index);
+	static void WeponDataInit(void);
 	static void Create(int wepon_type, int x, int z);
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
@@ -62,8 +72,9 @@ protected:
 
 private:
 	static int m_WEPONDATA_MAX;//ウェポンデータの最大数
-	static int m_WeponNum[TYPE_MAX];
+	static int m_WeponNum[WEPONTYPE_NONE];
 
 	static Wepon_Data m_WeponData[];
+	static int CSV_Wepon_Load(Wepon_Data* wepondata, const int num);//装備テーブル読み込み
 };
 #endif
