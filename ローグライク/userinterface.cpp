@@ -1,4 +1,4 @@
-#include <d3dx9.h>
+ï»¿#include <d3dx9.h>
 #include <stdio.h>
 #include "common.h"
 #include "CTexture.h"
@@ -9,46 +9,46 @@
 #include "CObject.h"
 #include "Cplayer.h"
 #include "CCamera.h"
+#include "Attack.h"
 #include "map.h"
 #include "stage.h"
 #include "debug_font.h"
 /*----------------------------------------------------------------------
-@@’è”
+ã€€ã€€å®šæ•°
  ----------------------------------------------------------------------*/
 #define TEXT_MAX (100)
-//ƒ~ƒjƒ}ƒbƒv•\¦ˆÊ’u
+//ãƒŸãƒ‹ãƒãƒƒãƒ—è¡¨ç¤ºä½ç½®
 #define MAP_POS_X (250)
 #define MAP_POS_Y (250)
-//ƒvƒŒƒCƒ„[ˆÊ’u‚©‚ç‚Ì–¢ŒöŠJƒ}ƒbƒvŠJ•ú”ÍˆÍ
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‹ã‚‰ã®æœªå…¬é–‹ãƒãƒƒãƒ—é–‹æ”¾ç¯„å›²
 #define MAP_ON_X (25)
 #define MAP_ON_Y (25)
-//ƒGƒlƒ~[ƒAƒCƒRƒ“•\¦”ÍˆÍ
+//ã‚¨ãƒãƒŸãƒ¼ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤ºç¯„å›²
 #define ENEMY_ON_X (30)
 #define ENEMY_ON_Y (30)
-//ƒIƒuƒWƒFƒNƒgƒAƒCƒRƒ“•\¦”ÍˆÍ
+//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤ºç¯„å›²
 #define OBJECT_ON_X (30)
 #define OBJECT_ON_Y (30)
  /*----------------------------------------------------------------------
- @@ƒOƒ[ƒoƒ‹•Ï”
+ ã€€ã€€ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
    ----------------------------------------------------------------------*/
 LPD3DXFONT CUserinterface::g_pD3DXFont;
 
 CUserinterface::TEXT CUserinterface::g_text;
 int CUserinterface::g_Textbackground;
 int CUserinterface::g_TextFramecount;
-D3DXVECTOR2 time_pos;//ŠÔ‚Å•Ï‚í‚éˆÊ’u
-int add_time; //ƒeƒLƒXƒg•\¦ŠÔ‚ğ+‚·‚é‚Æ‚«‘«‚·
+D3DXVECTOR2 time_pos;//æ™‚é–“ã§å¤‰ã‚ã‚‹ä½ç½®
+int add_time; //ãƒ†ã‚­ã‚¹ãƒˆè¡¨ç¤ºæ™‚é–“ã‚’+ã™ã‚‹ã¨ãè¶³ã™
 bool text_draw;
 
 void CUserinterface::UI_Initialize(void)
 {
-	C3DObj *getplayer = CPlayer::Get_Player();
 	g_pD3DXFont = NULL;
 	g_TextFramecount = 0;
 
 	D3DXCreateFont(m_pD3DDevice, 40, 0, 0, 0, false,
 		SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
-		DEFAULT_PITCH, "HGP‘n‰pŠpÎß¯Ìß‘Ì", &g_pD3DXFont);
+		DEFAULT_PITCH, "HGPå‰µè‹±è§’ï¾ï¾Ÿï½¯ï¾Œï¾Ÿä½“", &g_pD3DXFont);
 
 	time_pos = D3DXVECTOR2(0.0f, 0.0f);
 	add_time = 0;
@@ -64,6 +64,11 @@ void CUserinterface::UI_Initialize(void)
 	g_text.hitchara = CHARATYPENONE;
 	g_text.type = 0;
 	g_text.damage = 0;
+}
+
+void CUserinterface::UI_NameInitialize(void)
+{
+	C3DObj *getplayer = CPlayer::Get_Player();
 	strcpy_s(g_text.player_name, MAX_NAME, getplayer->Get_Name());
 }
 
@@ -78,7 +83,7 @@ void CUserinterface::UI_Update(void)
 	C3DObj *getplayer = CPlayer::Get_Player();
 	//if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END && !getplayer->Get_EnterFlag())
 	//{
-		//ƒGƒ“ƒ^[‘Ò‚¿‚Ì‚Í‰½‚à‚µ‚È‚¢
+		//ã‚¨ãƒ³ã‚¿ãƒ¼å¾…ã¡ã®æ™‚ã¯ä½•ã‚‚ã—ãªã„
 		
 	//}
 	//else
@@ -125,15 +130,17 @@ void CUserinterface::UI_Draw(void)
 	{
 		Sprite_Draw(TEX_WINDOW_MARU, 0.0f, 0.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WINDOW_MARU), (float)Texture_GetHeight(TEX_WINDOW_MARU), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 	}
-	CommandWindow_Draw();
-	ItemWindow_Draw();
-	StatusWindow_Draw();
 	UI_UpDraw();
 	Map_Draw();
 	UI_TextDraw();
+	NanameYajirusi_Draw();
+	ConditionIconDraw();
+	CommandWindow_Draw();
+	ItemWindow_Draw();
+	StatusWindow_Draw();
 }
 
-// Œã‚ÉƒfƒoƒbƒO‚¾‚¯‚Å‚È‚­ƒQ[ƒ€‚È‚¢•¶Í—p‚àì¬
+// å¾Œã«ãƒ‡ãƒãƒƒã‚°ã ã‘ã§ãªãã‚²ãƒ¼ãƒ ãªã„æ–‡ç« ç”¨ã‚‚ä½œæˆ
 void CUserinterface::UI_TextDraw(int x, int y, D3DCOLOR color, const char* text, ...)
 {
 #if defined(_DEBUG) || defined(DEBUG)
@@ -142,13 +149,13 @@ void CUserinterface::UI_TextDraw(int x, int y, D3DCOLOR color, const char* text,
 
 	char Tbuffer[TEXT_MAX];
 	va_list ap;
-	// ‰Â•Ï’·ˆø”‚ğ‚PŒÂ‚Ì•Ï”‚É‚Ü‚Æ‚ß‚é
+	// å¯å¤‰é•·å¼•æ•°ã‚’ï¼‘å€‹ã®å¤‰æ•°ã«ã¾ã¨ã‚ã‚‹
 	va_start(ap, text);
-	// ‚Ü‚Æ‚ß‚ç‚ê‚½•Ï”‚Åˆ—‚·‚é
+	// ã¾ã¨ã‚ã‚‰ã‚ŒãŸå¤‰æ•°ã§å‡¦ç†ã™ã‚‹
 	vsprintf_s(Tbuffer, TEXT_MAX, text, ap);
 	va_end(ap);
 
-	// ÀŒ±								•¶š”‚ç‚µ‚¢‚ª-1‚È‚ç‘S•”‚É‚È‚é
+	// å®Ÿé¨“								æ–‡å­—æ•°ã‚‰ã—ã„ãŒ-1ãªã‚‰å…¨éƒ¨ã«ãªã‚‹
 	g_pD3DXFont->DrawTextA(NULL, Tbuffer, -1, &rect, DT_LEFT, color);
 
 #endif // _DEBUG || DEBUG
@@ -162,15 +169,15 @@ void CUserinterface::UI_TextDraw2(int x, int y, D3DCOLOR color, const char* text
 
 	char Tbuffer[TEXT_MAX];  
 	va_list ap;
-	// ‰Â•Ï’·ˆø”‚ğ‚PŒÂ‚Ì•Ï”‚É‚Ü‚Æ‚ß‚é
+	// å¯å¤‰é•·å¼•æ•°ã‚’ï¼‘å€‹ã®å¤‰æ•°ã«ã¾ã¨ã‚ã‚‹
 	va_start(ap, text);
-	// ‚Ü‚Æ‚ß‚ç‚ê‚½•Ï”‚Åˆ—‚·‚é
+	// ã¾ã¨ã‚ã‚‰ã‚ŒãŸå¤‰æ•°ã§å‡¦ç†ã™ã‚‹
 	vsprintf_s(Tbuffer, TEXT_MAX, text, ap);
 	va_end(ap);
 
 
 
-	// ÀŒ±								•¶š”‚ç‚µ‚¢‚ª-1‚È‚ç‘S•”‚É‚È‚é
+	// å®Ÿé¨“								æ–‡å­—æ•°ã‚‰ã—ã„ãŒ-1ãªã‚‰å…¨éƒ¨ã«ãªã‚‹
 	g_pD3DXFont->DrawTextA(NULL, Tbuffer, -1, &rect, DT_LEFT, color);
 #endif // _DEBUG || DEBUG
 }
@@ -183,9 +190,69 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act)
 	g_text.alive = true;
 	g_text.chara = chara;
 	g_text.act = act;
-	// ’a¶“ú
+	// èª•ç”Ÿæ—¥
 	g_text.TextCreateFrame = g_TextFramecount;
 	
+}
+
+void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, char* message)
+{
+	g_text.Age = 0;
+	time_pos.y = 0;
+	text_draw = false;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.act = act;
+	// èª•ç”Ÿæ—¥
+	g_text.TextCreateFrame = g_TextFramecount;
+	strcpy_s(g_text.free_message, MAX_NAME, message);
+}
+
+void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, char* rog_message)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.act = act;
+	strcpy_s(g_text.name, MAX_NAME, CObject::Get_ObjectName(type));
+	strcpy_s(g_text.item_log, MAX_NAME, rog_message);
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// èª•ç”Ÿæ—¥
+	g_text.TextCreateFrame = g_TextFramecount;
+}
+
+void CUserinterface::UI_TextCreateCondition(CHARATYPE chara, ACTTYPE act, int condition)
+{
+	g_text.Age = 0;
+	time_pos.y = 0;
+	text_draw = false;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.act = act;
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// èª•ç”Ÿæ—¥
+	g_text.TextCreateFrame = g_TextFramecount;
+	switch (condition)
+	{
+	case C3DObj::POIZUN_CONDITION:
+		strcpy_s(g_text.heal_log, MAX_NAME, "ã®æ¯’ãŒæŠœã‘ãŸï¼");
+		break;
+	case C3DObj::SLEEP_CONDITION:
+		strcpy_s(g_text.heal_log, MAX_NAME, "ã®ç›®ãŒè¦šã‚ãŸï¼");
+		break;
+	case C3DObj::KURAYAMI_CONDITION:
+		strcpy_s(g_text.heal_log, MAX_NAME, "ã®ç›®ãŒå›å¾©ã—ãŸï¼");
+		break;
+	case C3DObj::BAISOKU_CONDITION:
+	case C3DObj::DONSOKU_CONDITION:
+		strcpy_s(g_text.heal_log, MAX_NAME, "ã®é€Ÿåº¦ãŒå…ƒã«æˆ»ã£ãŸï¼");
+		break;
+	}
 }
 
 void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type)
@@ -201,7 +268,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type)
 	strcpy_s(g_text.item_log, MAX_NAME, CObject::Get_ObjectEffect(type));
 	g_text.pos.x = TEXT_POSX;
 	g_text.pos.y = TEXT_POSY;
-	// ’a¶“ú
+	// èª•ç”Ÿæ—¥
 	g_text.TextCreateFrame = g_TextFramecount;
 }
 
@@ -219,7 +286,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, int p
 	g_text.pos.x = TEXT_POSX;
 	g_text.pos.y = TEXT_POSY;
 	g_text.purasu_number = purasu_number;
-	// ’a¶“ú
+	// èª•ç”Ÿæ—¥
 	g_text.TextCreateFrame = g_TextFramecount;
 }
 
@@ -238,7 +305,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 	{
 		g_text.type = type;
 	}
-	//ƒGƒlƒ~[ƒf[ƒ^‚©‚ç–¼‘O‚ÆŒoŒ±’l‚ğ‚à‚ç‚¤‚Ì‚Å°1‚·‚é
+	//ã‚¨ãƒãƒŸãƒ¼ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰åå‰ã¨çµŒé¨“å€¤ã‚’ã‚‚ã‚‰ã†ã®ã§ï½°1ã™ã‚‹
 	if (hitchara > 1)
 	{
 		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
@@ -251,7 +318,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 	}
 	g_text.pos.x = TEXT_POSX;
 	g_text.pos.y = TEXT_POSY;
-	// ’a¶“ú
+	// èª•ç”Ÿæ—¥
 	g_text.TextCreateFrame = g_TextFramecount;
 }
 
@@ -266,12 +333,13 @@ void CUserinterface::UI_TextCreate(int week_type,CHARATYPE chara, ACTTYPE act, C
 	g_text.hitchara = hitchara;
 	g_text.damage = damage;
 	g_text.act = act;
+	g_text.act2 = 0;
 	g_text.attribute_type = week_type;
 	if (type > 0)
 	{
 		g_text.type = type;
 	}
-	//ƒGƒlƒ~[ƒf[ƒ^‚©‚ç–¼‘O‚ÆŒoŒ±’l‚ğ‚à‚ç‚¤‚Ì‚Å°1‚·‚é
+	//ã‚¨ãƒãƒŸãƒ¼ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰åå‰ã¨çµŒé¨“å€¤ã‚’ã‚‚ã‚‰ã†ã®ã§ï½°1ã™ã‚‹
 	if (hitchara > 1)
 	{
 		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
@@ -284,7 +352,41 @@ void CUserinterface::UI_TextCreate(int week_type,CHARATYPE chara, ACTTYPE act, C
 	}
 	g_text.pos.x = TEXT_POSX;
 	g_text.pos.y = TEXT_POSY;
-	// ’a¶“ú
+	// èª•ç”Ÿæ—¥
+	g_text.TextCreateFrame = g_TextFramecount;
+}
+
+void CUserinterface::UI_TextCreate(char *skill_effect, int week_type, CHARATYPE chara, int act, CHARATYPE hitchara, int damage, int type)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.hitchara = hitchara;
+	g_text.damage = damage;
+	g_text.act2 = act;
+	g_text.attribute_type = week_type;
+	strcpy_s(g_text.skill_log, MAX_NAME, skill_effect);
+	if (type > 0)
+	{
+		g_text.type = type;
+	}
+	//ã‚¨ãƒãƒŸãƒ¼ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰åå‰ã¨çµŒé¨“å€¤ã‚’ã‚‚ã‚‰ã†ã®ã§ï½°1ã™ã‚‹
+	if (hitchara > 1)
+	{
+		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
+		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	if (chara > 1)
+	{
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// èª•ç”Ÿæ—¥
 	g_text.TextCreateFrame = g_TextFramecount;
 }
 
@@ -303,17 +405,17 @@ void CUserinterface::UI_Delete(void)
 }
 
 void CUserinterface::CommandWindow_Draw(void)
-{//—¼è‚¿ó‘Ô‚Ì‚à‘‚¢‚Ä‚Ë
-	//•Ší‚ª—¼è‚©‚ç•Ğèi‹t‚àj‚É‚È‚Á‚½‚çƒeƒLƒXƒg‚Åo‚·‚±‚Æ
+{
+	//æ­¦å™¨ãŒä¸¡æ‰‹ã‹ã‚‰ç‰‡æ‰‹ï¼ˆé€†ã‚‚ï¼‰ã«ãªã£ãŸã‚‰ãƒ†ã‚­ã‚¹ãƒˆã§å‡ºã™ã“ã¨
 	C3DObj *getplayer = CPlayer::Get_Player();
-	//ƒAƒCƒeƒ€–¼•`‰æ
-	//•Ší‚Í‚Pƒy[ƒW–Ú‚Ì‚İ•`‰æ
+	//ã‚¢ã‚¤ãƒ†ãƒ åæç”»
+	//æ­¦å™¨ã¯ï¼‘ãƒšãƒ¼ã‚¸ç›®ã®ã¿æç”»
 	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_WINDOW)
 	{
 		RightWindow_Draw();
-		//ã‚ÌƒEƒBƒ“ƒhƒE
+		//ä¸Šã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 		Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 130.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 0.38f, 1.1f, 0.0f);
-		//ƒJ[ƒ\ƒ‹ˆÊ’u
+		//ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®
 		switch (getplayer->Get_CursorNumber())
 		{
 		case CPlayer::CURSOL_LEFT_TOP:
@@ -329,17 +431,17 @@ void CUserinterface::CommandWindow_Draw(void)
 			Sprite_Draw(TEX_CURSOL, 240.0f, 212.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.19f, 0.19f, 0.0f);
 			break;				
 		}
-		UI_TextDraw(145, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "“¹‹ï");
-		UI_TextDraw(275, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "”\—Í");
-		UI_TextDraw(145, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "‘«Œ³");
-		UI_TextDraw(275, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "‘Š«");
-		//‰º‚ÌƒEƒBƒ“ƒhƒE
+		UI_TextDraw(145, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "é“å…·");
+		UI_TextDraw(275, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "èƒ½åŠ›");
+		UI_TextDraw(145, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "è¶³å…ƒ");
+		UI_TextDraw(275, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "æ“ä½œ");
+		//ä¸‹ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 		Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 510.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.2f, 0.0f);
-		//UI_TextDraw(145, 530, D3DCOLOR_RGBA(255, 255, 255, 255), "“’B“x");
+		//UI_TextDraw(145, 530, D3DCOLOR_RGBA(255, 255, 255, 255), "åˆ°é”åº¦");
 		//UI_TextDraw(475, 530, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", ((CStage::Stage_GetLevel() * 10) / MAX_MAP) * 10);
-		UI_TextDraw(145, 540, D3DCOLOR_RGBA(255, 255, 255, 255), "UŒ‚—Í");
+		UI_TextDraw(145, 540, D3DCOLOR_RGBA(255, 255, 255, 255), "æ”»æ’ƒåŠ›");
 		if (getplayer->Get_WMode())
-		{//ã‚©‚çUŒ‚—ÍA–hŒä—Í
+		{//ä¸Šã‹ã‚‰æ”»æ’ƒåŠ›ã€é˜²å¾¡åŠ›
 			UI_TextDraw(475, 540, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d", getplayer->Get_Str() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_str + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_str);
 			UI_TextDraw(475, 595, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d", getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def);
 		}
@@ -369,7 +471,7 @@ void CUserinterface::CommandWindow_Draw(void)
 			Sprite_Draw(TEX_AX_ICON, 260.0f, 525.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.45f, 0.45f, 0.0f);
 			break;
 		}
-		//‚ƒAƒCƒRƒ“‚Í—¼è‚¿‚Ì‚Í•\¦‚µ‚È‚¢	
+		//ç›¾ã‚¢ã‚¤ã‚³ãƒ³ã¯ä¸¡æ‰‹æŒã¡ã®æ™‚ã¯è¡¨ç¤ºã—ãªã„	
 		if (!getplayer->Get_WMode() && CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_str > 0)
 		{
 			Sprite_Draw(TEX_SHELD_ICON, 320.0f, 525.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SHELD_ICON), (float)Texture_GetHeight(TEX_SHELD_ICON), 0.0f, 0.0f, 0.35f, 0.35f, 0.0f);
@@ -378,7 +480,7 @@ void CUserinterface::CommandWindow_Draw(void)
 		{
 			Sprite_Draw(TEX_RING_ICON, 380.0f, 525.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_RING_ICON), (float)Texture_GetHeight(TEX_RING_ICON), 0.0f, 0.0f, 0.35f, 0.35f, 0.0f);
 		}
-		UI_TextDraw(145, 595, D3DCOLOR_RGBA(255, 255, 255, 255), "–hŒä—Í");
+		UI_TextDraw(145, 595, D3DCOLOR_RGBA(255, 255, 255, 255), "é˜²å¾¡åŠ›");
 		if (CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def > 0)
 		{
 			switch (CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_type)
@@ -411,9 +513,9 @@ void CUserinterface::CommandWindow_Draw(void)
 		{
 			Sprite_Draw(TEX_RING_ICON, 380.0f, 585.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_RING_ICON), (float)Texture_GetHeight(TEX_RING_ICON), 0.0f, 0.0f, 0.35f, 0.35f, 0.0f);
 		}
-		UI_TextDraw(595, 540, D3DCOLOR_RGBA(255, 255, 255, 255), "–• “x");
+		UI_TextDraw(595, 540, D3DCOLOR_RGBA(255, 255, 255, 255), "æº€è…¹åº¦");
 		UI_TextDraw(925, 540, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d/%3d%%", getplayer->Get_PlayerOnaka(),MAX_ONAKA);
-		UI_TextDraw(595, 595, D3DCOLOR_RGBA(255, 255, 255, 255), "Ÿ‚ÌƒŒƒxƒ‹‚Ü‚Å");
+		UI_TextDraw(595, 595, D3DCOLOR_RGBA(255, 255, 255, 255), "æ¬¡ã®ãƒ¬ãƒ™ãƒ«ã¾ã§");
 		UI_TextDraw(1025, 595, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d", getplayer->Get_PlayerNextExp(getplayer->Get_Lv()) - getplayer->Get_Exp() );
 	}
 }
@@ -423,21 +525,21 @@ void CUserinterface::ItemWindow_Draw(void)
 	C3DObj *getplayer = CPlayer::Get_Player();
 	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_WINDOW_ITEM)
 	{
-		//‰E‚ÌƒEƒBƒ“ƒhƒE
+		//å³ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 		RightWindow_Draw();
-		//¶‚ÌƒEƒBƒ“ƒhƒE
+		//å·¦ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 		Sprite_Draw(TEX_WIDTH_WINDOW, 60.0f, 115.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 3.1f, 1.53f, D3DXToRadian(0.0f));
-		//ŠƒAƒCƒeƒ€ƒZƒbƒg
+		//æ‰€æŒã‚¢ã‚¤ãƒ†ãƒ ã‚»ãƒƒãƒˆ
 		SetItemWindow();
 		if (getplayer->Get_ItemOn())
-		{//ƒAƒCƒeƒ€‘I‘ğ‚ÌƒEƒBƒ“ƒhƒE
+		{//ã‚¢ã‚¤ãƒ†ãƒ é¸æŠæ™‚ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 			SetItemOnWindow();
 		}
 	}
 }
 
 void CUserinterface::RightWindow_Draw(void)
-{//‰E‚ÌƒEƒBƒ“ƒhƒE
+{//å³ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 	C3DObj *getplayer = CPlayer::Get_Player();
 	int i;
 	int m_WeponStock[MAX_WEPON] = { 0 };
@@ -482,18 +584,18 @@ void CUserinterface::RightWindow_Draw(void)
 	}
 	if (CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number > 0)
 	{
-		UI_TextDraw(875, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::WEPON_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number);
+		UI_TextDraw(875, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::WEPON_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number);
 	}
 	else if (CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number == 0)
 	{
 		UI_TextDraw(875, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::WEPON_NUMBER])->Wepon_name);
 	}
-	//—¼è‚¿‚Ì‚Í‚‚ÌêŠ‚É•Ší–¼
+	//ä¸¡æ‰‹æŒã¡ã®æ™‚ã¯ç›¾ã®å ´æ‰€ã«æ­¦å™¨å65
 	if (getplayer->Get_WMode())
 	{
 		if (CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number > 0)
 		{
-			UI_TextDraw(875, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::WEPON_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number);
+			UI_TextDraw(875, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::WEPON_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number);
 		}
 		else if (CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_purasu_number == 0)
 		{
@@ -504,7 +606,7 @@ void CUserinterface::RightWindow_Draw(void)
 	{
 		if (CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_purasu_number > 0)
 		{
-			UI_TextDraw(875, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::SHELD_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_purasu_number);
+			UI_TextDraw(875, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::SHELD_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_purasu_number);
 		}
 		else if (CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_purasu_number == 0)
 		{
@@ -513,24 +615,58 @@ void CUserinterface::RightWindow_Draw(void)
 	}
 	if (CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number > 0)
 	{
-		UI_TextDraw(875, 265, D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::RING_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number);
+		UI_TextDraw(875, 265, D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%d", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::RING_NUMBER])->Wepon_name, CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number);
 	}
 	else if (CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number == 0)
 	{
 		UI_TextDraw(875, 265, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", CWepon::Get_Wepon_Data(m_WeponStock[CPlayer::RING_NUMBER])->Wepon_name);
 	}
+	Sprite_Draw(TEX_WIDTH_WINDOW, 790.0f, 145.0f + (TEXT_Y + 130), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 2.43f, 0.553f, D3DXToRadian(0.0f));
+	Sprite_Draw(TEX_AISYOU_ICON, 840.0f, 150.5f + (TEXT_Y + 130), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_AISYOU_ICON), (float)Texture_GetHeight(TEX_AISYOU_ICON), 0.0f, 0.0f, 0.33f, 0.31f, 0.0f);
 }
+
+void CUserinterface::NanameYajirusi_Draw(void)
+{
+	C3DObj *getplayer = CPlayer::Get_Player();
+	//æ–œã‚ç§»å‹•ãƒ¢ãƒ¼ãƒ‰ã®æ™‚4æ–¹ã®æ–œã‚ã«çŸ¢å°è¡¨ç¤º
+	if (getplayer->Get_NanameFlag())
+	{
+		Sprite_Draw(TEX_PLAYER_YAJIRUSI3, 445, 125, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_YAJIRUSI3), (float)Texture_GetHeight(TEX_PLAYER_YAJIRUSI3), 0.0f, 0.0f, 0.8f, 0.8f, D3DXToRadian(0.0f));
+	}
+}
+
+void CUserinterface::ConditionIconDraw(void)
+{
+	C3DObj *getplayer = CPlayer::Get_Player();
+	if (getplayer->Get_Condition() == C3DObj::KURAYAMI_CONDITION)
+	{
+		Sprite_Draw(TEX_PLAYER_MEKAKUSI_ICON, 595, 235, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_MEKAKUSI_ICON), (float)Texture_GetHeight(TEX_PLAYER_MEKAKUSI_ICON), 0.0f, 0.0f, 0.4f, 0.4f, D3DXToRadian(0.0f));
+	}
+	if (getplayer->Get_Condition() == C3DObj::POIZUN_CONDITION)
+	{
+		Sprite_Draw(TEX_PLAYER_POIZUN_ICON, 595, 235, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_POIZUN_ICON), (float)Texture_GetHeight(TEX_PLAYER_POIZUN_ICON), 0.0f, 0.0f, 0.4f, 0.4f, D3DXToRadian(0.0f));
+	}
+	if (getplayer->Get_Condition() == C3DObj::SLEEP_CONDITION)
+	{
+		Sprite_Draw(TEX_PLAYER_SLEEP_ICON, 595, 235, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_SLEEP_ICON), (float)Texture_GetHeight(TEX_PLAYER_SLEEP_ICON), 0.0f, 0.0f, 0.4f, 0.4f, D3DXToRadian(0.0f));
+	}
+	if (getplayer->Get_Str2() >= CHARGE_BUFF)
+	{
+		Sprite_Draw(TEX_PLAYER_CHARGE_ICON, 595, 235, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_CHARGE_ICON), (float)Texture_GetHeight(TEX_PLAYER_CHARGE_ICON), 0.0f, 0.0f, 0.4f, 0.4f, D3DXToRadian(0.0f));
+	}
+}
+
 
 void CUserinterface::SetItemWindow(void)
 {
-	//ƒAƒCƒeƒ€–¼•\¦
+	//ã‚¢ã‚¤ãƒ†ãƒ åè¡¨ç¤º
 	int i;
-	int stock = 0;//ƒAƒCƒeƒ€‚ª‰½ŒÂ‚ ‚é‚©”‚¦‚é
+	int stock = 0;//ã‚¢ã‚¤ãƒ†ãƒ ãŒä½•å€‹ã‚ã‚‹ã‹æ•°ãˆã‚‹
 	C3DObj *getplayer = CPlayer::Get_Player();
 	int m_WeponStock[MAX_WEPON] = { 0 };
 	int m_ItemStock[MAX_ITEM] = { 0 };
-	//ƒAƒCƒeƒ€–¼•`‰æ
-	//•Ší‚Í‚Pƒy[ƒW–Ú‚Ì‚İ•`‰æ
+	//ã‚¢ã‚¤ãƒ†ãƒ åæç”»
+	//æ­¦å™¨ã¯ï¼‘ãƒšãƒ¼ã‚¸ç›®ã®ã¿æç”»
 	for (i = 0; i < MAX_WEPON; i++)
 	{
 		m_WeponStock[i] = getplayer->Get_PlayerWeponStock(i);
@@ -538,7 +674,7 @@ void CUserinterface::SetItemWindow(void)
 		{
 			if (CPlayer::GetPlayerWeponData(i)->wepon_purasu_number > 0)
 			{
-				UI_TextDraw(145, 155 + (TEXT_Y * stock), D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d", CWepon::Get_Wepon_Data(m_WeponStock[i])->Wepon_name, CPlayer::GetPlayerWeponData(i)->wepon_purasu_number);
+				UI_TextDraw(145, 155 + (TEXT_Y * stock), D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%d", CWepon::Get_Wepon_Data(m_WeponStock[i])->Wepon_name, CPlayer::GetPlayerWeponData(i)->wepon_purasu_number);
 			}
 			else
 			{
@@ -574,14 +710,14 @@ void CUserinterface::SetItemWindow(void)
 			}
 		}
 	}
-	//ƒAƒCƒeƒ€‚ª‚Pƒy[ƒW–„‚Ü‚Á‚Ä‚½‚ç‚Qƒy[ƒW–Ú‚ª‚ ‚é‚±‚Æ‚ğ¦‚·ƒJ[ƒ\ƒ‹‚ğo‚·
+	//ã‚¢ã‚¤ãƒ†ãƒ ãŒï¼‘ãƒšãƒ¼ã‚¸åŸ‹ã¾ã£ã¦ãŸã‚‰ï¼’ãƒšãƒ¼ã‚¸ç›®ãŒã‚ã‚‹ã“ã¨ã‚’ç¤ºã™ã‚«ãƒ¼ã‚½ãƒ«ã‚’å‡ºã™
 	if (m_WeponStock[2] != 0 && m_ItemStock[5] != 0)
 	{
-		Sprite_Draw(TEX_CURSOL, 515.0f, 125.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.23f, 0.23f, 0.0f);
-		Sprite_Draw(TEX_CURSOL, 510.0f, 167.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.23f, 0.23f, D3DXToRadian(180.0f));
+		Sprite_Draw(TEX_CURSOL, 510.0f, 125.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.23f, 0.23f, 0.0f);
+		Sprite_Draw(TEX_CURSOL, 505.0f, 167.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.23f, 0.23f, D3DXToRadian(180.0f));
 	}
-	//ƒJ[ƒ\ƒ‹ˆÊ’u
-	//ƒAƒCƒeƒ€‘I‘ğ’†‚ÍƒOƒŒƒC‚É‚·‚é
+	//ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®
+	//ã‚¢ã‚¤ãƒ†ãƒ é¸æŠä¸­ã¯ã‚°ãƒ¬ã‚¤ã«ã™ã‚‹
 	if (getplayer->Get_ItemOn())
 	{
 		Sprite_Draw(TEX_CURSOL_GRY, 110.0f, 157.0f + (TEXT_Y * (getplayer->Get_CursorNumber())), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL_GRY), (float)Texture_GetHeight(TEX_CURSOL_GRY), 0.0f, 0.0f, 0.19f, 0.19f, 0.0f);
@@ -590,15 +726,15 @@ void CUserinterface::SetItemWindow(void)
 	{
 		Sprite_Draw(TEX_CURSOL, 110.0f, 157.0f + (TEXT_Y * (getplayer->Get_CursorNumber())), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.19f, 0.19f, 0.0f);
 	}
-	//UI_TextDraw(145, 155 + (TEXT_Y * stock), D3DCOLOR_RGBA(255, 255, 255, 255), "–ß‚é");
+	//UI_TextDraw(145, 155 + (TEXT_Y * stock), D3DCOLOR_RGBA(255, 255, 255, 255), "æˆ»ã‚‹");
 }
 
 void CUserinterface::SetItemOnWindow(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
-	int add_cursor = 0;//‚à‚µ2ƒy[ƒW–Ú‚ğŠJ‚¢‚Ä‚½‚ç‘«‚·
-	//ƒAƒCƒeƒ€ƒ^ƒCƒv‚É‚æ‚è•\¦ƒEƒBƒ“ƒhƒEAƒƒbƒZ[ƒW‚ğ•Ï‚¦‚é
-	//‘•”õ‚Ì
+	int add_cursor = 0;//ã‚‚ã—2ãƒšãƒ¼ã‚¸ç›®ã‚’é–‹ã„ã¦ãŸã‚‰è¶³ã™
+	//ã‚¢ã‚¤ãƒ†ãƒ ã‚¿ã‚¤ãƒ—ã«ã‚ˆã‚Šè¡¨ç¤ºã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å¤‰ãˆã‚‹
+	//è£…å‚™ã®æ™‚
 	if (getplayer->Get_NextItemPage())
 	{
 		add_cursor += ((MAX_ITEM + MAX_WEPON) / 2);
@@ -606,18 +742,18 @@ void CUserinterface::SetItemOnWindow(void)
 	if (getplayer->Get_PlayerItemStockType(getplayer->Get_CursorNumber() + add_cursor) == CPlayer::WEPON)
 	{
 		Sprite_Draw(TEX_MESSAGE_WINDOW, 555.0f, 130.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 0.25f, 0.7f, D3DXToRadian(0.0f));
-		UI_TextDraw(620, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "à–¾");
+		UI_TextDraw(620, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "èª¬æ˜");
 	}
 	else if (getplayer->Get_PlayerItemStockType(getplayer->Get_CursorNumber() + add_cursor) == CPlayer::ITEM)
 	{
 		Sprite_Draw(TEX_MESSAGE_WINDOW, 555.0f, 130.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 0.25f, 1.46f, D3DXToRadian(0.0f));
-		UI_TextDraw(620, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "ˆù‚Ş");
-		UI_TextDraw(620, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "’u‚­");
-		UI_TextDraw(620, 265, D3DCOLOR_RGBA(255, 255, 255, 255), "à–¾");
+		UI_TextDraw(620, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "é£²ã‚€");
+		UI_TextDraw(620, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "ç½®ã");
+		UI_TextDraw(620, 265, D3DCOLOR_RGBA(255, 255, 255, 255), "èª¬æ˜");
 	}
-	//ƒJ[ƒ\ƒ‹ˆÊ’u
+	//ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®
 	Sprite_Draw(TEX_CURSOL, 585.0f, 157.0f + (TEXT_Y * (getplayer->Get_TimeCursorNumber())), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.19f, 0.19f, 0.0f);
-	//ƒtƒ‰ƒO‚ªON‚È‚çƒAƒCƒeƒ€à–¾•¶‚ğ•\¦
+	//ãƒ•ãƒ©ã‚°ãŒONãªã‚‰ã‚¢ã‚¤ãƒ†ãƒ èª¬æ˜æ–‡ã‚’è¡¨ç¤º
 	if (getplayer->Get_ItemTips())
 	{
 		SetItemTips();
@@ -627,12 +763,12 @@ void CUserinterface::SetItemOnWindow(void)
 void CUserinterface::SetItemTips(void)
 {
 	int i;
-	int add_cursor = 0;//‚à‚µ2ƒy[ƒW–Ú‚ğŠJ‚¢‚Ä‚½‚ç‘«‚·
+	int add_cursor = 0;//ã‚‚ã—2ãƒšãƒ¼ã‚¸ç›®ã‚’é–‹ã„ã¦ãŸã‚‰è¶³ã™
 	C3DObj *getplayer = CPlayer::Get_Player();
 	int m_WeponStock[MAX_WEPON] = { 0 };
 	int m_ItemStock[MAX_ITEM] = { 0 };
-	//ƒAƒCƒeƒ€–¼•`‰æ
-	//•Ší‚Í‚Pƒy[ƒW–Ú‚Ì‚İ•`‰æ
+	//ã‚¢ã‚¤ãƒ†ãƒ åæç”»
+	//æ­¦å™¨ã¯ï¼‘ãƒšãƒ¼ã‚¸ç›®ã®ã¿æç”»
 	for (i = 0; i < MAX_WEPON; i++)
 	{
 		m_WeponStock[i] = getplayer->Get_PlayerWeponStock(i);
@@ -645,55 +781,58 @@ void CUserinterface::SetItemTips(void)
 	{
 		add_cursor += ((MAX_ITEM + MAX_WEPON) / 2);
 	}
-	Sprite_Draw(TEX_MESSAGE_WINDOW, 555.0f, 329.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 0.755f, 1.1f, D3DXToRadian(0.0f));
-	//ƒAƒCƒeƒ€ƒ^ƒCƒv‚É‚æ‚èà–¾•¶‚ğ•Ï‚¦‚é
-	//‘•”õ‚Ì
+	Sprite_Draw(TEX_MESSAGE_WINDOW, 555.0f, 329.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 0.755f, 2.1f, D3DXToRadian(0.0f));
+	//ã‚¢ã‚¤ãƒ†ãƒ ã‚¿ã‚¤ãƒ—ã«ã‚ˆã‚Šèª¬æ˜æ–‡ã‚’å¤‰ãˆã‚‹
+	//è£…å‚™ã®æ™‚
 	if (getplayer->Get_PlayerItemStockType(getplayer->Get_CursorNumber() + add_cursor) == CPlayer::WEPON)
-	{//Œã‚Åenum’è‹`‚µ‚Ä‚¨‚­‚±‚Æ
-		//•Ší‚Ì”\—Í’l‚ğŒ©‚Ä1ˆÈã‚ ‚ê‚Î•\¦‚·‚é
+	{//å¾Œã§enumå®šç¾©ã—ã¦ãŠãã“ã¨
+		//æ­¦å™¨ã®èƒ½åŠ›å€¤ã‚’è¦‹ã¦1ä»¥ä¸Šã‚ã‚Œã°è¡¨ç¤ºã™ã‚‹
 		switch (CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_type)
 		{
 		case CWepon::TYPE_SWORD:
 		case CWepon::TYPE_REIPIA:
 		case CWepon::TYPE_MEISU:
-			UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "•Ğè•Ší");
+			UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "ç‰‡æ‰‹æ­¦å™¨");
 			break;
 		case CWepon::TYPE_BIGSWORD:
 		case CWepon::TYPE_RANCE:
 		case CWepon::TYPE_AX:
-			UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "—¼è•Ší");
+			UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "ä¸¡æ‰‹æ­¦å™¨");
 			break;
 		case CWepon::TYPE_SHELD:
 			if (getplayer->Get_WMode())
 			{
-				UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "”ñ‘•”õ’†");
+				UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "éè£…å‚™ä¸­");
 			}
 			else
 			{
-				UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "‘•”õ’†");
+				UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "è£…å‚™ä¸­");
 			}
 			break;
 		case CWepon::TYPE_RING:
-			UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "‘•ü•i");
+			UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "è£…é£¾å“");
 			break;
 		}
 		if (CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_str > 0 && CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_def > 0)
 		{
-			UI_TextDraw(765, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "UŒ‚—Í %d  –hŒä—Í %d", CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_str, CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_def);
+			UI_TextDraw(765, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "æ”»æ’ƒåŠ› %d  é˜²å¾¡åŠ› %d", CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_str, CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_def);
 		}
 		else if (CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_str > 0)
 		{
-			UI_TextDraw(765, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "UŒ‚—Í %d", CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_str);
+			UI_TextDraw(765, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "æ”»æ’ƒåŠ› %d", CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_str);
 		}
 		else if (CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_def > 0)
 		{
-			UI_TextDraw(765, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "–hŒä—Í %d", CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_def);
+			UI_TextDraw(765, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "é˜²å¾¡åŠ› %d", CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_def);
 		}
+		strchg(CWepon::Get_Wepon_Data(m_WeponStock[getplayer->Get_CursorNumber()])->Wepon_effect, "kk", "\n");
 		UI_TextDraw(640, 410, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", CWepon::Get_Wepon_Data(m_WeponStock[getplayer->Get_CursorNumber()])->Wepon_effect);
 	}
 	else if (getplayer->Get_PlayerItemStockType(getplayer->Get_CursorNumber() + add_cursor) == CPlayer::ITEM)
-	{//ƒXƒCƒbƒ`‚¶‚á‚È‚­‚ÄƒAƒCƒeƒ€ƒXƒgƒbƒN‚Ìƒ^ƒCƒvQÆ‚µ‚ëII
-		UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "g—pƒAƒCƒeƒ€");
+	{//ã‚¹ã‚¤ãƒƒãƒã˜ã‚ƒãªãã¦ã‚¢ã‚¤ãƒ†ãƒ ã‚¹ãƒˆãƒƒã‚¯ã®ã‚¿ã‚¤ãƒ—å‚ç…§ã—ã‚ï¼ï¼
+		UI_TextDraw(585, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "ä½¿ç”¨ã‚¢ã‚¤ãƒ†ãƒ ");
+		//â†“æ”¹è¡Œæ–‡å­—ãŒã‚ã£ãŸå ´åˆæ”¹è¡Œã‚’è¡Œã†
+		strchg(CObject::Get_Item_Data(m_ItemStock[getplayer->Get_CursorNumber() + add_cursor - MAX_WEPON])->object_tips, "kk", "\n");
 		UI_TextDraw(640, 410, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", CObject::Get_Item_Data(m_ItemStock[getplayer->Get_CursorNumber() + add_cursor - MAX_WEPON])->object_tips);
 	}
 }
@@ -702,82 +841,118 @@ void CUserinterface::StatusWindow_Draw(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
 	int i;
-	int m_WeponStock[MAX_WEPON] = { 0 };	//ƒAƒCƒeƒ€–¼•`‰æ
-	//•Ší‚Í‚Pƒy[ƒW–Ú‚Ì‚İ•`‰æ
+	int m_WeponStock[MAX_WEPON] = { 0 };	//ã‚¢ã‚¤ãƒ†ãƒ åæç”»
+	//æ­¦å™¨ã¯ï¼‘ãƒšãƒ¼ã‚¸ç›®ã®ã¿æç”»
 	for (i = 0; i < MAX_WEPON; i++)
 	{
 		m_WeponStock[i] = getplayer->Get_PlayerWeponStock(i);
 	}
 	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_WINDOW_STATUS)
 	{
-		//‰E‚ÌƒEƒBƒ“ƒhƒE
+		//å³ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 		RightWindow_Draw();
-		//ã‚ÌƒEƒBƒ“ƒhƒE
+		//ä¸Šã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 		Sprite_Draw(TEX_WIDTH_WINDOW, 60.0f, 115.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 3.1f, 1.53f, D3DXToRadian(0.0f));
-		//ƒJ[ƒ\ƒ‹ˆÊ’u
+		//ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®
 		Sprite_Draw(TEX_CURSOL, 110.0f, 547.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_CURSOL), (float)Texture_GetHeight(TEX_CURSOL), 0.0f, 0.0f, 0.19f, 0.19f, 0.0f);
-		UI_TextDraw(105, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚Ì”\—Í",getplayer->Get_Name());
-		UI_TextDraw(125, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "‚¿‚©‚ç    %d", getplayer->Get_Str());
-		UI_TextDraw(125, 265, D3DCOLOR_RGBA(255, 255, 255, 255), "‚Ü‚à‚è    %d", getplayer->Get_Def());
-		UI_TextDraw(125, 320, D3DCOLOR_RGBA(255, 255, 255, 255), "ŒoŒ±’l    %d", getplayer->Get_Exp());
+		UI_TextDraw(105, 155, D3DCOLOR_RGBA(255, 255, 255, 255), "%sã®èƒ½åŠ›",getplayer->Get_Name());
+		UI_TextDraw(125, 210, D3DCOLOR_RGBA(255, 255, 255, 255), "ã¡ã‹ã‚‰    %d", getplayer->Get_Str());
+		UI_TextDraw(125, 265, D3DCOLOR_RGBA(255, 255, 255, 255), "ã¾ã‚‚ã‚Š    %d", getplayer->Get_Def());
+		UI_TextDraw(125, 320, D3DCOLOR_RGBA(255, 255, 255, 255), "çµŒé¨“å€¤    %d", getplayer->Get_Exp());
 		switch (CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_type)
 		{
 		case CWepon::TYPE_SWORD:
-			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "•Šíƒ^ƒCƒv   •ĞèŒ•");
+			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨ã‚¿ã‚¤ãƒ—   ç‰‡æ‰‹å‰£");
 			break;
 		case CWepon::TYPE_BIGSWORD:
-			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "•Šíƒ^ƒCƒv   —¼èŒ•");
+			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨ã‚¿ã‚¤ãƒ—   ä¸¡æ‰‹å‰£");
 			break;
 		case CWepon::TYPE_REIPIA:
-			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "•Šíƒ^ƒCƒv   ƒŒƒCƒsƒA");
+			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨ã‚¿ã‚¤ãƒ—   ãƒ¬ã‚¤ãƒ”ã‚¢");
 			break;
 		case CWepon::TYPE_RANCE:
-			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "•Šíƒ^ƒCƒv   ƒ‰ƒ“ƒX");
+			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨ã‚¿ã‚¤ãƒ—   ãƒ©ãƒ³ã‚¹");
 			break;
 		case CWepon::TYPE_MEISU:
-			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "•Šíƒ^ƒCƒv   ƒƒCƒX");
+			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨ã‚¿ã‚¤ãƒ—   ãƒ¡ã‚¤ã‚¹");
 			break;
 		case CWepon::TYPE_AX:
-			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "•Šíƒ^ƒCƒv   ƒIƒm");
+			UI_TextDraw(125, 375, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨ã‚¿ã‚¤ãƒ—   ã‚ªãƒ");
 			break;
 		}
 		
 		if (getplayer->Get_WMode())
 		{
-			UI_TextDraw(125, 430, D3DCOLOR_RGBA(255, 255, 255, 255), "•ŠíUŒ‚—Í   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_str + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_str);
-			UI_TextDraw(125, 485, D3DCOLOR_RGBA(255, 255, 255, 255), "•Ší–hŒä—Í   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def);
+			UI_TextDraw(125, 430, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨æ”»æ’ƒåŠ›   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_str + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_str);
+			UI_TextDraw(125, 485, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨é˜²å¾¡åŠ›   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def);
 		}
 		else
 		{
-			UI_TextDraw(125, 430, D3DCOLOR_RGBA(255, 255, 255, 255), "•ŠíUŒ‚—Í   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_str + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_str + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_str);
-			UI_TextDraw(125, 485, D3DCOLOR_RGBA(255, 255, 255, 255), "•Ší–hŒä—Í   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def);
+			UI_TextDraw(125, 430, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨æ”»æ’ƒåŠ›   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_str + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_str + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_str);
+			UI_TextDraw(125, 485, D3DCOLOR_RGBA(255, 255, 255, 255), "æ­¦å™¨é˜²å¾¡åŠ›   %d", CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def);
 		}
-		UI_TextDraw(145, 545, D3DCOLOR_RGBA(255, 255, 255, 255), "–ß‚é");
+		UI_TextDraw(145, 545, D3DCOLOR_RGBA(255, 255, 255, 255), "æˆ»ã‚‹");
 	}
 }
 
 void CUserinterface::UI_UpDraw(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
-	//ã‚ÌUI•\¦///////////////////
+	//ä¸Šã®UIè¡¨ç¤º///////////////////
 	UI_TextDraw(570, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%.0f", getplayer->Get_Hp());
 	UI_TextDraw(710, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%.0f", getplayer->Get_MaxHp());
 
 	UI_TextDraw(500, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "HP        /");
 
-	//HPƒo[
+	//HPãƒãƒ¼
 	Sprite_Draw(TEX_HPGAGE_REDBAR, 500, 50 + UI_Y, 0, 0, (float)Texture_GetWidth(TEX_HPGAGE_REDBAR), (float)Texture_GetHeight(TEX_HPGAGE_REDBAR), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 	Sprite_Draw(TEX_HPGAGE_WAKU, 500, 50 + UI_Y, 0, 0, (float)Texture_GetWidth(TEX_HPGAGE_WAKU), (float)Texture_GetHeight(TEX_HPGAGE_WAKU), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-	Sprite_Draw(TEX_HPGAGE_GREENBAR, 512, 60 + UI_Y, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), (float)Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
-
+	if (getplayer->Get_Condition() != C3DObj::POIZUN_CONDITION && getplayer->Get_PlayerOnaka() > 0)
+	{
+		Sprite_Draw(TEX_HPGAGE_GREENBAR, 512, 60 + UI_Y, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), (float)Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
+	}
+	else if(getplayer->Get_Condition() == C3DObj::POIZUN_CONDITION)
+	{
+		Sprite_Draw(TEX_HPGAGE_POIZUNBAR, 512, 60 + UI_Y, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), (float)Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
+	}
+	else if (getplayer->Get_PlayerOnaka() == 0)
+	{
+		Sprite_Draw(TEX_HPGAGE_ONAKA, 512, 60 + UI_Y, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), (float)Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
+	}
 	UI_TextDraw(80, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", CStage::Stage_GetLevel());
 	UI_TextDraw(100, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "  F");
 
 	UI_TextDraw(300, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", getplayer->Get_Lv());
 	UI_TextDraw(200, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "  Lv");
 
-	UI_TextDraw(910, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%4d", getplayer->Get_Gold());
-	UI_TextDraw(980, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "  G");
+	//UI_TextDraw(910, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%4d", getplayer->Get_Gold());
+	//UI_TextDraw(980, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "  G");
+	//æ­¦å™¨ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º
+	switch (CPlayer::GetPlayerWeponData(0)->wepon_type)
+	{
+	case CWepon::TYPE_SWORD:
+		Sprite_Draw(TEX_SWORD_ICON, 840, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SWORD_ICON), (float)Texture_GetHeight(TEX_SWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		break;
+	case CWepon::TYPE_BIGSWORD:
+		Sprite_Draw(TEX_BIGSWORD_ICON, 830, UI_Y - 5, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		break;
+	case CWepon::TYPE_REIPIA:
+		Sprite_Draw(TEX_REIPIA_ICON, 830, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		break;
+	case CWepon::TYPE_RANCE:
+		Sprite_Draw(TEX_RANCE_ICON, 830, UI_Y - 5, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		break;
+	case CWepon::TYPE_MEISU:
+		Sprite_Draw(TEX_MEISU_ICON, 830, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		break;
+	case CWepon::TYPE_AX:
+		Sprite_Draw(TEX_AX_ICON, 820, UI_Y - 5, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		break;
+	}
+	UI_TextDraw(880, UI_Y + 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d",CPlayer::GetPlayerWeponData(0)->wepon_str + CPlayer::GetPlayerWeponData(1)->wepon_str + CPlayer::GetPlayerWeponData(2)->wepon_str + getplayer->Get_Str());
+	
+	Sprite_Draw(TEX_SHELD_ICON, 990, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SHELD_ICON), (float)Texture_GetHeight(TEX_SHELD_ICON), 0.0f, 0.0f, 0.3f, 0.3f, 0.0f);
+	UI_TextDraw(1030, UI_Y + 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d", CPlayer::GetPlayerWeponData(0)->wepon_def + CPlayer::GetPlayerWeponData(1)->wepon_def + CPlayer::GetPlayerWeponData(2)->wepon_def + getplayer->Get_Def());
 }
 
 void CUserinterface::Map_Draw(void)
@@ -786,7 +961,7 @@ void CUserinterface::Map_Draw(void)
 	C3DObj *enemy;
 	C3DObj *object;
 	C3DObj *wepon;
-	//ƒEƒBƒ“ƒhƒE‚ğŠJ‚¢‚Ä‚é‚Æ‚«ˆÈŠO‚Éƒ~ƒjƒ}ƒbƒv•`‰æ///////////////////
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‹ã„ã¦ã‚‹ã¨ãä»¥å¤–ã«ãƒŸãƒ‹ãƒãƒƒãƒ—æç”»///////////////////
 	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_WINDOW_STATUS)
 	{
 		return;
@@ -803,12 +978,15 @@ void CUserinterface::Map_Draw(void)
 			for (y = 0; y < MAX_MAPHEIGHT; y++)
 			{
 				if (CMap::Map_GetData(x, y).type != 0)
-				{//«‚±‚ÌƒRƒƒ“ƒg‚ğo‚·‚Æƒ}ƒbƒv‚ª‘SŠJ‚É‚È‚é
+				{//â†“ã“ã®ã‚³ãƒ¡ãƒ³ãƒˆã‚’å‡ºã™ã¨ãƒãƒƒãƒ—ãŒå…¨é–‹ã«ãªã‚‹
 					CMap::Map_SetData(x, y, D3DCOLOR_RGBA(255, 255, 255, 255));
 					if (CMap::Map_GetData(x, y).alpha == 0 && (getplayer->Get_Position().x + MAP_POS_X - MAP_ON_X) < (CMap::Map_GetData(x, y).pos.x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + MAP_ON_X > (CMap::Map_GetData(x, y).pos.x + MAP_POS_X)
 						&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - MAP_ON_X < (CMap::Map_GetData(x, y).pos.z * -1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + MAP_ON_Y >(CMap::Map_GetData(x, y).pos.z * -1) + MAP_POS_Y)
-					{//ƒ}ƒbƒv‚ğ“¥‚ñ‚¾‚ç‰Â‹‰»‚·‚é
-						CMap::Map_SetData(x, y, 255);
+					{//ãƒãƒƒãƒ—ã‚’è¸ã‚“ã ã‚‰å¯è¦–åŒ–ã™ã‚‹
+						if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
+						{
+							CMap::Map_SetData(x, y, 255);
+						}
 					}
 					if (CMap::Map_GetData(x, y).alpha != 0)
 					{
@@ -817,52 +995,74 @@ void CUserinterface::Map_Draw(void)
 				}
 			}
 		}
-		//ƒvƒŒƒCƒ„[ƒAƒCƒRƒ“•\¦
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º
 		Sprite_Draw(TEX_PLAYER_ICON, getplayer->Get_Position().x + MAP_POS_X, (getplayer->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
 		for (i = 0; i < MAX_GAMEOBJ; i++)
 		{
 			enemy = CEnemy::Get_Enemy(i);
 			if (enemy)
-			{//”ÍˆÍ“à‚É‚¢‚½‚çƒGƒlƒ~[ƒAƒCƒRƒ“•\¦ if•¶ƒRƒƒ“ƒgƒAƒEƒg‚Å‘S•\¦
-			//	if ((getplayer->Get_Position().x + MAP_POS_X - ENEMY_ON_X) < (enemy->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + ENEMY_ON_X > (enemy->Get_Position().x + MAP_POS_X)
-			//		&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - ENEMY_ON_Y < (enemy->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + ENEMY_ON_Y >(enemy->Get_Position().z*-1) + MAP_POS_Y)
+			{//ç¯„å›²å†…ã«ã„ãŸã‚‰ã‚¨ãƒãƒŸãƒ¼ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º ifæ–‡ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã§å…¨è¡¨ç¤º
+		//		if ((getplayer->Get_Position().x + MAP_POS_X - ENEMY_ON_X) < (enemy->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + ENEMY_ON_X > (enemy->Get_Position().x + MAP_POS_X)
+		//			&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - ENEMY_ON_Y < (enemy->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + ENEMY_ON_Y >(enemy->Get_Position().z*-1) + MAP_POS_Y)
 				{
-					Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
+					{
+						Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+					}
+				}
+				if (getplayer->Get_EnemyONFlag())
+				{
+					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
+					{
+						Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+					}
 				}
 			}
 			object = CObject::Get_Object(i);
-			//ƒIƒuƒWƒFƒNƒg‚Ì”»’è
+			//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åˆ¤å®š
 			if (object)
-			{//ƒIƒuƒWƒFƒNƒg‚Íˆê“xƒ}ƒbƒsƒ“ƒO‚³‚¹‚½‚çÁ‚¦‚é‚Ü‚Å•\¦‚³‚¹‚é@if•¶ƒRƒƒ“ƒgƒAƒEƒg‚Å‘S•\¦
-				//if ((getplayer->Get_Position().x + MAP_POS_X - OBJECT_ON_X) < (object->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + OBJECT_ON_X > (object->Get_Position().x + MAP_POS_X)
-				//	&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - OBJECT_ON_Y < (object->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + OBJECT_ON_Y >(object->Get_Position().z*-1) + MAP_POS_Y)
+			{//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯ä¸€åº¦ãƒãƒƒãƒ”ãƒ³ã‚°ã•ã›ãŸã‚‰æ¶ˆãˆã‚‹ã¾ã§è¡¨ç¤ºã•ã›ã‚‹ã€€ifæ–‡ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã§å…¨è¡¨ç¤º
+			//	if ((getplayer->Get_Position().x + MAP_POS_X - OBJECT_ON_X) < (object->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + OBJECT_ON_X > (object->Get_Position().x + MAP_POS_X)
+			//		&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - OBJECT_ON_Y < (object->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + OBJECT_ON_Y >(object->Get_Position().z*-1) + MAP_POS_Y)
 				{
-					object->Set_MapDrawFlag(true);
+					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
+					{
+						object->Set_MapDrawFlag(true);
+					}
 				}
 				if (object->Get_MapDrawFlag())
 				{
-					if (object->m_ObjectType == CObject::TYPE_LADDER)
+					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
 					{
-						Sprite_Draw(CTexture::TEX_LADDER_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
-					}
-					if (object->m_ObjectType != CObject::TYPE_LADDER)
-					{
-						Sprite_Draw(CTexture::TEX_ITEM_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+						if (object->m_ObjectType == CObject::TYPE_LADDER)
+						{
+							Sprite_Draw(CTexture::TEX_LADDER_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+						}
+						if (object->m_ObjectType != CObject::TYPE_LADDER)
+						{
+							Sprite_Draw(CTexture::TEX_ITEM_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+						}
 					}
 				}
 			}
 			wepon = CWepon::Get_Wepon(i);
-			//•Ší‚Ì”»’è
+			//æ­¦å™¨ã®åˆ¤å®š
 			if (wepon)
-			{//•Ší‚Íˆê“xƒ}ƒbƒsƒ“ƒO‚³‚¹‚½‚çÁ‚¦‚é‚Ü‚Å•\¦‚³‚¹‚é@if•¶ƒRƒƒ“ƒgƒAƒEƒg‚Å‘S•\¦
-			// if ((getplayer->Get_Position().x + MAP_POS_X - OBJECT_ON_X) < (wepon->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + OBJECT_ON_X > (wepon->Get_Position().x + MAP_POS_X)
-			// 	&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - OBJECT_ON_Y < (wepon->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + OBJECT_ON_Y >(wepon->Get_Position().z*-1) + MAP_POS_Y)
+			{//æ­¦å™¨ã¯ä¸€åº¦ãƒãƒƒãƒ”ãƒ³ã‚°ã•ã›ãŸã‚‰æ¶ˆãˆã‚‹ã¾ã§è¡¨ç¤ºã•ã›ã‚‹ã€€ifæ–‡ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã§å…¨è¡¨ç¤º
+		//	if ((getplayer->Get_Position().x + MAP_POS_X - OBJECT_ON_X) < (wepon->Get_Position().x + MAP_POS_X) && (getplayer->Get_Position().x + MAP_POS_X) + OBJECT_ON_X > (wepon->Get_Position().x + MAP_POS_X)
+		//	 	&& (getplayer->Get_Position().z*-1) + MAP_POS_Y - OBJECT_ON_Y < (wepon->Get_Position().z*-1) + MAP_POS_Y && (getplayer->Get_Position().z*-1) + MAP_POS_Y + OBJECT_ON_Y >(wepon->Get_Position().z*-1) + MAP_POS_Y)
 				{
-					wepon->Set_MapDrawFlag(true);
+				 if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
+				 {
+					 wepon->Set_MapDrawFlag(true);
+				 }
 				}
 				if (wepon->Get_MapDrawFlag())
 				{
-					Sprite_Draw(CTexture::TEX_ITEM_ICON, wepon->Get_Position().x + MAP_POS_X, (wepon->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
+					{
+						Sprite_Draw(CTexture::TEX_ITEM_ICON, wepon->Get_Position().x + MAP_POS_X, (wepon->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+					}
 				}
 			}
 		}
@@ -882,7 +1082,7 @@ void CUserinterface::UI_TextDraw(void)
 	}
 	if (getplayer->Get_PlayerTurn() != CPlayer::PLAYER_WINDOW)
 	{
-		//‰º‚ÌƒeƒLƒXƒg•`‰æ
+		//ä¸‹ã®ãƒ†ã‚­ã‚¹ãƒˆæç”»
 		if (g_text.alive)
 		{
 			Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
@@ -891,25 +1091,25 @@ void CUserinterface::UI_TextDraw(void)
 			case PLAYERCHARA:
 				switch (g_text.act)
 				{
-				case REGULARATTACK://ƒL[“ü—Í‚³‚¹‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‰ğœ
+				case REGULARATTACK://ã‚­ãƒ¼å…¥åŠ›ã•ã›ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆè§£é™¤
 					if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END /*&& getplayer->Get_EnterFlag() */ || text_draw)
-					{//ƒŒƒxƒ‹ƒAƒbƒv‚ÍƒŒƒxƒ‹ƒAƒbƒv•\¦‚Ü‚Åƒ^[ƒ“‚ğ~‚ß‚é‚±‚Æ
+					{//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã¯ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—è¡¨ç¤ºã¾ã§ã‚¿ãƒ¼ãƒ³ã‚’æ­¢ã‚ã‚‹ã“ã¨
 						text_draw = true;
 						time_pos.y -= 2;
-						//ƒEƒBƒ“ƒhƒEã•”‚Ü‚Å•¶š‚ğƒXƒNƒ[ƒ‹‚µAã•”‚Ü‚Å—ˆ‚½‚çÁ‚·
+						//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä¸Šéƒ¨ã¾ã§æ–‡å­—ã‚’ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã—ã€ä¸Šéƒ¨ã¾ã§æ¥ãŸã‚‰æ¶ˆã™
 						if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y)
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ÌUŒ‚I", g_text.player_name);
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã®æ”»æ’ƒï¼", g_text.player_name);
 						}
 						if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y + 50)
 						{
 							if (g_text.damage == 0)
 							{
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "UŒ‚‚ÍŠO‚ê‚Ä‚µ‚Ü‚Á‚½I");
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "æ”»æ’ƒã¯å¤–ã‚Œã¦ã—ã¾ã£ãŸï¼");
 							}
 							else
 							{
-								//•¶š—ñ‚Ì’·‚³‚ğ’²‚×‚»‚Ì’·‚³•ªŸ‚Ì•¶‚ÌX‚ğ‘«‚·
+								//æ–‡å­—åˆ—ã®é•·ã•ã‚’èª¿ã¹ãã®é•·ã•åˆ†æ¬¡ã®æ–‡ã®Xã‚’è¶³ã™
 								int len = strlen(g_text.name);
 								int add_x = 0;
 								if (g_text.damage < 10)
@@ -924,8 +1124,8 @@ void CUserinterface::UI_TextDraw(void)
 								{
 									add_x = 3;
 								}
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚É", g_text.name);
-								//‘Š«‚É‚æ‚Á‚Äƒ_ƒ[ƒW•¶šF•ÏX
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã«", g_text.name);
+								//ç›¸æ€§ã«ã‚ˆã£ã¦ãƒ€ãƒ¡ãƒ¼ã‚¸æ–‡å­—è‰²å¤‰æ›´
 								if (g_text.attribute_type == WEEK_TYPE)
 								{
 									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
@@ -938,63 +1138,63 @@ void CUserinterface::UI_TextDraw(void)
 								{
 									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
 								}
-								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ƒ_ƒ[ƒW—^‚¦‚½!");
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸ãˆãŸ!");
 							}
 						}
-						//‚±‚±‚©‚çƒEƒBƒ“ƒhƒE‚É•\¦‚·‚é•¶šA©•ª‚ÌêŠ‚Ü‚ÅƒXƒNƒ[ƒ‹‚·‚é
+						//ã“ã“ã‹ã‚‰ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã™ã‚‹æ–‡å­—ã€è‡ªåˆ†ã®å ´æ‰€ã¾ã§ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã™ã‚‹
 						if (g_text.pos.y + time_pos.y + 100 < g_text.pos.y)
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğ“|‚µ‚½I", g_text.name);
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’å€’ã—ãŸï¼", g_text.name);
 						}
 						else
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğ“|‚µ‚½I", g_text.name);
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’å€’ã—ãŸï¼", g_text.name);
 						}
-						if (g_text.Age >= ATTACK_END + 30)//1s–Ú‚ªo‚Ä‚©‚ç­‚µ‘Ò‚Á‚Ä‚©‚ço‚·
+						if (g_text.Age >= ATTACK_END + 30)//1è¡Œç›®ãŒå‡ºã¦ã‹ã‚‰å°‘ã—å¾…ã£ã¦ã‹ã‚‰å‡ºã™
 						{
 							if (g_text.Age == ATTACK_END + 30)
 							{
 								g_text.lv_up = getplayer->ExpGoldCheck(g_text.exp, g_text.gold);
-								add_time += 40;//•\¦ŠÔ‰„’·
+								add_time += 40;//è¡¨ç¤ºæ™‚é–“å»¶é•·
 							}
 							if (g_text.pos.y + time_pos.y + 150 < g_text.pos.y + 50)
 							{
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "ŒoŒ±’l%dŠl“¾", g_text.exp);
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "çµŒé¨“å€¤%dç²å¾—", g_text.exp);
 							}
 							else
 							{
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 150 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ŒoŒ±’l%dŠl“¾", g_text.exp);
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 150 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "çµŒé¨“å€¤%dç²å¾—", g_text.exp);
 							}
 
 						}
 						if (g_text.Age >= ATTACK_END + 50 && g_text.lv_up)
-						{//ƒŒƒxƒ‹ƒAƒbƒv‚µ‚½‚ç
+						{//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã—ãŸã‚‰
 							if (g_text.Age == ATTACK_END + 50)
 							{
-								add_time += 80;//•\¦ŠÔ‰„’·
+								add_time += 80;//è¡¨ç¤ºæ™‚é–“å»¶é•·
 							}
 							if (g_text.pos.y + time_pos.y + 200 < g_text.pos.y + 100)
 							{
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ÍƒŒƒxƒ‹%d‚É‚È‚Á‚½I", g_text.player_name, getplayer->Get_Lv());
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã¯ãƒ¬ãƒ™ãƒ«%dã«ãªã£ãŸï¼", g_text.player_name, getplayer->Get_Lv());
 							}
 							else
 							{
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 200 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ÍƒŒƒxƒ‹%d‚É‚È‚Á‚½I", g_text.player_name, getplayer->Get_Lv());
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 200 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã¯ãƒ¬ãƒ™ãƒ«%dã«ãªã£ãŸï¼", g_text.player_name, getplayer->Get_Lv());
 							}
 						}
 					}
 					else if (g_text.Age <= ATTACK_END + 1)
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ÌUŒ‚I", g_text.player_name);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã®æ”»æ’ƒï¼", g_text.player_name);
 						if (g_text.Age > 30)
 						{
 							if (g_text.damage == 0)
 							{
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "UŒ‚‚ÍŠO‚ê‚Ä‚µ‚Ü‚Á‚½I");
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "æ”»æ’ƒã¯å¤–ã‚Œã¦ã—ã¾ã£ãŸï¼");
 							}
 							else if (g_text.damage > 0)
 							{
-								//•¶š—ñ‚Ì’·‚³‚ğ’²‚×‚»‚Ì’·‚³•ªŸ‚Ì•¶‚ÌX‚ğ‘«‚·
+								//æ–‡å­—åˆ—ã®é•·ã•ã‚’èª¿ã¹ãã®é•·ã•åˆ†æ¬¡ã®æ–‡ã®Xã‚’è¶³ã™
 								int len = strlen(g_text.name);
 								int add_x = 0;
 								if (g_text.damage < 10)
@@ -1009,8 +1209,8 @@ void CUserinterface::UI_TextDraw(void)
 								{
 									add_x = 3;
 								}
-								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚É", g_text.name);
-								//‘Š«‚É‚æ‚Á‚Äƒ_ƒ[ƒW•¶šF•ÏX
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã«", g_text.name);
+								//ç›¸æ€§ã«ã‚ˆã£ã¦ãƒ€ãƒ¡ãƒ¼ã‚¸æ–‡å­—è‰²å¤‰æ›´
 								if (g_text.attribute_type == WEEK_TYPE)
 								{
 									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
@@ -1023,40 +1223,42 @@ void CUserinterface::UI_TextDraw(void)
 								{
 									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
 								}
-								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ƒ_ƒ[ƒW—^‚¦‚½!");
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸ãˆãŸ!");
 							}
 							if (getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
 							{
-								UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "¥");
+								UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "â–¼");
 							}
 						}
 					}
 					break;
 				case GOLADDER:
-					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "æ‚Éi‚İ‚Ü‚·‚©H");
-					UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "Ë i‚Ş\n\n   ‚»‚Ì‚Ü‚Ü");
+					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "å…ˆã«é€²ã¿ã¾ã™ã‹ï¼Ÿ");
+					UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "â‡’ é€²ã‚€\n\n   ãã®ã¾ã¾");
 					break;
 
 				case NOTGOLADDER:
-					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "æ‚Éi‚İ‚Ü‚·‚©H");
-					UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "    i‚Ş\n\nË‚»‚Ì‚Ü‚Ü");
+					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "å…ˆã«é€²ã¿ã¾ã™ã‹ï¼Ÿ");
+					UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "    é€²ã‚€\n\nâ‡’ãã®ã¾ã¾");
 					break;
 
 				case DESTROY:
-					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚Í‚â‚ç‚ê‚Ä‚µ‚Ü‚Á‚½", g_text.player_name);
-					UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "¥");
+					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "%sã¯ã‚„ã‚‰ã‚Œã¦ã—ã¾ã£ãŸâ–¼", g_text.player_name);
+					break;
+				case FREE_MESSAGE:
+					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", g_text.free_message);
 					break;
 
 				case ITEM:
-					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğè‚É“ü‚ê‚½", g_text.name);
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’æ‰‹ã«å…¥ã‚ŒãŸ", g_text.name);
 					break;
 
 				case NOITEM:
-					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚Ìã‚Éæ‚Á‚½", g_text.name);
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã®ä¸Šã«ä¹—ã£ãŸ", g_text.name);
 					break;
 
 				case ITEM_EFFECT:
-					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğˆù‚ñ‚¾", g_text.name);
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’é£²ã‚“ã ", g_text.name);
 					if (g_text.Age > ITEM_EFFECT_FRAME)
 					{
 						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s", g_text.item_log);
@@ -1064,85 +1266,92 @@ void CUserinterface::UI_TextDraw(void)
 					break;
 
 				case ITEM_ASIMOTO:
-					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğ‘«Œ³‚É’u‚¢‚½", g_text.name);
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’è¶³å…ƒã«ç½®ã„ãŸ", g_text.name);
 					break;
 
 				case NOITEM_ASIMOTO:
-					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "‚±‚ÌêŠ‚É‚Í’u‚¯‚È‚¢I");
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ã“ã®å ´æ‰€ã«ã¯ç½®ã‘ãªã„ï¼");
 					break;
 
 				case WEPON_GET:
 					if (g_text.purasu_number > 0)
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d‚ğ‘•”õ‚µ‚½", g_text.name, g_text.purasu_number);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%dã‚’è£…å‚™ã—ãŸ", g_text.name, g_text.purasu_number);
 					}
 					else
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğ‘•”õ‚µ‚½", g_text.name);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’è£…å‚™ã—ãŸ", g_text.name);
 					}
 					break;
 				case WEPON_W_GETCHENGE:
 					if (g_text.purasu_number > 0)
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d‚ğ‘•”õ‚µ‚½", g_text.name, g_text.purasu_number);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%dã‚’è£…å‚™ã—ãŸ", g_text.name, g_text.purasu_number);
 						if (g_text.Age > ITEM_EFFECT_FRAME)
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "‚‚ğ‚µ‚Ü‚Á‚½");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ç›¾ã‚’ã—ã¾ã£ãŸ");
 						}
 					}
 					else
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğ‘•”õ‚µ‚½", g_text.name);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’è£…å‚™ã—ãŸ", g_text.name);
 						if (g_text.Age > ITEM_EFFECT_FRAME)
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "‚‚ğ‚µ‚Ü‚Á‚½");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ç›¾ã‚’ã—ã¾ã£ãŸ");
 						}
 					}
 					break;
 				case WEPON_NORMAL_GETCHENGE:
 					if (g_text.purasu_number > 0)
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d‚ğ‘•”õ‚µ‚½", g_text.name, g_text.purasu_number);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%dã‚’è£…å‚™ã—ãŸ", g_text.name, g_text.purasu_number);
 						if (g_text.Age > ITEM_EFFECT_FRAME)
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "‚µ‚Ü‚Á‚Ä‚¢‚½‚‚ğ‘•”õ‚µ‚½");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ã—ã¾ã£ã¦ã„ãŸç›¾ã‚’è£…å‚™ã—ãŸ");
 						}
 					}
 					else
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğ‘•”õ‚µ‚½", g_text.name);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’è£…å‚™ã—ãŸ", g_text.name);
 						if (g_text.Age > ITEM_EFFECT_FRAME)
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "‚µ‚Ü‚Á‚Ä‚¢‚½‚‚ğ‘•”õ‚µ‚½");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ã—ã¾ã£ã¦ã„ãŸç›¾ã‚’è£…å‚™ã—ãŸ");
 						}
 					}
 					break;
 				case SHELD_W_GET:
 					if (g_text.purasu_number > 0)
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s{%d‚ğ‚µ‚Ü‚Á‚½", g_text.name, g_text.purasu_number);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sï¼‹%dã‚’ã—ã¾ã£ãŸ", g_text.name, g_text.purasu_number);
 					}
 					else
 					{
-						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚ğ‚µ‚Ü‚Á‚½", g_text.name);
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‚’ã—ã¾ã£ãŸ", g_text.name);
 					}
+					break;
+				case CONDITION_HEAL:
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.player_name,g_text.heal_log);
+					break;
+				case SLEEP_WAIT:
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã¯çœ ã£ã¦ã„ã‚‹â€¦", g_text.player_name);
 					break;
 				}
 				break;
 
 			case ENEMY:
-				if (g_text.act == REGULARATTACK)
+				switch (g_text.act2)
 				{
-					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚©‚ç‚ÌUŒ‚I", g_text.name);
+				case CAttack::NORMAL_ATTACK_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã‹ã‚‰ã®æ”»æ’ƒï¼", g_text.name);
 					if (g_text.Age > 30)
 					{
 						if (g_text.damage == 0)
 						{
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "UŒ‚‚ÍŠO‚ê‚Ä‚µ‚Ü‚Á‚½I");
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "æ”»æ’ƒã¯å¤–ã‚Œã¦ã—ã¾ã£ãŸï¼");
 						}
 						else
 						{
-							//•¶š—ñ‚Ì’·‚³‚ğ’²‚×‚»‚Ì’·‚³•ªŸ‚Ì•¶‚ÌX‚ğ‘«‚·
+							//æ–‡å­—åˆ—ã®é•·ã•ã‚’èª¿ã¹ãã®é•·ã•åˆ†æ¬¡ã®æ–‡ã®Xã‚’è¶³ã™
 							int len = strlen(g_text.player_name);
 							int add_x = 0;
 							if (g_text.damage < 10)
@@ -1157,8 +1366,8 @@ void CUserinterface::UI_TextDraw(void)
 							{
 								add_x = 3;
 							}
-							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s‚É", g_text.player_name);
-							//‘Š«‚É‚æ‚Á‚Äƒ_ƒ[ƒW•¶šF•ÏX
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã«", g_text.player_name);
+							//ç›¸æ€§ã«ã‚ˆã£ã¦ãƒ€ãƒ¡ãƒ¼ã‚¸æ–‡å­—è‰²å¤‰æ›´
 							if (g_text.attribute_type == WEEK_TYPE)
 							{
 								UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
@@ -1171,12 +1380,112 @@ void CUserinterface::UI_TextDraw(void)
 							{
 								UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
 							}
-							UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 42), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ƒ_ƒ[ƒW—^‚¦‚½!");
+							UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 42), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸ãˆãŸ!");
 						}
+					}
+					break;
+				case CAttack::HIGH_ATTACK_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name,g_text.skill_log);
+					SkillAttackLog();
+					break;
+				case CAttack::HITYU_ATTACK_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					SkillAttackLog();
+					break;
+				case CAttack::HANI_FURASHU_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					SkillAttackLog();
+					break;
+				case CAttack::KIAIDAME_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					if (g_text.Age > 30)
+					{
+						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã®æ¬¡ã®æ”»æ’ƒåŠ›ãŒä¸ŠãŒã£ãŸï¼", g_text.name);
+					}
+					break;
+				case CAttack::SUNAKEMURI_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					if (g_text.Age > 30)
+					{
+						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã¯ç›®ãŒè¦‹ãˆãªããªã£ã¦ã—ã¾ã£ãŸï¼", g_text.player_name);
+					}
+					break;
+				case CAttack::KOMORIUTA_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					if (g_text.Age > 30)
+					{
+						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã¯çœ ã£ã¦ã—ã¾ã£ãŸ", g_text.player_name);
+					}
+					break;
+				case CAttack::POIZUN_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					if (g_text.Age > 30)
+					{
+						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã¯æ¯’ã«ä¾µã•ã‚ŒãŸï¼", g_text.player_name);
 					}
 					break;
 				}
 			}
 		}
+	}
+}
+
+void CUserinterface::SkillAttackLog(void)
+{
+	if (g_text.Age > 30)
+	{
+		if (g_text.damage == 0)
+		{
+			UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "æ”»æ’ƒã¯å¤–ã‚Œã¦ã—ã¾ã£ãŸï¼");
+		}
+		else
+		{
+			//æ–‡å­—åˆ—ã®é•·ã•ã‚’èª¿ã¹ãã®é•·ã•åˆ†æ¬¡ã®æ–‡ã®Xã‚’è¶³ã™
+			int len = strlen(g_text.player_name);
+			int add_x = 0;
+			if (g_text.damage < 10)
+			{
+				add_x = 1;
+			}
+			else if (g_text.damage >= 10 && g_text.damage <= 99)
+			{
+				add_x = 2;
+			}
+			else if (g_text.damage >= 100)
+			{
+				add_x = 3;
+			}
+			UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sã«", g_text.player_name);
+			//ç›¸æ€§ã«ã‚ˆã£ã¦ãƒ€ãƒ¡ãƒ¼ã‚¸æ–‡å­—è‰²å¤‰æ›´
+			if (g_text.attribute_type == WEEK_TYPE)
+			{
+				UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+			}
+			if (g_text.attribute_type == NORMAL_TYPE)
+			{
+				UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+			}
+			if (g_text.attribute_type == RESIST_TYPE)
+			{
+				UI_TextDraw((int)g_text.pos.x + ((len * 25)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+			}
+			UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 42), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸ãˆãŸ!");
+		}
+	}
+}
+
+void CUserinterface::strchg(char *buf, const char *str1, const char *str2)
+{
+	char tmp[1024 + 1];
+	char *p;
+
+	while ((p = strstr(buf, str1)) != NULL) {
+		/* è¦‹ã¤ã‹ã‚‰ãªããªã‚‹ã¾ã§ç¹°ã‚Šè¿”ã™
+		pã¯æ—§æ–‡å­—åˆ—ã®å…ˆé ­ã‚’æŒ‡ã—ã¦ã„ã‚‹ */
+		*p = '\0'; /* å…ƒã®æ–‡å­—åˆ—ã‚’æ—§æ–‡å­—åˆ—ã®ç›´å‰ã§åŒºåˆ‡ã£ã¦ */
+		p += strlen(str1);  /* ãƒã‚¤ãƒ³ã‚¿ã‚’æ—§æ–‡å­—åˆ—ã®æ¬¡ã®æ–‡å­—ã¸ */
+		strcpy(tmp, p);             /* æ—§æ–‡å­—åˆ—ã‹ã‚‰å¾Œã‚’ä¿å­˜ */
+		strcat(buf, str2);  /* æ–°æ–‡å­—åˆ—ã‚’ãã®å¾Œã«ã¤ãªã */
+		strcat(buf, tmp);   /* ã•ã‚‰ã«æ®‹ã‚Šã‚’ã¤ãªã */
 	}
 }

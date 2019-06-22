@@ -9,7 +9,6 @@
 //===================================
 // ’è”
 //===================================
-\
 
 class CObjectYakusou : public CObject
 {
@@ -28,6 +27,5 @@ public:
 
 private:
 	int type;
-	//int g_laddertex;
 };
 #endif

@@ -6,7 +6,6 @@
 
 #ifndef _ENEMY_H_
 #define _ENEMY_H_
-#define ENEMY_MAX (100)
 #include "C3DObj.h"
 #include "userinterface.h"
 class CEnemy :virtual public C3DObj
@@ -28,7 +27,7 @@ public:
 
 		TYPE_SRIME,	
 
-		TYPE_MAX
+		TYPE_MAXENEMY
 	};
 
 
@@ -43,6 +42,7 @@ public:
 	void Enemy_Finalize(int Index);
 	static void EnemyTurnEnd(void);
 
+	static void EnemyDataInit(void);//CSVの読み込み
 	static void Create(int enemy_type, int x, int z);
 	static int Get_EnemyNum(int EnemyType) { return m_EnemyNum[EnemyType]; }
 	static int Get_EnemyIndex(int EnemyType) { return m_EnemyNum[EnemyType] - 1; }
@@ -68,6 +68,7 @@ protected:
 			gold;
 		int first_floor;//出現開始フロア
 		int end_floor;//出現終わりフロア
+		int enemychance;//出現率
 	}ENEMY_Data;
 	int enemyturn;
 	// 目的地
@@ -90,11 +91,13 @@ protected:
 	int m_EnemyIndex;	
 	
 	static int m_EnemyEnableNum;
-	static int m_EnemyNum[TYPE_MAX];//各エネミーの総数
+	static int m_EnemyNum[TYPE_MAXENEMY];//各エネミーの総数
 private:
 	static int m_EnemyMaxNum;//エネミーの総数
 	static int m_ENEMY_MAX;
 	static ENEMY_Data m_EnemyData[];
+
+	static int CEnemy::CSV_EnemyLoad(ENEMY_Data* enemydata, const int num);
 };
 
 #endif // !1

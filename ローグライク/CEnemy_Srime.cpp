@@ -19,6 +19,7 @@
 //	生成
 //=============================================================================
 
+
 CEnemy_Srime::CEnemy_Srime(int x, int z, ENEMY_Data enemy_data) :CEnemy(TYPE_SRIME), C3DObj(C3DObj::TYPE_ENEMY)
 {
 	Initialize(x, z, enemy_data);
@@ -39,15 +40,16 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 {
 	strcpy_s(name, MAX_NAME, enemy_data.enemy_name);
 	m_EnemyIndex = Get_EnemyIndex(TYPE_ALL);
-	Normal_model = GetNormalModel(MODELL_ENEMY_1);
-
+	//Normal_model = GetNormalModel(MODELL_ENEMY_1);
+	C3DObj::InitNormalModelLoad(&Normal_model, "asset/model/piel_wepon.x");
 	TurnCount = 0;
-
+	m_Condition = NORMAL_CONDITION;
 	get_turbo = false;
 	m_WeponType = enemy_data.wepon_type;
 	add_time = 0;
 	alive = true;
 	rival_flag = false;
+	map_drawflag = false;
 	m_Position = D3DXVECTOR3(-247.5f + x * 5, 0.0f, 247.5f - z * 5);
 	m_EnemyMyColision.position = m_Position;
 	m_EnemyMyColision.radius = ENEMY_RADIUS;
@@ -56,6 +58,7 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 	m_MaxHp = enemy_data.Hp;
 	m_Hp = m_MaxHp;
 	m_Str = enemy_data.str;
+	m_Str2 = 1.0f;
 	m_Def = enemy_data.def;
 	m_Exp = enemy_data.exp;
 	m_Gold = enemy_data.gold;
@@ -121,7 +124,19 @@ void CEnemy_Srime::Update(void)
 	case CPlayer::PLAYER_TURN_END:
 		if (!m_Judge_player.HitItem)
 		{
-			Enemy_AI();
+			if (getplayer->Get_Condition() <= C3DObj::KURAYAMI_CONDITION)
+			{
+				Enemy_AI();
+			}
+		}
+		break;
+	case CPlayer::PLAYER_TURN_CONPLETE:
+		if (!m_Judge_player.HitItem)
+		{
+			if (getplayer->Get_Condition() >= C3DObj::BAISOKU_CONDITION)
+			{
+				Enemy_AI();
+			}
 		}
 		break;
 	}
@@ -135,6 +150,13 @@ void CEnemy_Srime::Draw(void)
 	
 	CBilboard::Shadow_Draw(m_mtxWorld, m_Position);
 	DrawDX_Normal(m_mtxWorld, &Normal_model);
+	if (m_Str2 >= CHARGE_BUFF)
+	{
+		CBilboard::Hukidasi_Draw(m_mtxWorld, m_Position, CTexture::TEX_PLAYER_CHARGE_ICON);
+	}
+	//DebugFont_Draw(200, 150, "エネミーモード%d", enemyturn);
+	//DebugFont_Draw(200, 250, "Attackfream = %d", attackframe);
+	//DebugFont_Draw(0, 300, "Angle = %f", m_Angle);
 	//DebugFont_Draw(0, 300, "エネミー nanawalk = %d", nanawalk);
 	//DebugFont_Draw(0, 330, "エネミー walk = %d", walkf);
 	/*
@@ -203,42 +225,32 @@ void CEnemy_Srime::Enemy_AI(void)
 			}
 		}
 
-		// ?????Z?????????
-
 		for (int i = 0; i < MAX_GAMEOBJ; i++)
 		{
 			enemy = CEnemy::Get_Enemy(i);
 			if (enemy)
 			{
-				// ?W???b?W?G?l?~?[???
 				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz - 1)
 					m_Judge_enemy.HitBottom = true;
 
-				// ?W???b?W?G?l?~?[???
 				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz + 1)
 					m_Judge_enemy.HitTop = true;
 
-				// ?W???b?W?G?l?~?[??E
 				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz)
 					m_Judge_enemy.HitRight = true;
 
-				// ?W???b?W?G?l?~?[???
 				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz)
 					m_Judge_enemy.HitLeft = true;
 
-				// ?W???b?W?G?l?~?[?????
 				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz - 1)
 					m_Judge_enemy.HitTopLeft = true;
 
-				// ?W???b?W?G?l?~?[?????
 				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz + 1)
 					m_Judge_enemy.HitBottomLeft = true;
 
-				// ?W???b?W?G?l?~?[??E??    
 				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz + 1)
 					m_Judge_enemy.HitBottomRight = true;
 
-				// ?W???b?W?G?l?~?[??E??
 				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz - 1)
 					m_Judge_enemy.HitTopRight = true;
 
@@ -317,25 +329,25 @@ void CEnemy_Srime::Enemy_AI(void)
 				{
 					// 目的地を通路へ
 					// 上の通路
-					if (CMap::Map_GetData(m_Mapz - 1, m_Mapx).type == 2)
+					if (CMap::Map_GetData(m_Mapz - 1, m_Mapx).type == 2 && !m_Judge_enemy.HitTop)
 					{
 						m_Goalz = m_Mapz - 1;
 						m_Goalx = m_Mapx;
 					}
 					// 下の通路
-					if (CMap::Map_GetData(m_Mapz + 1, m_Mapx).type == 2)
+					if (CMap::Map_GetData(m_Mapz + 1, m_Mapx).type == 2 && !m_Judge_enemy.HitBottom)
 					{
 						m_Goalz = m_Mapz + 1;
 						m_Goalx = m_Mapx;
 					}
 					// 左の通路
-					if (CMap::Map_GetData(m_Mapz, m_Mapx - 1).type == 2)
+					if (CMap::Map_GetData(m_Mapz, m_Mapx - 1).type == 2 && !m_Judge_enemy.HitLeft)
 					{
 						m_Goalz = m_Mapz;
 						m_Goalx = m_Mapx - 1;
 					}
 					// 右の通路
-					if (CMap::Map_GetData(m_Mapz, m_Mapx + 1).type == 2)
+					if (CMap::Map_GetData(m_Mapz, m_Mapx + 1).type == 2 && !m_Judge_enemy.HitRight)
 					{
 						m_Goalz = m_Mapz;
 						m_Goalx = m_Mapx + 1;
@@ -698,6 +710,10 @@ void CEnemy_Srime::Enemy_AI(void)
 
 void CEnemy_Srime::Enemy_Act(void)
 {
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 2);
+	int attack_number = 0;
 	C3DObj *getplayer = CPlayer::Get_Player();
 	if (attackframe < 8)
 	{
@@ -861,8 +877,37 @@ void CEnemy_Srime::Enemy_Act(void)
 	attackframe++;
 	if (attackframe == 5)
 	{
+		//attack_number = random(mt);
+		attack_number = 0;
+		switch (attack_number)
+		{
+		case 0:
+			//CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Angle);
+			if (getplayer->Get_Condition() == NORMAL_CONDITION)
+			{
+				CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
+			}
+			else
+			{
+				CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str,m_Str2, m_Angle);
+			}
+			//m_Str2 = CHARGE_BUFF;
+			break;
+		case 1:
+			//CAttack::Attack_EnemySkill(CAttack::HIGH_ATTACK_SKILL, m_WeponType, m_Type, m_Str, m_Angle, ESCAPE_CHECK_OK);
+			CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
+			//m_Str2 = CHARGE_BUFF;
+			break;
+		case 2:
+			CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
+			//m_Str2 = CHARGE_BUFF;
+			break;
+		}
+		//攻撃スキルのみ↓を書く
+		//m_Str2 = 1.0;
 		// 向いてる方向、攻撃力、攻撃したキャラの名前を渡す
-		CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Angle);
+	//	CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Angle);
+	//	CAttack::Attack_EnemySkill(CAttack::HIGH_ATTACK_SKILL, m_WeponType, m_Type, m_Str, m_Angle);
 	}
 	//プレイヤーが死んだら表示時間延長
 	if (attackframe == 20 && getplayer->Get_Hp() <= 0)
@@ -1496,6 +1541,7 @@ bool CEnemy_Srime::Damage(int str, float angle, int week_type)
 	// 後にダメージエフェクトを作成
 	if (str > 0)
 	{
+		Sleep(HITSTOP);
 		if (week_type == CUserinterface::NORMAL_TYPE)
 		{
 			Exp_Set(HIT, m_Position.x, m_Position.y, m_Position.z, 3.0f, 0.0f);
@@ -1515,35 +1561,35 @@ bool CEnemy_Srime::Damage(int str, float angle, int week_type)
 		PlaySound(MISS_SE);
 	}
 	//攻撃を受けた方に向く
-	if (angle == 4.8f)
+ 	if (angle == LEFT_ANGLE)
 	{
 		m_Angle = 1.6f;
 	}
-	if (angle == 0.0f)
+	if (angle == UP_ANGLE)
 	{
 		m_Angle = 3.2f;
 	}
-	if (angle == 1.6f)
+	if (angle == RIGHT_ANGLE)
 	{
 		m_Angle = 4.8f;
 	}
-	if (angle == 3.2f)
+	if (angle == DOWN_ANGLE)
 	{
 		m_Angle = 0.0f;
 	}
-	if (angle == 0.8f)
-	{
-		m_Angle = 4.0f;
-	}
-	if (angle == 2.4f)
-	{
-		m_Angle = 5.6f;
-	}
-	if (angle == 4.0f)
+	if (angle == LEFT_DOWN_ANGLE)
 	{
 		m_Angle = 0.8f;
 	}
-	if (angle == 5.6f)
+	if (angle == RIGHT_DOWN_ANGLE)
+	{
+		m_Angle = 5.6f;
+	}
+	if (angle == RIGHT_TOP_ANGLE)
+	{
+		m_Angle = 4.0f;
+	}
+	if (angle == LEFT_TOP_ANGLE)
 	{
 		m_Angle = 2.4f;
 	}

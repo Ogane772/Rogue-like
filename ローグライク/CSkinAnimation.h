@@ -61,13 +61,12 @@ public:
 	HRESULT InitThing2(LPDIRECT3DDEVICE9, THING *, LPSTR, MY_HIERARCHY);
 	HRESULT AllocateBoneMatrix( THING* , LPD3DXMESHCONTAINER  );
 	HRESULT AllocateAllBoneMatrices(THING* ,  LPD3DXFRAME  );
-	HRESULT InitSphere(LPDIRECT3DDEVICE9, THING*);
-	static HRESULT UpdateSphere(LPDIRECT3DDEVICE9 pDevice, THING* pThing);//ìñÇΩÇËîªíËÇÃçXêV
 	VOID SKIN_MESH::RenderMeshContainer(LPDIRECT3DDEVICE9 pDevice, MYMESHCONTAINER* pMeshContainer, MYFRAME* pFrame, THING* pThing, bool type);
 	VOID UpdateFrameMatrices(LPD3DXFRAME , LPD3DXMATRIX );
 	VOID SKIN_MESH::DrawFrame(LPDIRECT3DDEVICE9 pDevice, LPD3DXFRAME pFrameBase, THING* pThing, bool type);
 	VOID ChangeAnim(DWORD NewAnimNum);
-	
+	void FreeAnim(LPD3DXFRAME pFrame);
+	void Destroy(THING *DeleteAnimeModel);
 	MY_HIERARCHY cHierarchy;
 protected:
 	
@@ -78,16 +77,13 @@ struct THING
 {
 	LPD3DXMESH pMesh;
 	LPD3DXFRAME pFrameRoot;
-	LPD3DXMESH pSphereMesh;
 	LPD3DXANIMATIONCONTROLLER pAnimController;
 	D3DMATERIAL9* pMeshMaterials;
-	D3DMATERIAL9* pSphereMeshMaterials;
 	LPDIRECT3DTEXTURE9* pMeshTextures;
 	DWORD dwNumMaterials;
 	D3DXVECTOR3 vPosition;
 	D3DXMATRIX mRotation;
 	D3DXMATRIX mWorld;
-	SPHERE2 Sphere;
 	LPDIRECT3DTEXTURE9* texture;
 
 	THING()
