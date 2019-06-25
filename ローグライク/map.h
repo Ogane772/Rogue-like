@@ -73,7 +73,8 @@ private:
 	static void MapWallSet(void);//マップに壁配置処理
 	static void MapItemSet(void);//マップにアイテム配置処理
 	static void MapWeponSet(void);//マップに装備配置処理
-	
+	static void MapTrapSet(void);//マップにワナ配置処理
+
 	static void MapEnemySet(void);//マップにエネミー配置処理
 	static void MapLadderSet(void);//マップに階段配置処理
 

@@ -54,6 +54,7 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/yakusou.png",200,200 },
 	{ "asset/texture/maru.png",1284,720 },
 	{ "asset/texture/yajirusi.png",800,800 },
+	{ "asset/texture/yajirusi2.png",800,800 },
 	{ "asset/texture/yajirusi3.png",500,500 },
 	{ "asset/texture/kurayami_icon.png",250,200 },
 	{ "asset/texture/poizun_icon.png",250,200 },
@@ -64,6 +65,9 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/HP_Gage_onaka.png",250,40 },
 	{ "asset/texture/kakiicon.png",200,200 },
 	{ "asset/texture/aisyou.png",884,582 },
+	{ "asset/texture/buki_maru.png",458,278 },
+	{ "asset/texture/trap.png",200,200 },
+	{ "asset/texture/trap_icon.png",8,8 },
 };
 
 int CTexture::TEXTURE_MAX = sizeof(CTexture::TEXTURE_FILES) / sizeof(TEXTURE_FILES[0]);

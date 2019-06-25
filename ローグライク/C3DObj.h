@@ -91,6 +91,7 @@ public:
 
 		TYPE_OBJECT,	// 障害物
 		TYPE_WEPON,	// 装備
+		TYPE_TRAP,	// ワナ
 		TYPE_etc,		// その他
 		TYPE_MAX
 
@@ -147,6 +148,10 @@ public:
 	virtual void Set_EnemyTurn(int turn) {}//エネミーのターンモードセット
 	virtual bool Get_NanameFlag(void) { return 0; }//斜め移動状態を取得
 	virtual bool Get_GekikaFlag(void) { return 0; }//相性激化状態を取得
+	virtual bool GetWanaCheck(void) { return 0; }//罠が見えてるか取得
+	virtual bool GetWanaEffectOn(void) { return 0; }//罠の効果が発動してるか取得
+	virtual void SetWanaCheck(bool type) { };//罠が見えてるかセット
+	virtual void SetWanaEffectOn(bool type) { };//罠の効果が発動してるかセット
 	int Get_3DObjIndex() { return m_3DObjIndex; }	// ワークインデックス取得
 	int Get_3DObjType() { return m_3DObjType; }		// 種類取得
 	float Get_Angle(void) { return m_Angle; }	//	角度取得	
@@ -191,6 +196,7 @@ public:
 	static JUDGE m_Judge_player;
 	static JUDGE Judgement_GetPlayer(void) { return m_Judge_player; }
 	int m_ObjectType;
+	int m_TrapType;
 	int m_WeponType;
 	// マップ二次元配列用
 	int m_Mapx;

@@ -118,13 +118,13 @@ CObject::~CObject()
 
 C3DObj *CObject::Get_Object(int index)
 {
-	C3DObj *pornament = C3DObj::Get(index);
-	if (pornament)
+	C3DObj *pobject = C3DObj::Get(index);
+	if (pobject)
 	{
-		if (pornament->Get_3DObjType() == C3DObj::TYPE_OBJECT)
+		if (pobject->Get_3DObjType() == C3DObj::TYPE_OBJECT)
 		{
 
-			return pornament;
+			return pobject;
 
 		}
 	}

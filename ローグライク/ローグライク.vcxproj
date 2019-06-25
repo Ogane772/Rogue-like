@@ -163,6 +163,8 @@
     <ClCompile Include="Cplayer.cpp" />
     <ClCompile Include="CSkinAnimation.cpp" />
     <ClCompile Include="CTexture.cpp" />
+    <ClCompile Include="CTrap.cpp" />
+    <ClCompile Include="CTrap_Damage.cpp" />
     <ClCompile Include="CWepon.cpp" />
     <ClCompile Include="CWepon_Ax.cpp" />
     <ClCompile Include="CWepon_BigSword.cpp" />
@@ -212,6 +214,8 @@
     <ClInclude Include="Cplayer.h" />
     <ClInclude Include="CSkinAnimation.h" />
     <ClInclude Include="CTexture.h" />
+    <ClInclude Include="CTrap.h" />
+    <ClInclude Include="CTrap_Damage.h" />
     <ClInclude Include="CWepon.h" />
     <ClInclude Include="CWepon_Ax.h" />
     <ClInclude Include="CWepon_BigSword.h" />

@@ -7,6 +7,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include "CObject.h"
+#include "CTrap.h"
 #include "stage.h"
 #include "CWepon.h"
 #include <iostream>
@@ -1012,6 +1013,10 @@ void CMap::Map_Create(void)
 	//===================================================
 	MapWeponSet();
 	//===================================================
+	// ワナを生成
+	//===================================================
+	MapTrapSet();
+	//===================================================
 	// プレイヤーの初期位置を決める
 	//===================================================
 	MapPlayerSet();
@@ -1071,12 +1076,13 @@ void CMap::MapItemSet(void)
 	//乱数で取得した分だけアイテムを配置する
 	for (i = 0; i < setitem; i++)
 	{
-		do
+		for (;;)
 		{
 			lposX = random(mt);
 			lposZ = random(mt);
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEITEM;
+			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
+				break;
+		}
 		CObject::Create(itemdrop_number[random(mt)], lposX, lposZ);
 	}
 }
@@ -1094,13 +1100,63 @@ void CMap::MapWeponSet(void)
 
 	for (i = 0; i < setitem; i++)
 	{
-		do
+		for (;;)
 		{
 			lposX = random(mt);
 			lposZ = random(mt);
-		} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-		g_map[lposZ][lposX].have = HAVEWEPON;
+			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
+				break;
+		}
 		CWepon::Create(randomwepon(mt), lposX, lposZ);
+	}
+}
+
+void CMap::MapTrapSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
+	int settrap = mt() % 3 + 4;
+	int trapdrop_number[100] = { 0 };//ワナ設置率格納
+	int kakuritu_start = 0;//どの配列番号から数えるか
+	int lposX;
+	int lposZ;
+	int i, j, k;
+	//その階で出るアイテムを検索し確率を代入していく
+	for (j = 0; j<CTrap::Get_TRAPDATAMAX(); j++)
+	{
+		if (CTrap::Get_Trap_Data(j)->first_floor <= CStage::Stage_GetLevel() &&
+			CTrap::Get_Trap_Data(j)->end_floor >= CStage::Stage_GetLevel())
+		{
+			for (k = kakuritu_start; k < kakuritu_start + CTrap::Get_Trap_Data(j)->trapchance; k++)
+			{
+				if (trapdrop_number[k] == 0)
+				{
+					trapdrop_number[k] = CTrap::Get_Trap_Data(j)->trap_type;
+				}
+			}
+			kakuritu_start += CTrap::Get_Trap_Data(j)->trapchance;
+		}
+	}
+	//もしも100％埋まってなかったら空きにダメージ床を置いておく
+	for (k = 0; k < 100; k++)
+	{
+		if (trapdrop_number[k] == 0)
+		{
+			trapdrop_number[k] = CTrap::TYPE_DAMAGE;
+		}
+	}
+	//乱数で取得した分だけアイテムを配置する
+	for (i = 0; i < settrap; i++)
+	{
+		for (;;)
+		{
+			lposX = random(mt);
+			lposZ = random(mt);
+			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
+				break;
+		}
+		CTrap::Create(trapdrop_number[random(mt)], lposX, lposZ);
 	}
 }
 
@@ -1138,11 +1194,13 @@ void CMap::MapPlayerSet(void)
 	int pposX;
 	int pposZ;
 	std::uniform_int_distribution<int> random(0, 99);
-	do
+	for (;;)
 	{
 		pposX = random(mt);
 		pposZ = random(mt);
-	} while (g_map[pposZ][pposX].type != 1 && g_map[pposZ][pposX].have == NOTHAVE);
+		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE)
+			break;
+	}
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetPos(pposZ, pposX);
 }
@@ -1155,11 +1213,13 @@ void CMap::WorpPlayerSet(void)
 	int pposX;
 	int pposZ;
 	std::uniform_int_distribution<int> random(0, 99);
-	do
+	for (;;)
 	{
 		pposX = random(mt);
 		pposZ = random(mt);
-	} while (g_map[pposZ][pposX].type != 1 && g_map[pposZ][pposX].have == NOTHAVE);
+		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE)
+			break;
+	}
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetWorpPos(pposZ, pposX);
 }
@@ -1171,17 +1231,19 @@ void CMap::MapEnemySet(void)
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	// 敵生成数の誤差
-	int setenemy = 1;
+	int setenemy = 0;
 	for (int i = 0; i < setenemy; i++)
 		//for (int i = 0; i < 1; i++)	// デバッグ用
 	{
 		int eposX;
 		int eposZ;
-		do
+		for (;;)
 		{
-			eposX = mt() % MAX_MAPWIDTH;
-			eposZ = mt() % MAX_MAPHEIGHT;
-		} while (g_map[eposZ][eposX].type != 1 && g_map[eposZ][eposX].have == NOTHAVE);
+			eposX = random(mt);
+			eposZ = random(mt);
+			if (g_map[eposZ][eposX].type == 1 && g_map[eposZ][eposX].have == NOTHAVE)
+				break;
+		}
 		g_map[eposZ][eposX].have = HAVEENEMY;
 		CEnemy::Create(CEnemy::TYPE_SRIME, eposX, eposZ);
 	}
@@ -1195,12 +1257,13 @@ void CMap::MapLadderSet(void)
 	int lposX;
 	int lposZ;
 	std::uniform_int_distribution<int> random(0, 99);
-	do
+	for (;;)
 	{
 		lposX = random(mt);
 		lposZ = random(mt);
-	} while (g_map[lposZ][lposX].type != 1 && g_map[lposZ][lposX].have == NOTHAVE);
-	g_map[lposZ][lposX].have = HAVELADDER;
+		if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
+			break;
+	}
 	CObject::Create(CObject::TYPE_LADDER, lposX, lposZ);
 }
 
@@ -2411,6 +2474,10 @@ void CMap::Map_Create_B(void)
 	// 装備を生成
 	//===================================================
 	MapWeponSet();
+	//===================================================
+	// ワナを生成
+	//===================================================
+	MapTrapSet();
 	//===================================================
 	// プレイヤーの初期位置を決める
 	//===================================================

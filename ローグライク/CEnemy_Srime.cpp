@@ -7,6 +7,7 @@
 #include "userinterface.h"
 #include "debug_font.h"
 #include "Attack.h"
+#include "save_load.h"
 #include "map.h"
 #include "collision.h"
 #include "bilboard.h"
@@ -119,6 +120,11 @@ void CEnemy_Srime::Update(void)
 		break;
 
 	case CPlayer::PLAYER_MOVE:
+		//プレイヤーが移動中にオブジェクトに当たった時は殴らない
+		if (getplayer->m_Judge_player.HitItem)
+		{
+			break;
+		}
 	case CPlayer::PLAYER_ACT_END:
 	case CPlayer::PLAYER_MOVE_END:
 	case CPlayer::PLAYER_TURN_END:
@@ -1598,6 +1604,9 @@ bool CEnemy_Srime::Damage(int str, float angle, int week_type)
 	// 体力が0以下で倒れる
 	if (m_Hp <= 0)
 	{
+		SAVE_COUNT *save;
+		save = Get_SaveCount();
+		save->enemy_death_count += 1;
 		Enemy_Destroy();
 		return DEATH;
 	}

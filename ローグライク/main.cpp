@@ -22,6 +22,7 @@
 #include "debug_font.h"
 #include "gamepad.h"
 #include "CObject.h"
+#include "CTrap.h"
 #include "CWepon.h"
 #include "fade.h"
 #include "sound.h"
@@ -259,7 +260,7 @@ bool Begin(HINSTANCE hInstance, HWND hWnd)
 	// フェードの初期化
 	Fade_Initialize();
 
-	//ロード
+	//セーブデータのロード
 	Load();
 
 	//	システムタイマーの初期化
@@ -287,6 +288,7 @@ bool Begin(HINSTANCE hInstance, HWND hWnd)
 	CObject::ObjectDataInit();
 	CWepon::WeponDataInit();
 	CEnemy::EnemyDataInit();
+	CTrap::TrapDataInit();
 
 	CUserinterface::UI_Initialize();
 											//CCamera::Camera_Create();				//	カメラ生成					//	地面生成																									//CMeshField_Cylinder::MeshField_Cylinder_Create(CTexture::TEX_FLORR, 10.0f, SYLINDERSIZE, 20, 1,true);	//	内カベ生成

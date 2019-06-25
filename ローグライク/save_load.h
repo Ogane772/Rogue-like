@@ -15,5 +15,6 @@ typedef struct {
 }SAVE_COUNT;
 void Save(void);
 void Load(void);
+void SaveDelete(void);
 SAVE_COUNT* Get_SaveCount(void);
 #endif

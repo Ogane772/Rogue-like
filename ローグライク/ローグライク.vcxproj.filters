@@ -79,6 +79,12 @@
     <Filter Include="ソース ファイル\オブジェクト">
       <UniqueIdentifier>{ba5fe435-3aee-49f8-9cbf-449cae5a5886}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\ワナ">
+      <UniqueIdentifier>{862e9fce-b3ae-4a15-bd1b-11dc809072cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\ワナ">
+      <UniqueIdentifier>{f682876d-1a4e-474a-813c-a5a5bd3dafd4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C3DObj.cpp">
@@ -219,6 +225,12 @@
     <ClCompile Include="save_load.cpp">
       <Filter>ソース ファイル\コモン</Filter>
     </ClCompile>
+    <ClCompile Include="CTrap.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Damage.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C2DObj.h">
@@ -358,6 +370,12 @@
     </ClInclude>
     <ClInclude Include="save_load.h">
       <Filter>ヘッダー ファイル\コモン</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Damage.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
