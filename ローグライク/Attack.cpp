@@ -6,6 +6,7 @@
 #include "CWepon.h"
 #include <iostream>
 #include <random>
+#include "save_load.h"
 #define WEEK_BAIRITU (1.3f)
 #define WEEK_GEKIKA_BAIRITU (1.6f)
 #define RESIST_BAIRITU (0.7f)
@@ -58,6 +59,9 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 					{
 						damage = 1;
 					}
+					SAVE_COUNT *save;
+					save = Get_SaveCount();
+					save->damage_count += damage;
 				}
 				if (vec == DOWN_ANGLE)	// è„çUåÇ
 				{

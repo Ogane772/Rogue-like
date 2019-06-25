@@ -75,6 +75,7 @@ void TitleMenu_Update(void)
 					PlaySound(CURSOR_OK_SE);
 					save_delete_on = true;
 					//ここでセーブデータ消去
+					SaveDelete();
 				}
 				if (save_delete_cursor == 1)
 				{
@@ -139,11 +140,16 @@ void TitleMenu_Update(void)
 			switch (cursor)
 			{
 			case GAME_START:
+				SAVE_COUNT *save;
+				save = Get_SaveCount();
+				save->danjyon_in += 1;
 				Scene_Change(SCENE_INDEX_STAGE);
 				// 階層の初期化
 				CStage::Stage_SetLevel(0);
 				break;
 			case GAME_GALLERY:
+				//セーブデータのロード
+				Load();
 				Scene_Change(SCENE_INDEX_GALLERY);
 				break;
 			case SAVE_DELETE:

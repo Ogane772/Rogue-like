@@ -36,7 +36,7 @@ void Load(void)
 
 	errno_t error;
 
-	error = fopen_s(&pFile, FILENAME, "wb");
+	error = fopen_s(&pFile, FILENAME, "rb");
 	// ファイルオープン
 	if (error != 0)
 	{
@@ -54,6 +54,11 @@ void Load(void)
 		fread((&save.wepon_chenge_count), sizeof(save.wepon_chenge_count), 1, pFile);
 		fclose(pFile);
 	}
+}
+
+void SaveDelete(void)
+{
+	remove(FILENAME);
 }
 
 SAVE_COUNT* Get_SaveCount(void)

@@ -56,6 +56,7 @@ public:
 		PLAYER_SLEEP_WAIT,      // 睡眠状態の待機時間
 		PLAYER_WARP_WAIT,      // ワープ状態の待機時間
 		PLAYER_ITEM_ASIMOTO,	// アイテムを置いたとき
+		PLAYER_TRAP_EFFECT,		// ワナを踏んだ時の効果
 		PLAYER_ACT,				// 行動中
 		PLAYER_ACT_END,			// 行動終了
 		PLAYER_MOVE,			// 移動中
@@ -165,6 +166,7 @@ private:
 	void Player_SelectUi(void);
 	void Player_SelectItem(void);
 	void Player_ItemEffect(void);//アイテムの使用、使用効果
+	void Player_TrapEffect(void);//罠の効果
 	void Player_ItemAsimoto(void);//アイテムを足元に置く処理
 	void Player_CollisionUpdate(void);
 	void Player_TurboMove(void);
@@ -184,11 +186,14 @@ private:
 	void ControllerAngleChange(int index);	//	コントローラーの方向変換
 	void Player_Act(void);
 	void Player_Destroy(void);
+	void Player_BackCheck(void);//アイテム取得中にモンスターが攻撃してこないよう事前確認
 	void Player_Check(void);//プレイヤーの当たり判定
+	void Player_TrapCheck(void);//罠に攻撃した時見えるようにする
 	void Player_WeponChenge(int wepon_type, int wepondata_number);//武器の装備 引数　武器のタイプ、装備する場所
 	void Player_W_WeponChenge(int wepon_type);//両手武器の装備 引数　武器のタイプ、装備する場所
 	void Player_ItemSort(void);//使用アイテム削除自、アイテムを前に詰める
 	bool JoyDevice_IsTrigger(int nKey);//コントローラーのトリガー処理
+	int WeponPurasuSet(void);//+値を決めて返す
 	int m_PadDirection;
 	enum
 	{
@@ -217,12 +222,12 @@ private:
 	int m_AllWeponStock;//装備をいくつ持ってるか格納
 	int m_Add_cursor;//もし2ページ目を開いてたら足す
 	int m_AutoHell;//自動回復力
+	int m_TrapType;//踏んだトラップ番号格納
 	static 	int m_Turn;
 	int m_DrawCount;
 	bool m_Wmode;//両手武器を持ってるときはtrue
 	bool m_ItemOn;//アイテムを選択したらtrue
 	bool m_ItemTips;//アイテム説明フラグ
-	bool m_NoItem;//置いたときにアイテムを取らないようにする
 	bool m_NextItemPage;//所持アイテムウィンドウが2ページ目ならtrue
 	bool right_trigger = false;
 	bool left_trigger = false;
