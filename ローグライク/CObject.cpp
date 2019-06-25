@@ -187,13 +187,16 @@ int CObject::CSV_ObjectLoad(OBJECT_Data* object, const int num)
 	FILE* file = NULL;
 
 	if ((file = fopen(OBJECT_CSV_NAME, "r")) == NULL)
+	{
+		MessageBox(NULL, "ITEM_CSVを読み込めませんでした\nCSVを保存しなおせば直る可能性があります", "エラー", MB_OK);
+		exit(1);
 		return -1;
+	}
 	//データを読み込む
 	while (fgets(buf, size, file) != NULL && num > ++cnt);
 	fscanf(file, "%d,%[^,],%[^,],%[^,],%d,%d,%d", &object->object_type, &object->object_name, &object->object_effect, &object->object_tips, &object->first_floor, &object->end_floor, &object->itemchance);
 
 	fclose(file);
-
 
 
 	if (num != cnt)

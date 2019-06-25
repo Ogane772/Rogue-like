@@ -188,7 +188,11 @@ int CWepon::CSV_Wepon_Load(Wepon_Data* wepondata, const int num)
 	FILE* file = NULL;
 
 	if ((file = fopen(WEPON_CSV_NAME, "r")) == NULL)
+	{
+		MessageBox(NULL, "WEPON_CSVを読み込めませんでした\nCSVを保存しなおせば直る可能性があります", "エラー", MB_OK);
+		exit(1);
 		return -1;
+	}
 	//データを読み込む
 	while (fgets(buf, size, file) != NULL && num > ++cnt);
 	fscanf(file, "%d,%[^,],%[^,],%d,%d,%d,%d,%d,%d,%d", &wepondata->type, wepondata->Wepon_name, wepondata->Wepon_effect, &wepondata->str, &wepondata->def, &wepondata->first_floor, &wepondata->end_floor, &wepondata->weponchance, &wepondata->rare,&wepondata->kantei_type);

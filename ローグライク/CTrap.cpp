@@ -72,6 +72,11 @@ void CTrap::Create(int trap_type, int x, int z)
 	case TYPE_DAMAGE:
 	case TYPE_KUHUKU:
 	case TYPE_WARP_TRAP:
+	case TYPE_SLEEP_TRAP:
+	case TYPE_POIZUN_TRAP:
+	case TYPE_KUYARAMI_TRAP:
+	case TYPE_DONSOKU_TRAP:
+	case TYPE_ITEMDELETE_TRAP:
 		pdamage = new CTrapDamage(x, z, trap_type);
 		break;
 	}
@@ -161,7 +166,11 @@ int CTrap::CSV_TrapLoad(TRAP_Data* trap, const int num)
 	FILE* file = NULL;
 
 	if ((file = fopen(TRAP_CSV_NAME, "r")) == NULL)
+	{
+		MessageBox(NULL, "TRAP_CSVを読み込めませんでした\nCSVを保存しなおせば直る可能性があります", "エラー", MB_OK);
+		exit(1);
 		return -1;
+	}
 	//データを読み込む
 	while (fgets(buf, size, file) != NULL && num > ++cnt);
 	fscanf(file, "%d,%[^,],%[^,],%d,%d,%d", &trap->trap_type, &trap->trap_name, &trap->trap_effect, &trap->first_floor, &trap->end_floor, &trap->trapchance);

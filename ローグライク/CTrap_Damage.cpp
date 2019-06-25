@@ -22,9 +22,7 @@ CTrapDamage ::CTrapDamage (int x, int z, int trap_type) :CTrap(trap_type), C3DOb
 
 CTrapDamage ::~CTrapDamage ()
 {
-	//罠の判定やっといて
-	//あとテキスト表示とアイコン表示と効果も
-	//罠の表示判定と踏んだフラグも必要
+
 }
 
 void CTrapDamage ::Initialize(int x, int z, int trap_type)
