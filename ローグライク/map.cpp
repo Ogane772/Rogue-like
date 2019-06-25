@@ -24,6 +24,7 @@ void CMap::Map_Initialize(void)
 	CEnemy::DeleteAllEnemy();
 	CObject::DeleteAllObject();
 	CWepon::DeleteAllWepon();
+	CTrap::DeleteAllTrap();
 	int i = 0, j = 0;
 	//g_TexWood2 = -1;
 	if (CStage::Stage_GetLevel() == 1)
