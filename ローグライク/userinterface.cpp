@@ -256,6 +256,24 @@ void CUserinterface::UI_TextCreateCondition(CHARATYPE chara, ACTTYPE act, int co
 	}
 }
 
+void CUserinterface::UI_TextCreateDeleteItem(CHARATYPE chara, ACTTYPE act, int type, char* rog_message,char* action_message)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.act = act;
+	strcpy_s(g_text.name, MAX_NAME, CObject::Get_ObjectName(type));
+	strcpy_s(g_text.item_log, MAX_NAME, rog_message);
+	strcpy_s(g_text.free_message, MAX_NAME, action_message);
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+}
+
 void CUserinterface::UI_TextCreateTrap(CHARATYPE chara, ACTTYPE act, int type)
 {
 	g_text.lv_up = false;
@@ -1347,6 +1365,20 @@ void CUserinterface::UI_TextDraw(void)
 					if (g_text.Age > ITEM_EFFECT_FRAME)
 					{
 						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s", g_text.item_log);
+					}
+					break;
+				case ITEM_DELETE:
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.item_log,g_text.free_message);
+					if (g_text.Age > ITEM_EFFECT_FRAME)
+					{//アイテムが無かったら効果がないと表示
+						if (getplayer->Get_PlayerItemStock(0) == 0)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sは道具を持っていなかった！", g_text.player_name, g_text.name);
+						}
+						else
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sが消えてしまった！", g_text.name);
+						}
 					}
 					break;
 				case TRAP_EFFECT:

@@ -41,6 +41,7 @@ public:
 		NOITEM,			// アイテムを持てないとき
 		ITEM_EFFECT,	// アイテム使用時
 		ITEM_ASIMOTO,	// アイテム置いたとき
+		ITEM_DELETE,	// アイテム削除時
 		NOITEM_ASIMOTO,	// アイテムが置けないとき
 		TRAP_EFFECT,	// 罠を踏んだ時
 		WEPON_GET,	// 装備を手に入れた時
@@ -97,6 +98,7 @@ public:
 
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act);
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, char* message);
+	static void UI_TextCreateDeleteItem(CHARATYPE chara, ACTTYPE act, int type, char* rog_message, char* action_message);//アイテム削除用
 	static void UI_TextCreateTrap(CHARATYPE chara, ACTTYPE act, int type);//罠用
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int condition);//状態異常回復
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type , char* rog_message);//+値変化用

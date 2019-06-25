@@ -266,7 +266,11 @@ int CEnemy::CSV_EnemyLoad(ENEMY_Data* enemydata, const int num)
 	FILE* file = NULL;
 
 	if ((file = fopen(ENEMY_CSV_NAME, "r")) == NULL)
+	{
+		MessageBox(NULL, "ENEMY_CSVを読み込めませんでした\nCSVを保存しなおせば直る可能性があります", "エラー", MB_OK);
+		exit(1);
 		return -1;
+	}
 	//データを読み込む
 	while (fgets(buf, size, file) != NULL && num > ++cnt);
 	fscanf(file, "%d,%[^,],%f,%d,%d,%d,%d,%d,%d,%d", &enemydata->wepon_type, enemydata->enemy_name , &enemydata->Hp, &enemydata->str, &enemydata->def, &enemydata->exp, &enemydata->gold, &enemydata->first_floor, &enemydata->end_floor, &enemydata->enemychance);
