@@ -24,6 +24,7 @@ void CMap::Map_Initialize(void)
 	CEnemy::DeleteAllEnemy();
 	CObject::DeleteAllObject();
 	CWepon::DeleteAllWepon();
+	CTrap::DeleteAllTrap();
 	int i = 0, j = 0;
 	//g_TexWood2 = -1;
 	if (CStage::Stage_GetLevel() == 1)
@@ -1043,7 +1044,8 @@ void CMap::MapItemSet(void)
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
-	int setitem = mt() % 3 + 4;
+	//int setitem = mt() % 3 + 4;
+	int setitem = 40;
 	int itemdrop_number[100] = { 0 };//アイテムドロップ率格納
 	int kakuritu_start = 0;//どの配列番号から数えるか
 	int lposX;
@@ -1084,6 +1086,7 @@ void CMap::MapItemSet(void)
 				break;
 		}
 		CObject::Create(itemdrop_number[random(mt)], lposX, lposZ);
+		g_map[lposZ][lposX].have = HAVEITEM;
 	}
 }
 
@@ -1093,7 +1096,8 @@ void CMap::MapWeponSet(void)
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	std::uniform_int_distribution<int> randomwepon(1, 8);
-	int setitem = mt() % 3 + 4;
+	//int setitem = mt() % 3 + 4;
+	int setitem = 40;
 	int lposX;
 	int lposZ;
 	int i;
@@ -1108,6 +1112,7 @@ void CMap::MapWeponSet(void)
 				break;
 		}
 		CWepon::Create(randomwepon(mt), lposX, lposZ);
+		g_map[lposZ][lposX].have = HAVEWEPON;
 	}
 }
 
@@ -1117,6 +1122,7 @@ void CMap::MapTrapSet(void)
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	int settrap = mt() % 3 + 4;
+	//int settrap = 40;
 	int trapdrop_number[100] = { 0 };//ワナ設置率格納
 	int kakuritu_start = 0;//どの配列番号から数えるか
 	int lposX;
@@ -1157,6 +1163,7 @@ void CMap::MapTrapSet(void)
 				break;
 		}
 		CTrap::Create(trapdrop_number[random(mt)], lposX, lposZ);
+		g_map[lposZ][lposX].have = HAVETRAP;
 	}
 }
 
