@@ -42,7 +42,17 @@ public:
 	void Enemy_TopRightMoveCheck(void);
 	void Enemy_BottomLeftMoveCheck(void);
 	void Enemy_BottomRightMoveCheck(void);
+	//‚Á”ò‚ÑˆÚ“®ŠÖ”
+	void Enemy_BackMove(void);
+	//ƒ[ƒvˆÚ“®ŠÖ”
+	void Enemy_WarpMove(void);
 	bool Damage(int str, float angle, int week_type);
+	bool PoizunDamage(int str);
 	void Enemy_Destroy(void);
+	void Enemy_SetWorpPos(int pposZ, int pposX);
+	void Enemy_PoizunDamageStart(void);
+	void Enemy_PoizunDamage(void);
+	void Enemy_ConditionCount(void);
+	
 };
 #endif 

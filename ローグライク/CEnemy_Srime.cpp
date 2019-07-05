@@ -49,8 +49,10 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 	m_WeponType = enemy_data.wepon_type;
 	add_time = 0;
 	alive = true;
+	m_RangeHit = false;
 	rival_flag = false;
 	map_drawflag = false;
+	m_Back = false;
 	m_Position = D3DXVECTOR3(-247.5f + x * 5, 0.0f, 247.5f - z * 5);
 	m_EnemyMyColision.position = m_Position;
 	m_EnemyMyColision.radius = ENEMY_RADIUS;
@@ -64,10 +66,13 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 	m_Exp = enemy_data.exp;
 	m_Gold = enemy_data.gold;
 	m_Goway = false;
+	m_Warp = false;
 	m_Angle = 0.0f;
+	m_TurnCount = 0;
 	walkf = 0;
 	attackframe = 0;
 	nanawalk = 0;
+	m_BackFrame = 0;
 	m_Front = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	m_Up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	D3DXVec3Normalize(&m_Front, &m_Front);
@@ -99,52 +104,77 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 void CEnemy_Srime::Update(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
-		
-	m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
-	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
-	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
-	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
-
-
-	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
-	m_mtxWorld *= m_mtxTranslation;
-
-	switch (getplayer->Get_PlayerTurn())
+	
+	if (m_Back == false)
 	{
-	case CPlayer::PLAYER_KEY_INPUT:
-	case CPlayer::PLAYER_SERECT_UI:
-	case CPlayer::PLAYER_WINDOW:
-	case CPlayer::PLAYER_ITEM_WAIT:
-		// なにもしない
-		break;
+		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
 
-	case CPlayer::PLAYER_MOVE:
-		//プレイヤーが移動中にオブジェクトに当たった時は殴らない
-		if (getplayer->m_Judge_player.HitItem)
+		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+
+
+		D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+		m_mtxWorld *= m_mtxTranslation;
+	}
+
+	if (m_Warp == true)
+	{
+		Enemy_WarpMove();
+	}
+	else if (m_Back == true)
+	{
+		Enemy_BackMove();
+	}
+	else if (m_Back == false)
+	{
+		if (m_Condition == SLEEP_CONDITION)
 		{
-			break;
-		}
-	case CPlayer::PLAYER_ACT_END:
-	case CPlayer::PLAYER_MOVE_END:
-	case CPlayer::PLAYER_TURN_END:
-		if (!m_Judge_player.HitItem)
-		{
-			if (getplayer->Get_Condition() <= C3DObj::KURAYAMI_CONDITION)
+			if (m_TurnCount < ENEMY_SLEEP_HEALTURN)
 			{
-				Enemy_AI();
+				enemyturn = ENEMY_TURN_END;
 			}
 		}
-		break;
-	case CPlayer::PLAYER_TURN_CONPLETE:
-		if (!m_Judge_player.HitItem)
+		else if (m_Condition != SLEEP_CONDITION)
 		{
-			if (getplayer->Get_Condition() >= C3DObj::BAISOKU_CONDITION)
+			switch (getplayer->Get_PlayerTurn())
 			{
-				Enemy_AI();
+			case CPlayer::PLAYER_KEY_INPUT:
+			case CPlayer::PLAYER_SERECT_UI:
+			case CPlayer::PLAYER_WINDOW:
+			case CPlayer::PLAYER_ITEM_WAIT:
+				// なにもしない
+				break;
+
+			case CPlayer::PLAYER_MOVE:
+				//プレイヤーが移動中にオブジェクトに当たった時は殴らない
+				//プレイヤーが複数攻撃中も
+				if (getplayer->m_Judge_player.HitItem || getplayer->Get_PlayerTurn() == CPlayer::PLAYER_RANGEHIT_WAIT)
+				{
+					break;
+				}
+			case CPlayer::PLAYER_ACT_END:
+			case CPlayer::PLAYER_MOVE_END:
+			case CPlayer::PLAYER_TURN_END:
+				if (!m_Judge_player.HitItem)
+				{
+					if (getplayer->Get_Condition() <= C3DObj::KURAYAMI_CONDITION)
+					{
+						Enemy_AI();
+					}
+				}
+				break;
+			case CPlayer::PLAYER_TURN_CONPLETE:
+				if (!m_Judge_player.HitItem)
+				{
+					if (getplayer->Get_Condition() >= C3DObj::BAISOKU_CONDITION)
+					{
+						Enemy_AI();
+					}
+				}
+				break;
 			}
 		}
-		break;
 	}
 	// AI処理
 	//壁判定
@@ -160,9 +190,29 @@ void CEnemy_Srime::Draw(void)
 	{
 		CBilboard::Hukidasi_Draw(m_mtxWorld, m_Position, CTexture::TEX_PLAYER_CHARGE_ICON);
 	}
+	if (m_Condition == POIZUN_CONDITION)
+	{
+		CBilboard::Hukidasi_Draw(m_mtxWorld, m_Position, CTexture::TEX_PLAYER_POIZUN_ICON);
+	}
+	if (m_Condition == SLEEP_CONDITION)
+	{
+		CBilboard::Hukidasi_Draw(m_mtxWorld, m_Position, CTexture::TEX_PLAYER_SLEEP_ICON);
+	}
+	if (m_Condition == KURAYAMI_CONDITION)
+	{
+		CBilboard::Hukidasi_Draw(m_mtxWorld, m_Position, CTexture::TEX_PLAYER_MEKAKUSI_ICON);
+	}
+	if (m_Condition == MAHUJI_CONDITION)
+	{
+		CBilboard::Hukidasi_Draw(m_mtxWorld, m_Position, CTexture::TEX_PLAYER_MAHUJI_ICON);
+	}
+	//DebugFont_Draw(0, 100, "k.pos x = %f k.pos y = %f k.pos z = %f", m_EnemyMyColision.position.x, m_EnemyMyColision.position.y, m_EnemyMyColision.position.z);
+	//DebugFont_Draw(0, 150, "e.pos x = %f e.pos y = %f e.pos z = %f", m_Position.x, m_Position.y, m_Position.z);
 	//DebugFont_Draw(200, 150, "エネミーモード%d", enemyturn);
-	//DebugFont_Draw(200, 250, "Attackfream = %d", attackframe);
-	//DebugFont_Draw(0, 300, "Angle = %f", m_Angle);
+	//DebugFont_Draw(200, 25 0, "Attackfream = %d", attackframe);
+	//DebugFont_Draw(0, 350, "Angle = %f", m_Angle);
+	//DebugFont_Draw(0, 400, "床タイプ = %d", CMap::Map_GetData(m_Mapz, m_Mapx).type);
+	//DebugFont_Draw(0, 500, "mapX = %d,mapZ = %d", m_Mapx,m_Mapz);
 	//DebugFont_Draw(0, 300, "エネミー nanawalk = %d", nanawalk);
 	//DebugFont_Draw(0, 330, "エネミー walk = %d", walkf);
 	/*
@@ -198,7 +248,6 @@ void CEnemy_Srime::Enemy_AI(void)
 	// ターンが終わってる敵の数をカウント
 
 	// ワンフレームに攻撃できる敵をカウント
-
 	// 攻撃待ちカウント
 	int enemyturncount = 0;
 	// プレイヤーが移動するか移動以外の行動が終わった場合エネミーも移動する
@@ -211,54 +260,65 @@ void CEnemy_Srime::Enemy_AI(void)
 		C3DObj *enemy;
 		C3DObj *enemy2;
 
-		// 
+
 		for (int i = 0; i < MAX_GAMEOBJ; i++)
 		{
 			enemy = CEnemy::Get_Enemy(i);
-
 			if (enemy)
 			{
 				if (i != MAX_GAMEOBJ - 1)
 				{
 					for (int e = 0; e < MAX_GAMEOBJ; e++)
 					{
-						enemy2 = CEnemy::Get_Enemy(e);
-						if (enemy2)
-							C3DObj::Collision_EnemyVSEnemy(&enemy->m_Judge_enemy, &enemy->m_EnemyMyColision, &enemy2->m_Judge_enemy, &enemy2->m_EnemyMyColision);
-
+						if (i != e)
+						{
+							enemy2 = CEnemy::Get_Enemy(e);
+							if (enemy2)
+							{
+								if (enemy->m_Mapx == enemy2->m_Mapx && enemy->m_Mapz == enemy2->m_Mapz - 1)
+								{
+									enemy->m_Judge_enemy.HitBottom = true;
+									enemy2->m_Judge_enemy.HitTop = true;
+								}
+								if (enemy->m_Mapx == enemy2->m_Mapx && enemy->m_Mapz == enemy2->m_Mapz + 1)
+								{
+									enemy->m_Judge_enemy.HitTop = true;
+									enemy2->m_Judge_enemy.HitBottom = true;
+								}
+								if (enemy->m_Mapx == enemy2->m_Mapx + 1 && enemy->m_Mapz == enemy2->m_Mapz)
+								{
+									enemy->m_Judge_enemy.HitLeft = true;
+									enemy2->m_Judge_enemy.HitRight = true;
+								}
+								if (enemy->m_Mapx == enemy2->m_Mapx - 1 && enemy->m_Mapz == enemy2->m_Mapz)
+								{
+									enemy->m_Judge_enemy.HitRight = true;
+									enemy2->m_Judge_enemy.HitLeft = true;
+								}
+								if (enemy->m_Mapx == enemy2->m_Mapx - 1 && enemy->m_Mapz == enemy2->m_Mapz - 1)
+								{
+									enemy->m_Judge_enemy.HitBottomRight = true;
+									enemy2->m_Judge_enemy.HitTopLeft = true;
+								}
+								if (enemy->m_Mapx == enemy2->m_Mapx - 1 && enemy->m_Mapz == enemy2->m_Mapz + 1)
+								{
+									enemy->m_Judge_enemy.HitTopRight = true;
+									enemy2->m_Judge_enemy.HitBottomLeft = true;
+								}
+								if (enemy->m_Mapx == enemy2->m_Mapx + 1 && enemy->m_Mapz == enemy2->m_Mapz + 1)
+								{
+									enemy->m_Judge_enemy.HitTopLeft = true;
+									enemy2->m_Judge_enemy.HitBottomRight = true;
+								}
+								if (enemy->m_Mapx == enemy2->m_Mapx + 1 && enemy->m_Mapz == enemy2->m_Mapz - 1)
+								{
+									enemy->m_Judge_enemy.HitBottomLeft = true;
+									enemy2->m_Judge_enemy.HitTopRight = true;
+								}
+							}
+						}
 					}
 				}
-			}
-		}
-
-		for (int i = 0; i < MAX_GAMEOBJ; i++)
-		{
-			enemy = CEnemy::Get_Enemy(i);
-			if (enemy)
-			{
-				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz - 1)
-					m_Judge_enemy.HitBottom = true;
-
-				if (enemy->m_Mapx == m_Mapx && enemy->m_Mapz == m_Mapz + 1)
-					m_Judge_enemy.HitTop = true;
-
-				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz)
-					m_Judge_enemy.HitRight = true;
-
-				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz)
-					m_Judge_enemy.HitLeft = true;
-
-				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz - 1)
-					m_Judge_enemy.HitTopLeft = true;
-
-				if (enemy->m_Mapx == m_Mapx - 1 && enemy->m_Mapz == m_Mapz + 1)
-					m_Judge_enemy.HitBottomLeft = true;
-
-				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz + 1)
-					m_Judge_enemy.HitBottomRight = true;
-
-				if (enemy->m_Mapx == m_Mapx + 1 && enemy->m_Mapz == m_Mapz - 1)
-					m_Judge_enemy.HitTopRight = true;
 
 			}
 		}
@@ -721,12 +781,13 @@ void CEnemy_Srime::Enemy_Act(void)
 	std::uniform_int_distribution<int> random(0, 2);
 	int attack_number = 0;
 	C3DObj *getplayer = CPlayer::Get_Player();
+
 	if (attackframe < 8)
 	{
 		m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
 		D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
 		D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
-
+		
 		m_mtxWorld = m_mtxTranslation * m_mtxRotation;
 		// 左に攻撃
 		if (m_Judge_enemy.HitEnemyLeft)
@@ -884,28 +945,42 @@ void CEnemy_Srime::Enemy_Act(void)
 	if (attackframe == 5)
 	{
 		//attack_number = random(mt);
-		attack_number = 0;
 		switch (attack_number)
 		{
 		case 0:
 			//CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Angle);
-			if (getplayer->Get_Condition() == NORMAL_CONDITION)
+			if (getplayer->Get_Condition() == NORMAL_CONDITION && m_Condition != MAHUJI_CONDITION)
+			{
+				//CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
+			}
+			else
+			{
+				//CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str,m_Str2, m_Angle);
+			}
+			//チャージ倍率増やすときはここに書く
+			//m_Str2 = CHARGE_BUFF;
+			break;
+		case 1:
+			//CAttack::Attack_EnemySkill(CAttack::HIGH_ATTACK_SKILL, m_WeponType, m_Type, m_Str, m_Angle, ESCAPE_CHECK_OK);
+			if (getplayer->Get_Condition() == NORMAL_CONDITION && m_Condition != MAHUJI_CONDITION)
 			{
 				CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
 			}
 			else
 			{
-				CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str,m_Str2, m_Angle);
+				CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Str2, m_Angle);
 			}
 			//m_Str2 = CHARGE_BUFF;
 			break;
-		case 1:
-			//CAttack::Attack_EnemySkill(CAttack::HIGH_ATTACK_SKILL, m_WeponType, m_Type, m_Str, m_Angle, ESCAPE_CHECK_OK);
-			CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
-			//m_Str2 = CHARGE_BUFF;
-			break;
 		case 2:
-			CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
+			if (getplayer->Get_Condition() == NORMAL_CONDITION && m_Condition != MAHUJI_CONDITION)
+			{
+				CAttack::Attack_EnemySkill(CAttack::POIZUN_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
+			}
+			else
+			{
+				CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Str2, m_Angle);
+			}
 			//m_Str2 = CHARGE_BUFF;
 			break;
 		}
@@ -1542,6 +1617,306 @@ void CEnemy_Srime::Enemy_BottomRightMoveCheck(void)
 	}
 }
 
+void CEnemy_Srime::Enemy_BackMove(void)
+{//後で吹っ飛び先にモンスターがいたときの処理も書くこと
+	C3DObj *getplayer;
+	getplayer = CPlayer::Get_Player();
+	if (getplayer && this)
+	{
+		//下向いてたら上に飛ぶ
+		if (m_Angle == 3.2f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz - 1, m_Mapx).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapz = m_Mapz - 1;
+				}
+				m_Position.z += 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 3.2f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz - 1, m_Mapx).type == 0)
+			{//壁にぶつかったら止める
+				if (m_BackFrame != 0)
+				{
+					m_Position.z -= 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+		//上向いてたら下に飛ぶ
+		else if (m_Angle == 0.0f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz + 1, m_Mapx).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapz = m_Mapz + 1;
+				}
+				m_Position.z -= 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 0.0f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz + 1, m_Mapx).type == 0)
+			{//壁にぶつかったら止める
+				if (m_BackFrame != 0)
+				{
+					m_Position.z += 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+		//左向いてたら右に飛ぶ
+		else if (m_Angle == 4.8f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz, m_Mapx + 1).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapx = m_Mapx + 1;
+				}
+				m_Position.x += 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 4.8f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz, m_Mapx + 1).type == 0)
+			{//壁にぶつかったら止める
+				if (m_BackFrame != 0)
+				{
+					m_Position.x -= 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);	
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+		//右向いてたら左に飛ぶ
+		else if (m_Angle == 1.6f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz, m_Mapx - 1).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapx = m_Mapx - 1;
+				}
+				m_Position.x -= 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 1.6f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz, m_Mapx - 1).type == 0)
+			{//壁にぶつかったら止める
+				//フレームが0（つまり壁際）だったら移動しない
+				if (m_BackFrame != 0)
+				{
+					m_Position.x += 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+		//右上向いてたら左下に飛ぶ
+		else if (m_Angle == 0.8f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz + 1, m_Mapx - 1).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapx = m_Mapx - 1;
+					m_Mapz = m_Mapz + 1;
+				}
+				m_Position.x -= 0.5f;
+				m_Position.z -= 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 0.8f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz + 1, m_Mapx - 1).type == 0)
+			{//壁にぶつかったら止める
+				if (m_BackFrame != 0)
+				{
+					m_Position.x += 0.5f;
+					m_Position.z += 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+		//左上向いてたら右下に飛ぶ
+		else if (m_Angle == 5.6f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz + 1, m_Mapx + 1).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapx = m_Mapx + 1;
+					m_Mapz = m_Mapz + 1;
+				}
+				m_Position.x += 0.5f;
+				m_Position.z -= 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 5.6f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz + 1, m_Mapx + 1).type == 0)
+			{//壁にぶつかったら止める
+				if (m_BackFrame != 0)
+				{
+					m_Position.x -= 0.5f;
+					m_Position.z += 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+		//左下向いてたら右上に飛ぶ
+		else if (m_Angle == 4.0f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz - 1, m_Mapx + 1).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapx = m_Mapx + 1;
+					m_Mapz = m_Mapz - 1;
+				}
+				m_Position.x += 0.5f;
+				m_Position.z += 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 4.0f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz - 1, m_Mapx + 1).type == 0)
+			{//壁にぶつかったら止める
+				if (m_BackFrame != 0)
+				{
+					m_Position.x -= 0.5f;
+					m_Position.z -= 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+		//右下向いてたら左上に飛ぶ
+		else if (m_Angle == 2.4f)
+		{//壁にぶつかるまで飛ぶ
+			if (CMap::Map_GetData(m_Mapz - 1, m_Mapx - 1).type != 0)
+			{
+				if (m_BackFrame != 0 && m_BackFrame % 10 == 0)
+				{
+					m_Mapx = m_Mapx - 1;
+					m_Mapz = m_Mapz - 1;
+				}
+				m_Position.x -= 0.5f;
+				m_Position.z += 0.5f;
+				m_Rotation = D3DXVECTOR3(0, 2.4f, 0);
+				D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+				D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+				m_mtxWorld = m_mtxRotation * m_mtxTranslation;
+				m_EnemyMyColision.position = m_Position;
+				m_BackFrame++;
+			}
+			else if (CMap::Map_GetData(m_Mapz - 1, m_Mapx - 1).type == 0)
+			{//壁にぶつかったら止める
+				if (m_BackFrame != 0)
+				{
+					m_Position.x += 0.5f;
+					m_Position.z -= 0.5f;
+					m_EnemyMyColision.position = m_Position;
+				}
+				CUserinterface::UI_TextCreateBack(CUserinterface::PLAYERCHARA, CUserinterface::BACKENEMY_ATTACK, CUserinterface::ENEMY, 5, m_Type);
+				m_Back = false;
+				m_BackFrame = 0;
+				getplayer->SetEnemyBack(false);
+				getplayer->Set_RivalFlag(Damage(5, getplayer->Get_Angle(), CUserinterface::NORMAL_TYPE));
+			}
+		}
+	}
+}
+
+void CEnemy_Srime::Enemy_WarpMove(void)
+{
+	if (m_BackFrame <= 20)
+	{
+		m_Position.y += 1;
+	}
+	if (m_BackFrame == 21)
+	{
+		CMap::WorpEnemySet(this);
+	}
+	if (m_BackFrame> 20 && m_BackFrame < WAIT_FRAME - 5)
+	{
+		m_Position.y -= 1;
+		if (m_Position.y < 0)
+		{
+			m_Position.y = 0.0f;
+		}
+	}
+	if (m_BackFrame == WAIT_FRAME - 5)
+	{
+		m_Position.y = 0.0f;
+		m_BackFrame = 0;
+		m_Warp = false;
+	}
+	else
+	{
+		m_BackFrame++;
+	}
+}
+
 bool CEnemy_Srime::Damage(int str, float angle, int week_type)
 {
 	// 後にダメージエフェクトを作成
@@ -1613,10 +1988,110 @@ bool CEnemy_Srime::Damage(int str, float angle, int week_type)
 	return NORMAL;
 }
 
+bool CEnemy_Srime::PoizunDamage(int str)
+{
+	//毒エフェクト再生すること
+	// 後にダメージ計算式を作成
+	m_Hp -= str;
+	// 体力が0以下で倒れる
+	if (m_Hp <= 0)
+	{
+		SAVE_COUNT *save;
+		save = Get_SaveCount();
+		save->enemy_death_count += 1;
+		Enemy_Destroy();
+		return DEATH;
+	}
+	return NORMAL;
+}
+
 void CEnemy_Srime::Enemy_Destroy(void)
 {
 	alive = false;
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Type = CUserinterface::CHARATYPENONE;
 	delete this;
+}
+
+void CEnemy_Srime::Enemy_SetWorpPos(int pposZ, int pposX)
+{
+	m_Position = D3DXVECTOR3(-247.5f + pposX * 5, 0.0f, 247.5f - pposZ * 5);
+	m_EnemyMyColision.position = m_Position;
+	m_EnemyMyColision.radius = ENEMY_RADIUS;
+	// マップ位置を登録
+	m_Mapx = pposX;
+	m_Mapz = pposZ;
+
+	m_Goalx = pposX;
+	m_Goalz = pposZ;
+
+	//下を向かせる
+	m_Angle = 3.2f;
+	m_Rotation = D3DXVECTOR3(0.0f, m_Angle, 0.0f);
+	D3DXMatrixRotationY(&m_mtxRotation, m_Rotation.y);
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Rotation.x, m_Position.y, m_Rotation.z);
+
+	m_mtxWorld = m_mtxTranslation * m_mtxRotation;
+
+	D3DXMatrixTranslation(&m_mtxTranslation, m_Position.x, m_Position.y, m_Position.z);
+	m_mtxWorld *= m_mtxTranslation;
+}
+
+void CEnemy_Srime::Enemy_PoizunDamageStart(void)
+{
+	if (m_Condition == POIZUN_CONDITION)
+	{
+		m_TurnCount++;
+		if (m_TurnCount == ENEMY_POIZUN_HEALTURN)
+		{
+			m_Condition = NORMAL_CONDITION;
+		}
+		Enemy_PoizunDamage();
+	}
+}
+
+void CEnemy_Srime::Enemy_PoizunDamage(void)
+{
+	C3DObj *getplayer = CPlayer::Get_Player();
+	//これがないとプレイヤーに経験値入らず
+	//毒で死んだらUIも出すこと
+	//もしプレイヤーのエネミーデスがtrueだったらHP1で耐えるようにすること（1ターンに1体以上殺さない）
+	if (!getplayer->Get_EnemyDeath())
+	{
+		if (m_Hp - ENEMY_POINZU_DAMAGE <= 0)
+		{
+			getplayer->SetEnemyDeath(true);
+			CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::ENEMY_POIZUN_DEATH, CUserinterface::ENEMY, 0, m_Type);
+		}
+	}
+	//ダメージ処理も毒用のに変えること
+	getplayer->Set_RivalFlag(PoizunDamage((int)ENEMY_POINZU_DAMAGE));
+}
+
+void CEnemy_Srime::Enemy_ConditionCount(void)
+{
+	if (m_Condition == SLEEP_CONDITION)
+	{
+		m_TurnCount++;
+		if (m_TurnCount == ENEMY_SLEEP_HEALTURN)
+		{
+			m_Condition = NORMAL_CONDITION;
+		}
+	}
+	if (m_Condition == KURAYAMI_CONDITION)
+	{
+		m_TurnCount++;
+		if (m_TurnCount == ENEMY_KURAYAMI_HEALTURN)
+		{
+			m_Condition = NORMAL_CONDITION;
+		}
+	}
+	if (m_Condition == MAHUJI_CONDITION)
+	{
+		m_TurnCount++;
+		if (m_TurnCount == ENEMY_TOKUGI_HEALTURN)
+		{
+			m_Condition = NORMAL_CONDITION;
+		}
+	}
 }

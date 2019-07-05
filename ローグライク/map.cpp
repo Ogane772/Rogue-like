@@ -1045,7 +1045,7 @@ void CMap::MapItemSet(void)
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	//int setitem = mt() % 3 + 4;
-	int setitem = 40;
+	int setitem = 5;
 	int itemdrop_number[100] = { 0 };//アイテムドロップ率格納
 	int kakuritu_start = 0;//どの配列番号から数えるか
 	int lposX;
@@ -1097,7 +1097,7 @@ void CMap::MapWeponSet(void)
 	std::uniform_int_distribution<int> random(0, 99);
 	std::uniform_int_distribution<int> randomwepon(1, 8);
 	//int setitem = mt() % 3 + 4;
-	int setitem = 40;
+	int setitem = 5;
 	int lposX;
 	int lposZ;
 	int i;
@@ -1176,10 +1176,7 @@ void CMap::Map_CreateOneFloor(void)
 		{
 			g_map[z][x].type = 1;
 			g_map[z][x].use = false;
-
 		}
-
-
 	}
 
 
@@ -1231,6 +1228,24 @@ void CMap::WorpPlayerSet(void)
 	CPlayer::Player_SetWorpPos(pposZ, pposX);
 }
 
+void CMap::WorpEnemySet(C3DObj *enemy)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+
+	int pposX;
+	int pposZ;
+	std::uniform_int_distribution<int> random(0, 99);
+	for (;;)
+	{
+		pposX = random(mt);
+		pposZ = random(mt);
+		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE)
+			break;
+	}
+	g_map[pposZ][pposX].have = HAVEENEMY;
+	enemy->Enemy_SetWorpPos(pposZ, pposX);
+}
 
 void CMap::MapEnemySet(void)
 {
@@ -1238,7 +1253,7 @@ void CMap::MapEnemySet(void)
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	// 敵生成数の誤差
-	int setenemy = 0;
+	int setenemy = 5;
 	for (int i = 0; i < setenemy; i++)
 		//for (int i = 0; i < 1; i++)	// デバッグ用
 	{
@@ -1271,6 +1286,7 @@ void CMap::MapLadderSet(void)
 		if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
 			break;
 	}
+	g_map[lposZ][lposX].have = HAVELADDER;
 	CObject::Create(CObject::TYPE_LADDER, lposX, lposZ);
 }
 

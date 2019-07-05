@@ -1,4 +1,5 @@
-﻿#include <d3dx9.h>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <d3dx9.h>
 #include <stdio.h>
 #include "common.h"
 #include "CTexture.h"
@@ -99,7 +100,11 @@ void CUserinterface::UI_Update(void)
 			{
 				getplayer->Set_RivalFlag(false);
 				getplayer->Set_EnterFlag(false);
-				getplayer->Set_PlayerTurn(CPlayer::PLAYER_TURN_END);
+				//レベルアップしたら&複数攻撃中以外ならターンエンドにする
+				if(getplayer->Get_PlayerTurn() != CPlayer::PLAYER_RANGEHIT_WAIT)
+				{
+					getplayer->Set_PlayerTurn(CPlayer::PLAYER_TURN_END);
+				}
 			}
 		}
 		if (g_text.Age > TEXT_FRAMEMAX + add_time)
@@ -193,6 +198,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act)
 	g_text.act = act;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 	
 }
 
@@ -206,6 +212,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, char* message)
 	g_text.act = act;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 	strcpy_s(g_text.free_message, MAX_NAME, message);
 }
 
@@ -224,6 +231,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, char*
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_TextCreateCondition(CHARATYPE chara, ACTTYPE act, int condition)
@@ -238,6 +246,7 @@ void CUserinterface::UI_TextCreateCondition(CHARATYPE chara, ACTTYPE act, int co
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 	switch (condition)
 	{
 	case C3DObj::POIZUN_CONDITION:
@@ -272,6 +281,7 @@ void CUserinterface::UI_TextCreateDeleteItem(CHARATYPE chara, ACTTYPE act, int t
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_TextCreateTrap(CHARATYPE chara, ACTTYPE act, int type)
@@ -289,6 +299,25 @@ void CUserinterface::UI_TextCreateTrap(CHARATYPE chara, ACTTYPE act, int type)
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
+}
+
+void CUserinterface::UI_TextCreateTrapRog(CHARATYPE chara, ACTTYPE act, int type,char * rog)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.act = act;
+	strcpy_s(g_text.name, MAX_NAME, CTrap::Get_TrapName(type));
+	strcpy_s(g_text.item_log, MAX_NAME, rog);
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type)
@@ -306,6 +335,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type)
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, int purasu_number)
@@ -324,6 +354,7 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, int p
 	g_text.purasu_number = purasu_number;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type)
@@ -356,6 +387,41 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
+}
+
+void CUserinterface::UI_TextCreateBack(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.hitchara = hitchara;
+	g_text.damage = damage;
+	g_text.act = act;
+	strcpy_s(g_text.skill_log, MAX_NAME, "は壁に当たった！");
+	if (type > 0)
+	{
+		g_text.type = type;
+	}
+	//エネミーデータから名前と経験値をもらうのでｰ1する
+	if (hitchara > 1)
+	{
+		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
+		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	if (chara > 1)
+	{
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_TextCreate(int week_type,CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type)
@@ -390,6 +456,7 @@ void CUserinterface::UI_TextCreate(int week_type,CHARATYPE chara, ACTTYPE act, C
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_TextCreate(char *skill_effect, int week_type, CHARATYPE chara, int act, CHARATYPE hitchara, int damage, int type)
@@ -424,6 +491,113 @@ void CUserinterface::UI_TextCreate(char *skill_effect, int week_type, CHARATYPE 
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
 	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
+}
+
+void CUserinterface::UI_TextPlayerSkill(char *skill_effect, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.hitchara = hitchara;
+	g_text.damage = damage;
+	g_text.act = act;
+	g_text.attribute_type = week_type;
+	strcpy_s(g_text.skill_log, MAX_NAME, skill_effect);
+	if (type > 0)
+	{
+		g_text.type = type;
+	}
+	//エネミーデータから名前と経験値をもらうのでｰ1する
+	if (hitchara > 1)
+	{
+		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
+		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	if (chara > 1)
+	{
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
+}
+
+void CUserinterface::UI_TextPlayerSkillCondition(char *skill_effect, char *skill_log,int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.hitchara = hitchara;
+	g_text.damage = damage;
+	g_text.act = act;
+	g_text.attribute_type = week_type;
+	strcpy_s(g_text.skill_log, MAX_NAME, skill_effect);
+	strcpy_s(g_text.free_message, MAX_NAME, skill_log);
+	if (type > 0)
+	{
+		g_text.type = type;
+	}
+	//エネミーデータから名前と経験値をもらうのでｰ1する
+	if (hitchara > 1)
+	{
+		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
+		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	if (chara > 1)
+	{
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
+}
+
+void CUserinterface::UI_TextPlayerNodamageSkill(char *skill_effect, char *skill_log, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int type)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.hitchara = hitchara;
+	g_text.act = act;
+	g_text.attribute_type = week_type;
+	strcpy_s(g_text.skill_log, MAX_NAME, skill_effect);
+	strcpy_s(g_text.free_message, MAX_NAME, skill_log);
+	if (type > 0)
+	{
+		g_text.type = type;
+	}
+	//エネミーデータから名前と経験値をもらうのでｰ1する
+	if (hitchara > 1)
+	{
+		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
+		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	if (chara > 1)
+	{
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
 }
 
 void CUserinterface::UI_Delete(void)
@@ -861,7 +1035,21 @@ void CUserinterface::SetItemTips(void)
 			UI_TextDraw(765, 355, D3DCOLOR_RGBA(255, 255, 255, 255), "防御力 %d", CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_def);
 		}
 		strchg(CWepon::Get_Wepon_Data(m_WeponStock[getplayer->Get_CursorNumber()])->Wepon_effect, "kk", "\n");
+		//装備説明文
 		UI_TextDraw(640, 410, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", CWepon::Get_Wepon_Data(m_WeponStock[getplayer->Get_CursorNumber()])->Wepon_effect);
+		//3行目以降に武器特技名表示
+		if (CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_type <= CWepon::TYPE_AX)
+		{
+			//スキル名を取得しその文字数+1文字分先に消費HPを書く
+			int len = strlen(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_sikibetu_number)->Skill_name);
+			UI_TextDraw(585, 500, D3DCOLOR_RGBA(255, 255, 255, 255), "スキル:%s", CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_sikibetu_number)->Skill_name);
+			//スキルの消費HP表示 
+			//↓は使用HP表示せずテキストのみ
+			//UI_TextDraw(640 + ((len + 4)* 22), 500, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_sikibetu_number)->Skill_Hp);
+			//使用HP表示
+			UI_TextDraw(640 + ((len + 4) * 22), 500, D3DCOLOR_RGBA(255, 255, 255, 255), "消費HP:%3d", getplayer->Player_SkillHpGet());
+			UI_TextDraw(640, 550, D3DCOLOR_RGBA(255, 255, 255, 255), "%s", CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(getplayer->Get_CursorNumber())->wepon_sikibetu_number)->Skill_effect);
+		}
 	}
 	else if (getplayer->Get_PlayerItemStockType(getplayer->Get_CursorNumber() + add_cursor) == CPlayer::ITEM)
 	{//スイッチじゃなくてアイテムストックのタイプ参照しろ！！
@@ -1188,13 +1376,35 @@ void CUserinterface::UI_TextDraw(void)
 		//下のテキスト描画
 		if (g_text.alive)
 		{
-			Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 			switch (g_text.chara)
 			{
 			case PLAYERCHARA:
+				/*
+				if (g_text.act == REGULARATTACK || g_text.act == SKILLATTACK || g_text.act == BACKENEMY_ATTACK)
+				{
+					if (g_text.Age <= ATTACK_END + 30 && !g_text.lv_up)
+					{
+						Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
+					}
+					else if(getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END)
+					{
+						Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
+					}
+					else if (g_text.lv_up && g_text.Age > ATTACK_END)
+					{
+						Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
+					}
+				}
+				else
+				{
+					Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
+				}
+				*/
+				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				switch (g_text.act)
 				{
 				case REGULARATTACK://キー入力させるならコメントアウト解除
+					//このifはレベルアップ時のテキスト
 					if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END /*&& getplayer->Get_EnterFlag() */ || text_draw)
 					{//レベルアップ時はレベルアップ表示までターンを止めること
 						text_draw = true;
@@ -1257,6 +1467,10 @@ void CUserinterface::UI_TextDraw(void)
 						{
 							if (g_text.Age == ATTACK_END + 30)
 							{
+								if (CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_sikibetu_number == CWepon::TYPE_SIAWASE_RING)
+								{
+									g_text.exp = (int)((g_text.exp * (SIAWASE_RING + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number * 0.1f)));
+								}
 								g_text.lv_up = getplayer->ExpGoldCheck(g_text.exp, g_text.gold);
 								add_time += 40;//表示時間延長
 							}
@@ -1335,6 +1549,450 @@ void CUserinterface::UI_TextDraw(void)
 						}
 					}
 					break;
+				case ENEMY_POIZUN_DEATH://キー入力させるならコメントアウト解除
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sは毒で倒れた！", g_text.name);
+					if (g_text.Age == ITEM_EFFECT_FRAME)
+					{
+						if (CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_sikibetu_number == CWepon::TYPE_SIAWASE_RING)
+						{
+							g_text.exp = (int)((g_text.exp * (SIAWASE_RING + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number * 0.1f)));
+						}
+						g_text.lv_up = getplayer->ExpGoldCheck(g_text.exp, g_text.gold);
+					}
+					if (g_text.Age > ITEM_EFFECT_FRAME)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
+					}
+					//レベルアップしたら
+					if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END /*&& getplayer->Get_EnterFlag() */ || text_draw)
+					{//レベルアップ時はレベルアップ表示までターンを止めること
+						if (g_text.Age == ATTACK_END + 1)
+						{
+							add_time += 40;//表示時間延長
+						}
+						text_draw = true;
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sはレベル%dになった！", g_text.player_name, getplayer->Get_Lv());
+					}
+					break;
+				case SKILLATTACK://キー入力させるならコメントアウト解除
+					if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END /*&& getplayer->Get_EnterFlag() */ || text_draw)
+				{//レベルアップ時はレベルアップ表示までターンを止めること
+					text_draw = true;
+					time_pos.y -= 2;
+					//ウィンドウ上部まで文字をスクロールし、上部まで来たら消す
+					if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sの%s！", g_text.player_name, g_text.skill_log);
+					}
+					if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y + 50)
+					{
+						if (g_text.damage == 0)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "攻撃は外れてしまった！");
+						}
+						else
+						{
+							//文字列の長さを調べその長さ分次の文のXを足す
+							int len = strlen(g_text.name);
+							int add_x = 0;
+							if (g_text.damage < 10)
+							{
+								add_x = 1;
+							}
+							else if (g_text.damage >= 10 && g_text.damage <= 99)
+							{
+								add_x = 2;
+							}
+							else if (g_text.damage >= 100)
+							{
+								add_x = 3;
+							}
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに", g_text.name);
+							//相性によってダメージ文字色変更
+							if (g_text.attribute_type == WEEK_TYPE)
+							{
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+							}
+							if (g_text.attribute_type == NORMAL_TYPE)
+							{
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+							}
+							if (g_text.attribute_type == RESIST_TYPE)
+							{
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+							}
+							UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ダメージ与えた!");
+						}
+					}
+					//ここからウィンドウに表示する文字、自分の場所までスクロールする
+					if (g_text.pos.y + time_pos.y + 100 < g_text.pos.y)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
+					}
+					else
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
+					}
+					if (g_text.Age >= ATTACK_END + 30)//1行目が出てから少し待ってから出す
+					{
+						if (g_text.Age == ATTACK_END + 30)
+						{
+							if (CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_sikibetu_number == CWepon::TYPE_SIAWASE_RING)
+							{//しあわせの指輪は+値1につき0.1+
+								g_text.exp = (int)((g_text.exp * (SIAWASE_RING + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number * 0.1f)));
+							}
+							g_text.lv_up = getplayer->ExpGoldCheck(g_text.exp, g_text.gold);
+							add_time += 40;//表示時間延長
+						}
+						if (g_text.pos.y + time_pos.y + 150 < g_text.pos.y + 50)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
+						}
+						else
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 150 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
+						}
+
+					}
+					if (g_text.Age >= ATTACK_END + 50 && g_text.lv_up)
+					{//レベルアップしたら
+						if (g_text.Age == ATTACK_END + 50)
+						{
+							add_time += 80;//表示時間延長
+						}
+						if (g_text.pos.y + time_pos.y + 200 < g_text.pos.y + 100)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sはレベル%dになった！", g_text.player_name, getplayer->Get_Lv());
+						}
+						else
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 200 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sはレベル%dになった！", g_text.player_name, getplayer->Get_Lv());
+						}
+					}
+				}
+					else if (g_text.Age <= ATTACK_END + 1)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sの%s！", g_text.player_name, g_text.skill_log);
+						if (g_text.Age > 30)
+						{
+							if (g_text.damage == 0)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "攻撃は外れてしまった！");
+							}
+							else if (g_text.damage > 0)
+							{
+								//文字列の長さを調べその長さ分次の文のXを足す
+								int len = strlen(g_text.name);
+								int add_x = 0;
+								if (g_text.damage < 10)
+								{
+									add_x = 1;
+								}
+								else if (g_text.damage >= 10 && g_text.damage <= 99)
+								{
+									add_x = 2;
+								}
+								else if (g_text.damage >= 100)
+								{
+									add_x = 3;
+								}
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに", g_text.name);
+								//相性によってダメージ文字色変更
+								if (g_text.attribute_type == WEEK_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == NORMAL_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == RESIST_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+								}
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ダメージ与えた!");
+							}
+							if (getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
+							{
+								UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
+							}
+						}
+					}
+					break;
+				case SKILL_CONDITIONATTACK://キー入力させるならコメントアウト解除
+					if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END /*&& getplayer->Get_EnterFlag() */ || text_draw)
+					{//レベルアップ時はレベルアップ表示までターンを止めること
+						text_draw = true;
+						time_pos.y -= 2;
+						//ウィンドウ上部まで文字をスクロールし、上部まで来たら消す
+						if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sの%s！", g_text.player_name, g_text.skill_log);
+						}
+						if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y + 50)
+						{
+							if (g_text.damage == 0)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "攻撃は外れてしまった！");
+							}
+							else
+							{
+								//文字列の長さを調べその長さ分次の文のXを足す
+								int len = strlen(g_text.name);
+								int add_x = 0;
+								if (g_text.damage < 10)
+								{
+									add_x = 1;
+								}
+								else if (g_text.damage >= 10 && g_text.damage <= 99)
+								{
+									add_x = 2;
+								}
+								else if (g_text.damage >= 100)
+								{
+									add_x = 3;
+								}
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに", g_text.name);
+								//相性によってダメージ文字色変更
+								if (g_text.attribute_type == WEEK_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == NORMAL_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == RESIST_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+								}
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ダメージ与えた!");
+							}
+						}
+						//ここからウィンドウに表示する文字、自分の場所までスクロールする
+						if (g_text.pos.y + time_pos.y + 100 < g_text.pos.y)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
+						}
+						else
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
+						}
+						if (g_text.Age >= ATTACK_END + 30)//1行目が出てから少し待ってから出す
+						{
+							if (g_text.Age == ATTACK_END + 30)
+							{
+								if (CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_sikibetu_number == CWepon::TYPE_SIAWASE_RING)
+								{//しあわせの指輪は+値1につき0.1+
+									g_text.exp = (int)((g_text.exp * (SIAWASE_RING + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number * 0.1f)));
+								}
+								g_text.lv_up = getplayer->ExpGoldCheck(g_text.exp, g_text.gold);
+								add_time += 40;//表示時間延長
+							}
+							if (g_text.pos.y + time_pos.y + 150 < g_text.pos.y + 50)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
+							}
+							else
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 150 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
+							}
+
+						}
+						if (g_text.Age >= ATTACK_END + 50 && g_text.lv_up)
+						{//レベルアップしたら
+							if (g_text.Age == ATTACK_END + 50)
+							{
+								add_time += 80;//表示時間延長
+							}
+							if (g_text.pos.y + time_pos.y + 200 < g_text.pos.y + 100)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sはレベル%dになった！", g_text.player_name, getplayer->Get_Lv());
+							}
+							else
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 200 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sはレベル%dになった！", g_text.player_name, getplayer->Get_Lv());
+							}
+						}
+					}
+					else if (g_text.Age <= ATTACK_END + 1)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sの%s！", g_text.player_name, g_text.skill_log);
+						if (g_text.Age > 30)
+						{
+							if (g_text.damage == 0)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "攻撃は外れてしまった！");
+							}
+							else if (g_text.damage > 0)
+							{
+								//文字列の長さを調べその長さ分次の文のXを足す
+								int len = strlen(g_text.name);
+								int add_x = 0;
+								if (g_text.damage < 10)
+								{
+									add_x = 1;
+								}
+								else if (g_text.damage >= 10 && g_text.damage <= 99)
+								{
+									add_x = 2;
+								}
+								else if (g_text.damage >= 100)
+								{
+									add_x = 3;
+								}
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに", g_text.name);
+								//相性によってダメージ文字色変更
+								if (g_text.attribute_type == WEEK_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 0, 0, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == NORMAL_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%d", g_text.damage);
+								}
+								if (g_text.attribute_type == RESIST_TYPE)
+								{
+									UI_TextDraw((int)g_text.pos.x + ((len * 22)), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(0, 0, 255, 255), "%d", g_text.damage);
+								}
+								UI_TextDraw((int)g_text.pos.x + ((len * 22)) + (add_x * 26), (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "ダメージ与えた!");
+							}
+							if (getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
+							{
+								UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
+							}
+						}
+						//敵が死んでなければ状態異常メッセージ
+						if (g_text.Age > 40 && !getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.free_message);
+						}
+					}
+					break;
+				case BACKENEMY_ATTACK://キー入力させるならコメントアウト解除
+					if (getplayer->Get_RivalFlag() && g_text.Age > ATTACK_END /*&& getplayer->Get_EnterFlag() */ || text_draw)
+					{//レベルアップ時はレベルアップ表示までターンを止めること
+						text_draw = true;
+						time_pos.y -= 2;
+						//ウィンドウ上部まで文字をスクロールし、上部まで来たら消す
+						if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name,g_text.skill_log);
+						}
+						if (g_text.pos.y - 19 < g_text.pos.y + time_pos.y + 50)
+						{
+							if (g_text.damage == 0)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "攻撃は外れてしまった！");
+							}
+							else
+							{
+								//文字列の長さを調べその長さ分次の文のXを足す
+								int len = strlen(g_text.name);
+								int add_x = 0;
+								if (g_text.damage < 10)
+								{
+									add_x = 1;
+								}
+								else if (g_text.damage >= 10 && g_text.damage <= 99)
+								{
+									add_x = 2;
+								}
+								else if (g_text.damage >= 100)
+								{
+									add_x = 3;
+								}
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに%dダメージ与えた", g_text.name, g_text.damage);
+							}
+						}
+						//ここからウィンドウに表示する文字、自分の場所までスクロールする
+						if (g_text.pos.y + time_pos.y + 100 < g_text.pos.y)
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
+						}
+						else
+						{
+							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを倒した！", g_text.name);
+						}
+						if (g_text.Age >= ATTACK_END + 30)//1行目が出てから少し待ってから出す
+						{
+							if (g_text.Age == ATTACK_END + 30)
+							{
+								if (CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_sikibetu_number == CWepon::TYPE_SIAWASE_RING)
+								{
+									g_text.exp = (int)((g_text.exp * (SIAWASE_RING + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_purasu_number * 0.1f)));
+								}
+								g_text.lv_up = getplayer->ExpGoldCheck(g_text.exp, g_text.gold);
+								add_time += 40;//表示時間延長
+							}
+							if (g_text.pos.y + time_pos.y + 150 < g_text.pos.y + 50)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
+							}
+							else
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 150 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
+							}
+		
+						}
+						if (g_text.Age >= ATTACK_END + 50 && g_text.lv_up)
+						{//レベルアップしたら
+							if (g_text.Age == ATTACK_END + 50)
+							{
+								add_time += 80;//表示時間延長
+							}
+							if (g_text.pos.y + time_pos.y + 200 < g_text.pos.y + 100)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "%sはレベル%dになった！", g_text.player_name, getplayer->Get_Lv());
+							}
+							else
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 200 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sはレベル%dになった！", g_text.player_name, getplayer->Get_Lv());
+							}
+						}
+					}
+					else if (g_text.Age <= ATTACK_END + 1)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+						if (g_text.Age > 30)
+						{
+							if (g_text.damage == 0)
+							{
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "攻撃は外れてしまった！");
+							}
+							else if (g_text.damage > 0)
+							{
+								//文字列の長さを調べその長さ分次の文のXを足す
+								int len = strlen(g_text.name);
+								int add_x = 0;
+								if (g_text.damage < 10)
+								{
+									add_x = 1;
+								}
+								else if (g_text.damage >= 10 && g_text.damage <= 99)
+								{
+									add_x = 2;
+								}
+								else if (g_text.damage >= 100)
+								{
+									add_x = 3;
+								}
+								UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sに%dダメージ与えた", g_text.name, g_text.damage);
+							}
+							if (getplayer->Get_RivalFlag() && !getplayer->Get_EnterFlag())
+							{
+								UI_TextDraw((int)(g_text.pos.x + 470), (int)(g_text.pos.y + 100), D3DCOLOR_RGBA(255, 255, 255, 255), "▼");
+							}
+						}
+					}
+					break;
+				case NODAMAGE_SKILL:
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sの%s！", g_text.player_name, g_text.skill_log);
+					if (g_text.Age > 0)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.free_message);
+					}
+					break;
 				case GOLADDER:
 					UI_TextDraw(TEXT_POSX, TEXT_POSY, D3DCOLOR_RGBA(255, 255, 255, 255), "先に進みますか？");
 					UI_TextDraw(TEXT_POSX + 800, TEXT_POSY + 20, D3DCOLOR_RGBA(255, 255, 255, 255), "⇒ 進む\n\n   そのまま");
@@ -1386,6 +2044,13 @@ void CUserinterface::UI_TextDraw(void)
 					if (g_text.Age > ITEM_EFFECT_FRAME)
 					{
 						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s", g_text.item_log);
+					}
+					break;
+				case TRAP_NOEFFECT:
+					UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%sを踏んでしまった！", g_text.name);
+					if (g_text.Age > ITEM_EFFECT_FRAME)
+					{
+						UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 50 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "しかし罠は発動しなかった！");
 					}
 					break;
 				case ITEM_ASIMOTO:
@@ -1462,6 +2127,7 @@ void CUserinterface::UI_TextDraw(void)
 				break;
 
 			case ENEMY:
+				Sprite_Draw(TEX_MESSAGE_WINDOW, 90.0f, 500.0f, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_MESSAGE_WINDOW), (float)Texture_GetHeight(TEX_MESSAGE_WINDOW), 0.0f, 0.0f, 1.3f, 1.3f, 0.0f);
 				switch (g_text.act2)
 				{
 				case CAttack::NORMAL_ATTACK_SKILL:

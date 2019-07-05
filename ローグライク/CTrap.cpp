@@ -7,7 +7,7 @@
 //=============================================================================
 //	インクルードファイル
 //=============================================================================
-
+#define _CRT_SECURE_NO_WARNINGS
 #include "CTrap.h"
 #include "exp.h"
 #include "map.h"
@@ -77,6 +77,7 @@ void CTrap::Create(int trap_type, int x, int z)
 	case TYPE_KUYARAMI_TRAP:
 	case TYPE_DONSOKU_TRAP:
 	case TYPE_ITEMDELETE_TRAP:
+	case TYPE_SABIRU_TRAP:
 		pdamage = new CTrapDamage(x, z, trap_type);
 		break;
 	}

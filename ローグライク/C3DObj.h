@@ -41,6 +41,7 @@ public:
 		SLEEP_CONDITION,//睡眠状態
 		POIZUN_CONDITION,//毒状態
 		KURAYAMI_CONDITION,
+		MAHUJI_CONDITION,//特技封印
 		BAISOKU_CONDITION,
 		DONSOKU_CONDITION,
 	}PLAYER_JYOUTAIIJYOU;
@@ -123,14 +124,17 @@ public:
 	static void DrawAll();		// 全オブジェクト描画
 	static void DeleteAll();	// 全オブジェクト削除
 	void C3DObj_delete(void);	// オブジェクト削除	
+	//ゲッター
 	static C3DObj *Get(int nIdx);	// インスタンス取得
 	virtual int Get_PlayerWeponStock(int index) { return 0; }//所持武器取得
 	virtual int Get_PlayerItemStock(int index) { return 0; }//所持アイテム取得
 	virtual int Get_CursorNumber(void) { return 0; }//ウィンドウカーソル位置取得
 	virtual int Get_TimeCursorNumber(void) { return 0; }
 	virtual int Get_PlayerNextExp(int index) { return 0; } //次のレベルまでの必要経験値を取得
+	virtual void Player_SkillHpDown(void) { };//プレイヤーのHPを下げる
 	virtual void Player_OnakaDown(void) {}; //プレイヤーのおなかを減らす
 	virtual int Get_PlayerOnaka(void) { return 0; }//プレイヤーのおなか取得
+	virtual int Get_OnakaTurn(void) { return 0; }//プレイヤーのお腹が減るターン数を取得
 	virtual bool Get_DarkFlag(void) { return 0; };
 	virtual bool Get_WMode(void) { return 0; }//プレイヤーが両手持ちか取得
 	virtual bool ExpGoldCheck(int exp, int gold) { return 0; }//プレイヤーの経験とお金チェック
@@ -143,15 +147,26 @@ public:
 	virtual int Get_PlayerItemStockType(int index) { return 0; }//取得アイテムタイプを取得
 	virtual int Get_PlayerAllItemStock(int index) { return 0; }//全ての取得アイテムを格納
 	virtual int Get_PlayerTurn(void) { return 0; }//プレイヤーのターンモード取得
+	virtual int Player_SkillHpGet(void) { return 0; }//スキルの消費HP取得
 	virtual void Set_PlayerTurn(int turn) {}//プレイヤーのターンモードセット
 	virtual int Get_EnemyTurn(void) { return 0; }//エネミーのターンモード取得
 	virtual void Set_EnemyTurn(int turn) {}//エネミーのターンモードセット
 	virtual bool Get_NanameFlag(void) { return 0; }//斜め移動状態を取得
 	virtual bool Get_GekikaFlag(void) { return 0; }//相性激化状態を取得
+	virtual bool Get_EnemyPoizunDeath(void) { return 0; }//敵が毒で死んでいるか返す
 	virtual bool GetWanaCheck(void) { return 0; }//罠が見えてるか取得
 	virtual bool GetWanaEffectOn(void) { return 0; }//罠の効果が発動してるか取得
 	virtual void SetWanaCheck(bool type) { };//罠が見えてるかセット
 	virtual void SetWanaEffectOn(bool type) { };//罠の効果が発動してるかセット
+	virtual void SetEnemyBack(bool type) { };//敵が吹っ飛び中かセット
+	virtual void Enemy_SetWorpPos(int pposZ, int pposX) {};//エネミーのワープ位置セット
+	virtual void Set_Warp(bool type) {};
+	virtual void SetEnemyDeath(bool type) { };
+	virtual bool Get_EnemyDeath(void) { return 0; }
+	virtual bool Get_RangeHit(void) { return 0; }
+	virtual void Set_RangeHit(bool type) { };
+
+
 	int Get_3DObjIndex() { return m_3DObjIndex; }	// ワークインデックス取得
 	int Get_3DObjType() { return m_3DObjType; }		// 種類取得
 	float Get_Angle(void) { return m_Angle; }	//	角度取得	
@@ -169,17 +184,23 @@ public:
 	bool Get_RivalFlag(void) { return rival_flag; }
 	bool Get_MapDrawFlag(void) { return map_drawflag; }
 	bool Get_EnterFlag(void) { return enter_flag; }
-	
+	bool Get_BackMove(void) { return m_Back; }
+	//セッター
 	void SetCondition(int condition_type) { m_Baisoku_Flag = false; m_Donsoku_Flag = false; m_Condition = condition_type; }
 	void Set_MapDrawFlag(bool type) { map_drawflag = type; }
 	void Set_RivalFlag(bool type) { rival_flag = type; }
 	void Set_EnterFlag(bool type) { enter_flag = type; }
-	void Set_Attack_End(int end) { attack_endframe = end; }
+	void SetBackMove(bool type) { m_Back = type; }//吹っ飛び状態をセット
+	void Set_Attack_End(int end) { attack_endframe = end; }//攻撃終了時間をセット
 	void SetTurnCount(int turn) { m_TurnCount = turn; }
+	
+
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
 	virtual bool Get_DrawCheck(void) = 0;
 	virtual bool Damage(int str, float angle, int week_type) = 0;
+	virtual void Enemy_PoizunDamageStart(void) {};//エネミーの毒ダメージ計算
+	virtual void Enemy_ConditionCount(void) {};//エネミーの睡眠・暗闇・特技封じ処理
 	static HRESULT InitModelLoad();  //	モデル読み込み
 	//モデル情報取得
 	THING* C3DObj::GetAnimeModel(void);
@@ -238,7 +259,7 @@ protected:
 	int m_Gold;				// 所持金
 	int m_Exp;				// 経験値
 	int m_Condition;			// 状態異常状態格納
-
+	int m_BackFrame;//吹っ飛びのフレームカウント
 	int attack_endframe; // 攻撃終了フレーム
 	int walkf;
 	int attackframe;
@@ -250,6 +271,7 @@ protected:
 	bool enter_flag;		// エンターが押されたとき
 	bool m_Baisoku_Flag;		// 倍速中の1ターン目はfalse trueの時はターンエンド
 	bool m_Donsoku_Flag;		// 鈍足中の1ターン目はfalse trueの時は操作可能
+	bool m_Back;//吹っ飛び状態ならtrue
 	// 描画処理
 	void DrawDX_Anime(D3DXMATRIX mtxWorld, THING* pNomalModel);
 	void C3DObj::DrawDX_Normal(D3DXMATRIX mtxWorld, NormalModelData* pNomalModel);

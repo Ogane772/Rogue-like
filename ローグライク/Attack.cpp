@@ -32,38 +32,9 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 				if (atk_check == ESCAPE_NO)
 				{
 					week_check = Attack_WeekCheck(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_type, enemy->m_WeponType);
-					damage = (int)ENEMY_DAMAGEKEISAN;
-					if (week_check == CUserinterface::WEEK_TYPE)
-					{
-						if (!getplayer->Get_GekikaFlag())
-						{
-							damage *= (int)WEEK_BAIRITU;
-						}
-						else
-						{
-							damage *= (int)WEEK_GEKIKA_BAIRITU;
-						}
-					}
-					else if (week_check == CUserinterface::RESIST_TYPE)
-					{
-						if (!getplayer->Get_GekikaFlag())
-						{
-							damage *= (int)RESIST_BAIRITU;
-						}
-						else
-						{
-							damage *= (int)RESIST_GEKIKA_BAIRITU;
-						}
-					}
-					if (damage < 0)
-					{
-						damage = 1;
-					}
-					SAVE_COUNT *save;
-					save = Get_SaveCount();
-					save->damage_count += damage;
+					damage = CAttack::Attack_DamegeKeisan(week_check, enemy, str, str2);
 				}
-				if (vec == DOWN_ANGLE)	// ãUŒ‚
+				if (vec == DOWN_ANGLE)	// ‰ºUŒ‚
 				{
 					if (enemy->m_Judge_enemy.HitEnemyTop && atk_check == ESCAPE_NO)
 					{
@@ -80,14 +51,14 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 						break;
 					}			
 				}
-				if (vec == LEFT_ANGLE)	// ‰EUŒ‚
+				if (vec == LEFT_ANGLE)	// ¶UŒ‚
 				{
 					// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
 					if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_NO)
 					{
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-						CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 						break;
 					}
 					else if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_OK)
@@ -98,7 +69,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 						break;
 					}
 				}
-				if (vec == UP_ANGLE)	// ‰ºUŒ‚
+				if (vec == UP_ANGLE)	// ãUŒ‚
 				{
 					// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
 					if (enemy->m_Judge_enemy.HitEnemyBottom && atk_check == ESCAPE_NO)
@@ -116,7 +87,7 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 						break;
 					}
 				}
-				if (vec == RIGHT_ANGLE)	// ¶UŒ‚
+				if (vec == RIGHT_ANGLE)	// ‰EUŒ‚
 				{
 					// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
 					if (enemy->m_Judge_enemy.HitEnemyLeft && atk_check == ESCAPE_NO)
@@ -221,6 +192,317 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 	
 }
 
+void CAttack::Attack_PlayerSkill(int skill_number, float vec, int str, float str2)
+{
+	int e;
+	int week_check = 0;
+	C3DObj *getplayer;
+	C3DObj *enemy;
+	bool atk_check;//‰ñ”ğ¬Œ÷’l‘ã“ü
+	int damage = 0;//ƒ_ƒ[ƒWŒvZ®‚ÌŒ‹‰Ê‚ğ‘ã“ü
+	getplayer = CPlayer::Get_Player();
+	for (e = 0; e < MAX_GAMEOBJ; e++)
+	{
+		enemy = CEnemy::Get_Enemy(e);
+		if (enemy)
+		{
+			if (enemy->alive)
+			{
+				atk_check = ESCAPE_NO;
+				if (atk_check == ESCAPE_NO)
+				{
+					week_check = Attack_WeekCheck(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_type, enemy->m_WeponType);
+					damage = CAttack::Attack_DamegeKeisan(week_check, enemy, str, str2);
+				}
+				if (vec == DOWN_ANGLE)	// ‰ºUŒ‚
+				{
+					if (enemy->m_Judge_enemy.HitEnemyTop && atk_check == ESCAPE_NO)
+					{
+						Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+						break;
+					}
+				}
+				if (vec == LEFT_ANGLE)	// ¶UŒ‚
+				{
+					// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+					if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_NO)
+					{
+						Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+						break;
+					}
+				}
+				if (vec == UP_ANGLE)	// ãUŒ‚
+				{
+					// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+					if (enemy->m_Judge_enemy.HitEnemyBottom && atk_check == ESCAPE_NO)
+					{
+						Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+						break;
+					}
+				}
+				if (vec == RIGHT_ANGLE)	// ‰EUŒ‚
+				{
+					// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+					if (enemy->m_Judge_enemy.HitEnemyLeft && atk_check == ESCAPE_NO)
+					{
+						Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+						break;
+					}
+				}
+
+				// ’Ê˜H‚©‚çÎ‚ßUŒ‚‚Í“–‚½‚ç‚È‚¢
+				if (CMap::Map_GetData(getplayer->m_Mapz, getplayer->m_Mapx).type != 2 &&
+					CMap::Map_GetData(enemy->m_Mapz, enemy->m_Mapx).type != 2)
+				{
+					if (vec == RIGHT_TOP_ANGLE)	// ‰EãUŒ‚
+					{
+						// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+						if (enemy->m_Judge_enemy.HitEnemyBottomLeft && atk_check == ESCAPE_NO)
+						{
+							Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+							break;
+						}
+					}
+
+					if (vec == RIGHT_DOWN_ANGLE)	// ‰E‰ºUŒ‚
+					{
+						// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+						if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_NO)
+						{
+							Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+							break;
+						}
+					}
+
+					if (vec == LEFT_DOWN_ANGLE)	// ¶‰ºUŒ‚
+					{
+						// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+						if (enemy->m_Judge_enemy.HitEnemyTopRight && atk_check == ESCAPE_NO)
+						{
+							Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+							break;
+						}
+					}
+
+					if (vec == LEFT_TOP_ANGLE)	// ¶ãUŒ‚
+					{
+						// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+						if (enemy->m_Judge_enemy.HitEnemyBottomRight && atk_check == ESCAPE_NO)
+						{
+							Skill_PlayerEffect(enemy, skill_number, damage, week_check);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+int CAttack::Attack_PlayerThreeRenge(int skill_number, float vec, int str, float str2)
+{
+	int e;
+	int count = 0;
+	int week_check = 0;
+	C3DObj *getplayer;
+	C3DObj *enemy;
+	bool atk_check;//‰ñ”ğ¬Œ÷’l‘ã“ü
+	int damage = 0;//ƒ_ƒ[ƒWŒvZ®‚ÌŒ‹‰Ê‚ğ‘ã“ü
+	getplayer = CPlayer::Get_Player();
+	for (e = 0; e < MAX_GAMEOBJ; e++)
+	{//ŠeŒü‚«‚à‚â‚é‚±‚Æ
+		enemy = CEnemy::Get_Enemy(e);
+		if (enemy)
+		{
+			if (enemy->alive)
+			{
+				atk_check = ESCAPE_NO;
+				// “–‚½‚Á‚Ä‚¢‚½‚ç“–‚½‚Á‚½ƒGƒlƒ~[”‚ğ”‚¦‚é
+				if (vec == DOWN_ANGLE)	// ‰ºUŒ‚
+				{
+					/*
+					if (getplayer->m_Mapx == enemy->m_Mapx && getplayer->m_Mapz + 1 == enemy->m_Mapz)
+					{
+						count++;
+						enemy->Set_RangeHit(true);
+					}*/
+					// ’Ê˜H‚©‚çÎ‚ßUŒ‚‚Í“–‚½‚ç‚È‚¢
+					if (CMap::Map_GetData(getplayer->m_Mapz, getplayer->m_Mapx).type != 2 &&
+						CMap::Map_GetData(enemy->m_Mapz, enemy->m_Mapx).type != 2)
+					{
+						if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyTopRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+					if (enemy->m_Judge_enemy.HitEnemyTop && atk_check == ESCAPE_NO)
+					{
+						count++;
+						enemy->Set_RangeHit(true);
+					}
+				}
+				if (vec == LEFT_ANGLE)	// ¶UŒ‚
+				{
+					// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+					if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_NO)
+					{
+						count++;
+						enemy->Set_RangeHit(true);
+					}
+					if (CMap::Map_GetData(getplayer->m_Mapz, getplayer->m_Mapx).type != 2 &&
+						CMap::Map_GetData(enemy->m_Mapz, enemy->m_Mapx).type != 2)
+					{
+						if (enemy->m_Judge_enemy.HitEnemyTopRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyTopRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+				}
+				if (vec == UP_ANGLE)	// ãUŒ‚
+				{
+					if (enemy->m_Judge_enemy.HitEnemyBottom && atk_check == ESCAPE_NO)
+					{
+						count++;
+						enemy->Set_RangeHit(true);
+					}
+					if (CMap::Map_GetData(getplayer->m_Mapz, getplayer->m_Mapx).type != 2 &&
+						CMap::Map_GetData(enemy->m_Mapz, enemy->m_Mapx).type != 2)
+					{
+						if (enemy->m_Judge_enemy.HitEnemyBottomRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyBottomLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+				}
+				if (vec == RIGHT_ANGLE)	// ‰EUŒ‚
+				{
+					if (enemy->m_Judge_enemy.HitEnemyLeft && atk_check == ESCAPE_NO)
+					{
+						count++;
+						enemy->Set_RangeHit(true);
+					}
+					if (CMap::Map_GetData(getplayer->m_Mapz, getplayer->m_Mapx).type != 2 &&
+						CMap::Map_GetData(enemy->m_Mapz, enemy->m_Mapx).type != 2)
+					{
+						if (enemy->m_Judge_enemy.HitEnemyBottomLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+				}
+
+				// ’Ê˜H‚©‚çÎ‚ßUŒ‚‚Í“–‚½‚ç‚È‚¢
+				if (CMap::Map_GetData(getplayer->m_Mapz, getplayer->m_Mapx).type != 2 &&
+					CMap::Map_GetData(enemy->m_Mapz, enemy->m_Mapx).type != 2)
+				{
+					if (vec == RIGHT_TOP_ANGLE)	// ‰EãUŒ‚
+					{
+						// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+						if (enemy->m_Judge_enemy.HitEnemyBottomLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyBottom && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+
+					if (vec == RIGHT_DOWN_ANGLE)	// ‰E‰ºUŒ‚
+					{
+						if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+
+					if (vec == LEFT_DOWN_ANGLE)	// ¶‰ºUŒ‚
+					{
+						// “–‚½‚Á‚Ä‚¢‚½‚çƒ_ƒ[ƒW‚ğ—^‚¦‚é
+						if (enemy->m_Judge_enemy.HitEnemyTopRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+
+					if (vec == LEFT_TOP_ANGLE)	// ¶ãUŒ‚
+					{
+						if (enemy->m_Judge_enemy.HitEnemyBottomRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyBottom && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+						if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_NO)
+						{
+							count++;
+							enemy->Set_RangeHit(true);
+						}
+					}
+				}
+			}
+		}
+	}
+	return count;
+}
+
 void CAttack::Attack_EnemyUpdate(int enemy_wepon_type, int charatype, int str, float str2, float angle)
 {
 	int week_check = 0;
@@ -323,6 +605,88 @@ void CAttack::Attack_EnemySkill(int skill_number, int enemy_wepon_type, int char
 		Skill_Effect(skill_number, damage, week_check, angle, charatype);
 	}
 }
+
+void CAttack::Skill_PlayerEffect(C3DObj *enemy, int skill_number, int damage, int week_check)
+{
+	//ó‘ÔˆÙí‚Ì‚ÍƒGƒlƒ~[‚Ì•û‚ÉŒü‚©‚È‚¢‚Ì‚ÅŒü‚­‚æ‚¤‚É‚·‚é‚±‚Æ
+	//UI‚ğo‚·‚Æ‚«‚Í•K‚¸ƒ_ƒ[ƒWŒvZ‘O‚É‚·‚é‚±‚Æ
+	C3DObj *getplayer = CPlayer::Get_Player();
+	switch (skill_number)
+	{
+	case CWepon::TYPE_HIGHATTACK_SKILL:
+		damage = (int)(damage * 1.3f);
+		CUserinterface::UI_TextPlayerSkill(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, week_check, CUserinterface::PLAYERCHARA, CUserinterface::SKILLATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+		getplayer->Player_SkillHpDown();
+		getplayer->Set_Attack_End(ATTACK_END);
+		getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
+		break;
+	case CWepon::TYPE_BACKATTACK_SKILL:
+		getplayer->Player_SkillHpDown();
+		CUserinterface::UI_TextPlayerNodamageSkill(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_uieffect, week_check, CUserinterface::PLAYERCHARA, CUserinterface::NODAMAGE_SKILL, CUserinterface::ENEMY,  enemy->Get_Type());
+		enemy->SetBackMove(true);
+		break;
+	case CWepon::TYPE_WARP_SKILL:
+		getplayer->Player_SkillHpDown();
+		CUserinterface::UI_TextPlayerNodamageSkill(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_uieffect, week_check, CUserinterface::PLAYERCHARA, CUserinterface::NODAMAGE_SKILL, CUserinterface::ENEMY, enemy->Get_Type());
+		enemy->Set_Warp(true);
+		break;
+	case CWepon::TYPE_POIZUN_ATTACK:
+		damage = (int)(damage * 1.1f);
+		getplayer->Player_SkillHpDown();
+		getplayer->Set_Attack_End(ATTACK_END);
+		CUserinterface::UI_TextPlayerSkillCondition(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_uieffect,week_check, CUserinterface::PLAYERCHARA, CUserinterface::SKILLATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+		getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
+		if (enemy->Get_Condition() != POIZUN_CONDITION)
+		{
+			enemy->SetCondition(POIZUN_CONDITION);
+			enemy->SetTurnCount(0);
+		}
+		break;
+	case CWepon::TYPE_SLEEP_ATTACK:
+		damage = (int)(damage * 1.1f);
+		getplayer->Player_SkillHpDown();
+		getplayer->Set_Attack_End(ATTACK_END);
+		CUserinterface::UI_TextPlayerSkillCondition(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_uieffect, week_check, CUserinterface::PLAYERCHARA, CUserinterface::SKILLATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+		getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
+		if (enemy->Get_Condition() != SLEEP_CONDITION)
+		{
+			enemy->SetCondition(SLEEP_CONDITION);
+			enemy->SetTurnCount(0);
+		}
+		break;
+	case CWepon::TYPE_KURAYAMI_ATTACK:
+		damage = (int)(damage * 1.1f);
+		getplayer->Player_SkillHpDown();
+		getplayer->Set_Attack_End(ATTACK_END);
+		CUserinterface::UI_TextPlayerSkillCondition(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_uieffect, week_check, CUserinterface::PLAYERCHARA, CUserinterface::SKILLATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+		getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
+		if (enemy->Get_Condition() != KURAYAMI_CONDITION)
+		{
+			enemy->SetCondition(KURAYAMI_CONDITION);
+			enemy->SetTurnCount(0);
+		}
+		break;
+	case CWepon::TYPE_MAHUJI_ATTACK:
+		damage = (int)(damage * 1.1f);
+		getplayer->Player_SkillHpDown();
+		getplayer->Set_Attack_End(ATTACK_END);
+		CUserinterface::UI_TextPlayerSkillCondition(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_uieffect, week_check, CUserinterface::PLAYERCHARA, CUserinterface::SKILLATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+		getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
+		if (enemy->Get_Condition() != MAHUJI_CONDITION)
+		{
+			enemy->SetCondition(MAHUJI_CONDITION);
+			enemy->SetTurnCount(0);
+		}
+		break;
+	case CWepon::TYPE_THREE_ATTACK:
+		damage = (int)(damage * 1.1f);
+		CUserinterface::UI_TextPlayerSkill(CWepon::Get_Wepon_Skill(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_sikibetu_number)->Skill_name, week_check, CUserinterface::PLAYERCHARA, CUserinterface::SKILLATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+		getplayer->Set_Attack_End(ATTACK_END);
+		getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));	
+		break;
+	}
+}
+
 
 void CAttack::Skill_Effect(int skill_number, int damage, int week_check, float angle, int charatype)
 {
@@ -436,4 +800,44 @@ int CAttack::Attack_WeekCheck(int attack_wepontype, int damage_wepontype)
 		}
 	}
 	return CUserinterface::NORMAL_TYPE;
+}
+
+int CAttack::Attack_DamegeKeisan(int week_check, C3DObj *enemy, int str, float str2)
+{
+	C3DObj *getplayer;
+	getplayer = CPlayer::Get_Player();
+	int damage = 0;
+
+	week_check = Attack_WeekCheck(CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_type, enemy->m_WeponType);
+	damage = (int)ENEMY_DAMAGEKEISAN;
+	if (week_check == CUserinterface::WEEK_TYPE)
+	{
+		if (!getplayer->Get_GekikaFlag())
+		{
+			damage *= (int)WEEK_BAIRITU;
+		}
+		else
+		{
+			damage *= (int)WEEK_GEKIKA_BAIRITU;
+		}
+	}
+	else if (week_check == CUserinterface::RESIST_TYPE)
+	{
+		if (!getplayer->Get_GekikaFlag())
+		{
+			damage *= (int)RESIST_BAIRITU;
+		}
+		else
+		{
+			damage *= (int)RESIST_GEKIKA_BAIRITU;
+		}
+	}
+	if (damage < 0)
+	{
+		damage = 1;
+	}
+	SAVE_COUNT *save;
+	save = Get_SaveCount();
+	save->damage_count += damage;
+	return damage;
 }
