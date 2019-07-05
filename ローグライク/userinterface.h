@@ -10,7 +10,7 @@
 #define TEXT_POSX (150)		// テキスト表示X座標
 #define TEXT_POSY (520)		// テキスト表示Y座標
 #define TEXT_ADD_POSY (50)		// テキスト表示Y座標
-#define MAX_NAME (60)
+#define MAX_NAME (90)
 #define TEXT_Y (55)//テキストのY軸の幅
 #define ENEMY_DESTROY_TEXT (20) //　敵死亡時の動けないテキスト表示時間
 #define UI_Y (30)	//上のUI表示位置
@@ -32,6 +32,11 @@ public:
 
 	typedef enum {
 		REGULARATTACK,	// 通常攻撃
+		ENEMY_POIZUN_DEATH,	// 敵が毒で死んだとき
+		SKILLATTACK,	// スキル攻撃
+		SKILL_CONDITIONATTACK,	// 状態異常スキル攻撃
+		BACKENEMY_ATTACK,// 敵が壁に当たった時
+		NODAMAGE_SKILL,	// ダメージのないスキル攻撃
 		GOLADDER,		// 梯子を進む(次の階へ)
 		NOTGOLADDER,	// 梯子を進まない(次の階へ)
 		DESTROY,		// 倒れた
@@ -44,6 +49,7 @@ public:
 		ITEM_DELETE,	// アイテム削除時
 		NOITEM_ASIMOTO,	// アイテムが置けないとき
 		TRAP_EFFECT,	// 罠を踏んだ時
+		TRAP_NOEFFECT,	// 罠を踏んだ時(効果非発動時）
 		WEPON_GET,	// 装備を手に入れた時
 		WEPON_W_GETCHENGE,	// 装備を手に入れた時(片手→両手）
 		WEPON_NORMAL_GETCHENGE,	// 装備を手に入れた時（両手→片手）
@@ -100,13 +106,18 @@ public:
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, char* message);
 	static void UI_TextCreateDeleteItem(CHARATYPE chara, ACTTYPE act, int type, char* rog_message, char* action_message);//アイテム削除用
 	static void UI_TextCreateTrap(CHARATYPE chara, ACTTYPE act, int type);//罠用
+	static void UI_TextCreateTrapRog(CHARATYPE chara, ACTTYPE act, int type, char * rog);//罠の効果発動テキスト自由
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int condition);//状態異常回復
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type , char* rog_message);//+値変化用
 	static void UI_TextCreateCondition(CHARATYPE chara, ACTTYPE act, int type);//アイテム用
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, int purasu_number);//装備用
 	static void UI_TextCreate(int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
 	static void UI_TextCreate(char *skill_effect, int week_type, CHARATYPE chara, int act, CHARATYPE hitchara, int damage, int type);
+	static void UI_TextPlayerSkill(char *skill_effect, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
+	static void UI_TextPlayerSkillCondition(char *skill_effect, char *skill_log, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
+	static void UI_TextPlayerNodamageSkill(char *skill_effect, char *skill_log, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int type);
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
+	static void UI_TextCreateBack(CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);//吹き飛ばしダメージログ
 
 	static void UI_Delete(void);
 private:

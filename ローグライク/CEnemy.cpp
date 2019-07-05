@@ -115,25 +115,38 @@ void CEnemy::EnemyTurnEnd(void)
 	for (i = 0; i < MAX_GAMEOBJ; i++)
 	{	
 		enemy = CEnemy::Get_Enemy(i);
-		//誰もエネミーがいなくてもターン終了時
-		if (getplayer->Get_Condition() <= C3DObj::KURAYAMI_CONDITION && m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END
-			|| getplayer->Get_Condition() >= C3DObj::BAISOKU_CONDITION && m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_CONPLETE)
+		if (!enemy)
 		{
-			TurnCount++;
-			if (TurnCount % 10 == 0 && TurnCount != 0)
+			//誰もエネミーがいなくてもターン終了処理をする
+			if (getplayer->Get_Condition() <= C3DObj::KURAYAMI_CONDITION && m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_END
+				|| getplayer->Get_Condition() >= C3DObj::BAISOKU_CONDITION && m_EnemyMaxNum == 0 && i == MAX_GAMEOBJ - 1 && turnend_count == 0 && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_TURN_CONPLETE)
 			{
-				getplayer->Player_OnakaDown();
-			}
-			CPlayer::Player_NextTurn();
-			if (TurnCount % 50 == 49)
-			{
-				do
+				TurnCount++;
+				if (!getplayer->Get_PlayerHealFlag())
 				{
-					eposX = mt() % MAX_MAPWIDTH;
-					eposZ = mt() % MAX_MAPHEIGHT;
-				} while (CMap::Map_GetData(eposZ, eposX).type != 1);
+					if (TurnCount % getplayer->Get_OnakaTurn() == 0 && TurnCount != 0)
+					{
+						getplayer->Player_OnakaDown();
+					}
+				}
+				else
+				{
+					if (TurnCount % getplayer->Get_OnakaTurn() / 2 == 0 && TurnCount != 0)
+					{
+						getplayer->Player_OnakaDown();
+					}
+				}
+				CPlayer::Player_NextTurn();
+				if (TurnCount % 50 == 49)
+				{
+					do
+					{
+						eposX = mt() % MAX_MAPWIDTH;
+						eposZ = mt() % MAX_MAPHEIGHT;
+					} while (CMap::Map_GetData(eposZ, eposX).type != 1);
 
-				Create(TYPE_SRIME, eposX, eposZ);
+					Create(TYPE_SRIME, eposX, eposZ);
+				}
 			}
 		}
 		// エネミーがいない場合はコンティニュー
@@ -153,14 +166,14 @@ void CEnemy::EnemyTurnEnd(void)
 			CPlayer::Player_NextTurn();
 			if (!getplayer->Get_PlayerHealFlag())
 			{
-				if (TurnCount % 10 == 0 && TurnCount != 0)
+				if (TurnCount % getplayer->Get_OnakaTurn() == 0 && TurnCount != 0)
 				{
 					getplayer->Player_OnakaDown();
 				}
 			}
 			else
 			{
-				if (TurnCount % 5 == 0 && TurnCount != 0)
+				if (TurnCount % getplayer->Get_OnakaTurn() / 2 == 0 && TurnCount != 0)
 				{
 					getplayer->Player_OnakaDown();
 				}

@@ -23,6 +23,8 @@
 #define ITEM_EFFECT_FRAME (45)//アイテムの効果発動フレーム
 #define MAX_ITEM (13)	//所持アイテム最大数
 #define MAX_WEPON (3)	//所持装備数
+#define DEFFAULT_ONAKA_TURN (10)//初期のお腹が減るターン数
+#define SIAWASE_RING (1.5f)//しあわせの指輪のデフォルト値
 //プレイヤーの向き
 #define UP_ANGLE (3.2f)
 #define LEFT_ANGLE (1.6f)
@@ -32,6 +34,12 @@
 #define LEFT_DOWN_ANGLE (0.8f)
 #define RIGHT_TOP_ANGLE (4.0f)
 #define RIGHT_DOWN_ANGLE (5.6f)
+//スキル使用HP量
+#define SMOLL_SKILL_HP (m_MaxHp / 8)
+#define MIDDLE_SKILL_HP (m_MaxHp / 4)
+#define BIG_SKILL_HP (m_MaxHp / 2)
+//罠成功率
+#define TRAP_OK (70)
 //0.25 19 
 //0.5 9
 class CPlayer :public C3DObj
@@ -51,12 +59,15 @@ public:
 		PLAYER_DESTROY,			// プレイヤーがやられる
 		PLAYER_ITEM_EFFECT,		// アイテム使用時
 		PLAYER_ITEM_WAIT,		// アイテム取得時の待機時間
+		PLAYER_ENEMYTURN_WAIT,  // 敵ターン中の待機時間
 		PLAYER_TIME_WAIT,      // 入力不可のプレイヤー待機時間
+		PLAYER_RANGEHIT_WAIT,      // 複数攻撃処理ターン
 		PLAYER_CONDITION_HEAL_WAIT,// 状態異常回復の待機時間
 		PLAYER_SLEEP_WAIT,      // 睡眠状態の待機時間
 		PLAYER_WARP_WAIT,      // ワープ状態の待機時間
 		PLAYER_ITEM_ASIMOTO,	// アイテムを置いたとき
 		PLAYER_TRAP_EFFECT,		// ワナを踏んだ時の効果
+		PLAYER_ENEMY_BACK_WAIT, // 敵吹っ飛び中のの待機時間
 		PLAYER_ACT,				// 行動中
 		PLAYER_ACT_END,			// 行動終了
 		PLAYER_MOVE,			// 移動中
@@ -97,6 +108,7 @@ public:
 		int wepon_def;
 		int wepon_type;
 		int wepon_purasu_number;
+		int wepon_sikibetu_number;//装備の特殊効果を判定するための数字
 	}PLAYER_WEPON;
 
 
@@ -117,6 +129,7 @@ public:
 	static void Player_NextTurn(void);
 	bool Damage(int str, float angle, int week_type);
 	void Player_OnakaDown(void); //おなかを減らす
+	void Player_SkillHpDown(void);
 	int Get_PlayerOnaka(void) { return m_Onaka; }
 	bool Get_PlayerHealFlag(void) { return m_HealFlag; }
 	int Get_CursorNumber(void) { return m_CursorNumber; }
@@ -127,7 +140,11 @@ public:
 	int Get_PlayerItemStock(int index) { return m_ItemStock[index]; }
 	int Get_PlayerItemStockType(int index) { return m_ItemStockType[index]; }
 	int Get_PlayerAllItemStock(int index) { return m_AllItemStock[index]; }
+	int Get_OnakaTurn(void) { return m_OnakaTurn; }
+	int Player_SkillHpGet(void);
 	void Set_PlayerTurn(int turn) { m_Turn = turn; }
+	void SetEnemyBack(bool type) { m_EnemyBack = type; }
+	void SetEnemyDeath(bool type) { m_EnemyDeath = type; }
 	bool Get_DarkFlag(void) { return m_DarkFlag; }
 	bool Get_WMode(void) { return m_Wmode; }
 	bool Get_TurboMode(void) { return turbo; }
@@ -138,8 +155,10 @@ public:
 	bool Get_DrawCheck(void) { return alive; }
 	bool Get_GekikaFlag(void) { return m_Gekika; }
 	bool Get_EnemyONFlag(void) { return m_EnemyOn; }
+	bool Get_EnemyDeath(void) { return m_EnemyDeath; }
 	bool ExpGoldCheck(int exp, int gold);		// 獲得経験値とお金処理
 	
+
 	static C3DObj *Get_Player(void);
 	
 	// マップ二次元配列用
@@ -192,8 +211,10 @@ private:
 	void Player_WeponChenge(int wepon_type, int wepondata_number);//武器の装備 引数　武器のタイプ、装備する場所
 	void Player_W_WeponChenge(int wepon_type);//両手武器の装備 引数　武器のタイプ、装備する場所
 	void Player_ItemSort(void);//使用アイテム削除自、アイテムを前に詰める
+	void Player_ItemSort2(void);//途中のアイテム削除時、使用アイテム削除自、アイテムを前に詰める
 	bool JoyDevice_IsTrigger(int nKey);//コントローラーのトリガー処理
 	int WeponPurasuSet(void);//+値を決めて返す
+	bool SkillHpCheck(void);//スキル使用HPがあるか返す　true=使用できる
 	int m_PadDirection;
 	enum
 	{
@@ -223,6 +244,9 @@ private:
 	int m_Add_cursor;//もし2ページ目を開いてたら足す
 	int m_AutoHell;//自動回復力
 	int m_TrapType;//踏んだトラップ番号格納
+	int m_TrapCheck;//罠発動チェック
+	int m_OnakaTurn;//お腹の減るターン数
+	int m_EnemyAttackCount;//複数のエネミーを攻撃した時の数
 	static 	int m_Turn;
 	int m_DrawCount;
 	bool m_Wmode;//両手武器を持ってるときはtrue
@@ -238,7 +262,10 @@ private:
 	bool turbo;//高速化フラグ
 	bool m_Gekika;//相性激化フラグ
 	bool m_EnemyOn;//エネミー表示フラグ
-
+	bool m_SkillAtaack;//スキル攻撃ならtrue
+	bool m_EnemyBack;//エネミーが吹っ飛び中だったらtrue
+	bool m_EnemyWarp;//エネミーが吹っ飛び中だったらtrue
+	bool m_EnemyDeath;//敵が攻撃以外で死んだとき待つ
 	static Sphere m_Colision;		// 当たり判定
 	
 	int charatype;		// キャラクターの種類

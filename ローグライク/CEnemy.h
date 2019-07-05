@@ -8,6 +8,11 @@
 #define _ENEMY_H_
 #include "C3DObj.h"
 #include "userinterface.h"
+#define ENEMY_POINZU_DAMAGE (m_MaxHp / 8)
+#define ENEMY_POIZUN_HEALTURN (10)
+#define ENEMY_SLEEP_HEALTURN (2 + 1)//2ターンで回復
+#define ENEMY_KURAYAMI_HEALTURN (10 + 1)//10ターンで回復
+#define ENEMY_TOKUGI_HEALTURN (10 + 1)//10ターンで回復
 class CEnemy :virtual public C3DObj
 {
 public:
@@ -50,8 +55,11 @@ public:
 	static int Get_EnemyMaxNum(void) { return m_ENEMY_MAX; }
 	static C3DObj *Get_Enemy(int index);
 	bool Get_DrawCheck(void) { return alive; }
+	bool Get_RangeHit(void) { return m_RangeHit; }
+	void Set_RangeHit(bool type) { m_RangeHit = type; }
 	int Get_EnemyTurn(void){ return enemyturn; }
-	void Set_EnemyTurn(int turn) { enemyturn = turn;	}
+	void Set_EnemyTurn(int turn) { enemyturn = turn;}
+	void Set_Warp(bool type) { m_Warp = type; }
 	static int Get_EnemyExp(int index) { return m_EnemyData[index].exp; }
 	static char* Get_EnemyName(int index) { return m_EnemyData[index].enemy_name; }
 	static void Reset_EnemyEnableNum(void) {  m_EnemyEnableNum = 0; }
@@ -71,12 +79,19 @@ protected:
 		int enemychance;//出現率
 	}ENEMY_Data;
 	int enemyturn;
+
 	// 目的地
 	int m_Goalz;
 	int m_Goalx;
 	// 通路通過中か
 	bool m_Goway;
 	bool get_turbo;
+	
+	//ワープフラグ
+	bool m_Warp;
+
+	//複数攻撃を受けたときのフラグ
+	bool m_RangeHit;
 	float velocity;
 	
 	static bool attackflag; //エネミーが攻撃中ならtrue

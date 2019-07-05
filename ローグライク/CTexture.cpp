@@ -60,6 +60,7 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/poizun_icon.png",250,200 },
 	{ "asset/texture/sleep_icon.png",250,200 },
 	{ "asset/texture/charge_icon.png",250,200 },
+	{ "asset/texture/mahuji_icon.png",250,200 },
 	{ "asset/texture/black.png",1920,1080 },
 	{ "asset/texture/middlewindow.png",845,154 },
 	{ "asset/texture/HP_Gage_onaka.png",250,40 },

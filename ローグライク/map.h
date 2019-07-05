@@ -2,6 +2,7 @@
 #define MAP_H_
 #include <d3dx9.h>
 #include "CTexture.h"
+#include "C3DObj.h"
 //===================================
 // 定数
 //===================================
@@ -69,6 +70,7 @@ public:
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
 	static void Map_SetHaveData(int z, int x, HAVEMAP have) { g_map[z][x].have = have; }
 	static void Map_SetData(int z, int x, int alpha) { g_map[z][x].alpha = alpha; }
+	static void WorpEnemySet(C3DObj *enemy);//ワープエネミー配置処理
 private:
 	//static int g_TexWood2;
 	static void MapWallSet(void);//マップに壁配置処理
@@ -76,6 +78,7 @@ private:
 	static void MapWeponSet(void);//マップに装備配置処理
 	static void MapTrapSet(void);//マップにワナ配置処理
 
+	
 	static void MapEnemySet(void);//マップにエネミー配置処理
 	static void MapLadderSet(void);//マップに階段配置処理
 
