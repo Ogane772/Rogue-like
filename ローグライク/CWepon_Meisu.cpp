@@ -58,8 +58,3 @@ void CWeponMeisu::Draw(void)
 		CBilboard::BilBoard3_Draw(CTexture::TEX_MEISU_ICON, m_Position);
 	}
 }
-
-bool CWeponMeisu::Damage(int str, float angle, int week_type)
-{
-	return 0;
-}

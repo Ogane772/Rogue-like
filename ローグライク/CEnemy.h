@@ -25,6 +25,13 @@ public:
 		ENEMY_TURN_END,		// ターン終了
 		ENEMY_NONE
 	}ENEMYTURN;
+	enum EnemyAnimation
+	{
+		IDLE,
+		WALK,
+		ATTACK,
+	};
+
 	// 敵の種類
 	enum
 	{
@@ -42,7 +49,7 @@ public:
 
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
-	virtual bool Damage(int str, float angle, int week_type) = 0;
+	
 
 	void Enemy_Finalize(int Index);
 	static void EnemyTurnEnd(void);
@@ -57,9 +64,11 @@ public:
 	bool Get_DrawCheck(void) { return alive; }
 	bool Get_RangeHit(void) { return m_RangeHit; }
 	void Set_RangeHit(bool type) { m_RangeHit = type; }
+	int Get_EnemyItem(void) { return set_item; }
 	int Get_EnemyTurn(void){ return enemyturn; }
 	void Set_EnemyTurn(int turn) { enemyturn = turn;}
 	void Set_Warp(bool type) { m_Warp = type; }
+	void Set_EnemyItem(int type) { set_item = type; }
 	static int Get_EnemyExp(int index) { return m_EnemyData[index].exp; }
 	static char* Get_EnemyName(int index) { return m_EnemyData[index].enemy_name; }
 	static void Reset_EnemyEnableNum(void) {  m_EnemyEnableNum = 0; }
@@ -80,6 +89,8 @@ protected:
 	}ENEMY_Data;
 	int enemyturn;
 
+	//所持アイテム格納
+	int set_item;
 	// 目的地
 	int m_Goalz;
 	int m_Goalx;
@@ -89,7 +100,8 @@ protected:
 	
 	//ワープフラグ
 	bool m_Warp;
-
+	//ワープ予約フラグ
+	bool m_TimeWarp;
 	//複数攻撃を受けたときのフラグ
 	bool m_RangeHit;
 	float velocity;
@@ -107,6 +119,50 @@ protected:
 	
 	static int m_EnemyEnableNum;
 	static int m_EnemyNum[TYPE_MAXENEMY];//各エネミーの総数
+
+	//関数
+
+	void Enemy_Update(void);
+	void Enemy_Draw(void);
+
+	virtual void EnemySkill(void) = 0;
+
+	void Enemy_AI(void);
+
+	void Enemy_Act(void);
+	void Enemy_TurboMove(void);
+	void Enemy_Move(void);
+	// 斜め移動(力技)
+	void Enemy_lefttopMove(void);
+	void Enemy_righttopMove(void);
+	void Enemy_leftbottomMove(void);
+	void Enemy_rightbottomMove(void);
+	void Enemy_TurbolefttopMove(void);
+	void Enemy_TurborighttopMove(void);
+	void Enemy_TurboleftbottomMove(void);
+	void Enemy_TurborightbottomMove(void);
+	// 移動方向確定関数
+	void Enemy_LeftMoveCheck(void);
+	void Enemy_RightMoveCheck(void);
+	void Enemy_BottomMoveCheck(void);
+	void Enemy_TopMoveCheck(void);
+	void Enemy_TopLeftMoveCheck(void);
+	void Enemy_TopRightMoveCheck(void);
+	void Enemy_BottomLeftMoveCheck(void);
+	void Enemy_BottomRightMoveCheck(void);
+	//吹っ飛び移動関数
+	void Enemy_BackMove(void);
+	//ワープ移動関数
+	void Enemy_WarpMove(void);
+	bool Damage(int str, float angle, int week_type);
+	bool PoizunDamage(int str);
+	void Enemy_Destroy(void);
+	void Enemy_SetWorpPos(int pposZ, int pposX);
+	void Enemy_PoizunDamageStart(void);
+	void Enemy_PoizunDamage(void);
+	void Enemy_ConditionCount(void);
+	//アイテムドロップ関数
+	void Enemy_ItemDrop(void);
 private:
 	static int m_EnemyMaxNum;//エネミーの総数
 	static int m_ENEMY_MAX;

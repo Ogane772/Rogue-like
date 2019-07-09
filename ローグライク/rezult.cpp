@@ -6,6 +6,8 @@
 #include "bilboard.h"
 #include "CCamera.h"
 #include "C3DObj.h"
+#include "rezult.h"
+#include "gamepad.h"
 /*======================================================================
 グローバル変数
 ======================================================================*/
@@ -13,7 +15,7 @@
 static bool g_bIsFade;
 C2DObj *pResult;
 
-void Rezult_Initialize(void)
+void CRezult::Rezult_Initialize(void)
 {
 	C3DObj::DeleteAll();			//	3Dオブジェクト全消去
 	CGameObj::DeleteAll2D();			//	2Dオブジェクト全消去
@@ -29,25 +31,34 @@ void Rezult_Initialize(void)
 	}
 	pResult = new C2DObj;
 	Fade_Start(false, 90, 0, 0, 0);
+	GamePadInit();
 
 }
-void Rezult_Finalize(void)
+
+void CRezult::Rezult_Finalize(void)
 {
 	delete pResult;;
 }
-void Rezult_Draw(void)
+
+void CRezult::Rezult_Draw(void)
 {
-	CBilboard::BilBoard_ChangeSizeColor(12.8f, 7.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
 	pResult->m_Sprite_Draw(CTexture::TEX_RESULT, 0, 0, 0, 0, pResult->Texture_GetWidth(CTexture::TEX_RESULT), pResult->Texture_GetHeight(CTexture::TEX_RESULT));
 }
-void Rezult_Update(void)
-{
-	CBilboard::BilBoard_Update();
-	//Camera_TitleUpdate();
 
+void CRezult::Rezult_Update(void)
+{
+	//XBOXコントローラー情報があるときのみ取得
+	if (pJoyDevice)
+	{
+		pJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+	}
+	if (!(JoyDevice_IsTrigger(CONTROLLER::A_BUTTON)))
+	{
+		trigger = false;
+	}
 	if (!g_bIsFade)
 	{
-		if (Keyboard_IsTrigger(DIK_SPACE) || Keyboard_IsTrigger(DIK_RETURN))
+		if (Keyboard_IsTrigger(DIK_SPACE) || Keyboard_IsTrigger(DIK_RETURN) || JoyDevice_IsPress(CONTROLLER::A_BUTTON) && !trigger)
 		{
 
 			Fade_Start(true, 90, 0, 0, 0);

@@ -494,6 +494,42 @@ void CUserinterface::UI_TextCreate(char *skill_effect, int week_type, CHARATYPE 
 	add_time = 0;
 }
 
+void CUserinterface::UI_TextCreateSnatch(int week_type, CHARATYPE chara, int act, CHARATYPE hitchara, int damage, int type, int item_type)
+{
+	g_text.lv_up = false;
+	g_text.Age = 0;
+	text_draw = false;
+	time_pos.y = 0;
+	g_text.alive = true;
+	g_text.chara = chara;
+	g_text.hitchara = hitchara;
+	g_text.damage = damage;
+	g_text.act2 = act;
+	g_text.attribute_type = week_type;
+	strcpy_s(g_text.skill_log, MAX_NAME, "の盗む！");
+	strcpy_s(g_text.snatch_log, MAX_NAME, CObject::Get_ObjectName(item_type));
+	if (type > 0)
+	{
+		g_text.type = type;
+	}
+	//エネミーデータから名前と経験値をもらうのでｰ1する
+	if (hitchara > 1)
+	{
+		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
+		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	if (chara > 1)
+	{
+		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	}
+	g_text.pos.x = TEXT_POSX;
+	g_text.pos.y = TEXT_POSY;
+	// 誕生日
+	g_text.TextCreateFrame = g_TextFramecount;
+	add_time = 0;
+}
+
 void CUserinterface::UI_TextPlayerSkill(char *skill_effect, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type)
 {
 	g_text.lv_up = false;
@@ -1652,7 +1688,6 @@ void CUserinterface::UI_TextDraw(void)
 						{
 							UI_TextDraw((int)g_text.pos.x, (int)(g_text.pos.y + 150 + time_pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "経験値%d獲得", g_text.exp);
 						}
-
 					}
 					if (g_text.Age >= ATTACK_END + 50 && g_text.lv_up)
 					{//レベルアップしたら
@@ -2211,6 +2246,20 @@ void CUserinterface::UI_TextDraw(void)
 					if (g_text.Age > 30)
 					{
 						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sは毒に侵された！", g_text.player_name);
+					}
+					break;
+				case CAttack::TOUZOKU_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					if (g_text.Age > 30)
+					{
+						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "%sは%sを盗まれた！", g_text.player_name, g_text.snatch_log);
+					}
+					break;
+				case CAttack::NOTOUZOKU_SKILL:
+					UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y), D3DCOLOR_RGBA(255, 255, 255, 255), "%s%s", g_text.name, g_text.skill_log);
+					if (g_text.Age > 30)
+					{
+						UI_TextDraw((int)(g_text.pos.x), (int)(g_text.pos.y + 50), D3DCOLOR_RGBA(255, 255, 255, 255), "しかし%sはアイテムを持っていなかった！", g_text.player_name);
 					}
 					break;
 				}

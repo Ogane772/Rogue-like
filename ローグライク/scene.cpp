@@ -12,42 +12,42 @@ static SCENE_INDEX g_SceneNextIndex;
 typedef void(*SceneFunc)(void);
 static const SceneFunc g_Initialize[] =
 {
-	 Title_Initialize,
-	 TitleMenu_Initialize,
+	 CTitle::Title_Initialize,
+	 CTitleMenu::TitleMenu_Initialize,
 	 CGallery::Gallery_Initialize,
 	 CStage::Stage_Initialize,
 	 Game_Initialize,
-	 Rezult_Initialize,
+	 CRezult::Rezult_Initialize,
 };
 
 static const SceneFunc g_Finalize[] =
 {
-	Title_Finalize,
-	TitleMenu_Finalize,
+	CTitle::Title_Finalize,
+	CTitleMenu::TitleMenu_Finalize,
 	CGallery::Gallery_Finalize,
 	CStage::Stage_Finalize,
 	Game_Finalize,
-	Rezult_Finalize,
+	CRezult::Rezult_Finalize,
 };
 
 static const SceneFunc g_Update[] =
 {
-	Title_Update,
-	TitleMenu_Update,
+	CTitle::Title_Update,
+	CTitleMenu::TitleMenu_Update,
 	CGallery::Gallery_Update,
 	CStage::Stage_Update,
 	Game_Update,
-	Rezult_Update,
+	CRezult::Rezult_Update,
 };
 
 static const SceneFunc g_Draw[] =
 {
-	Title_Draw,
-	TitleMenu_Draw,
+	CTitle::Title_Draw,
+	CTitleMenu::TitleMenu_Draw,
 	CGallery::Gallery_Draw,
 	CStage::Stage_Draw,
 	Game_Draw,
-	Rezult_Draw,
+	CRezult::Rezult_Draw,
 };
 
 

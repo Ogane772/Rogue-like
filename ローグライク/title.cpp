@@ -3,20 +3,18 @@
 #include "input.h"
 #include "CTexture.h"
 #include "bilboard.h"
-
+#include "title.h"
+#include "debug_font.h"
 /*======================================================================
 グローバル変数
 ======================================================================*/
-//static int g_TextureIndex = TEXTURE_INVALID_INDEX;
-static bool g_bIsFade;
-static int tFlag = 0;
-C2DObj *pTitle;
+bool CTitle::g_bIsFade;
+int CTitle::tFlag;
+C2DObj *CTitle::pTitle;
 
-void Title_Initialize(void)
+void CTitle::Title_Initialize(void)
 {
-
-	//g_TextureIndex = CTexture::Texture_SetLoadFile("asset/texture/title.png", WINDOW_WIDTH, WINDOW_HEIGHT);
-
+	tFlag = 0;
 	if (tFlag > 0)
 	{
 		Fade_Start(false, 90, 0, 0, 0);
@@ -24,23 +22,33 @@ void Title_Initialize(void)
 	pTitle = new C2DObj;
 	g_bIsFade = false;
 	tFlag++;
+	GamePadInit();
 }
 
-void Title_Finalize(void)
+void CTitle::Title_Finalize(void)
 {
 	delete pTitle;
 }
 
-void Title_Update(void)
+void CTitle::Title_Update(void)
 {
+	//XBOXコントローラー情報があるときのみ取得
+	if (pJoyDevice)
+	{
+		pJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+	}
+
 	if (!g_bIsFade)
 	{
-		if (Keyboard_IsTrigger(DIK_SPACE) || Keyboard_IsTrigger(DIK_RETURN))
+		if (!(JoyDevice_IsTrigger(CONTROLLER::A_BUTTON)) && !(JoyDevice_IsTrigger(CONTROLLER::B_BUTTON)))
 		{
-			
+			trigger = false;
+		}
+		if (Keyboard_IsTrigger(DIK_SPACE) || Keyboard_IsTrigger(DIK_RETURN) || JoyDevice_IsTrigger(CONTROLLER::A_BUTTON) && !trigger || JoyDevice_IsTrigger(CONTROLLER::B_BUTTON) && !trigger)
+		{
 			Fade_Start(true, 90, 0, 0, 0);
 			g_bIsFade = true;
-
+			trigger = true;
 		}
 	}
 	else
@@ -54,10 +62,8 @@ void Title_Update(void)
 	}
 }
 
-void Title_Draw(void)
+void CTitle::Title_Draw(void)
 {
-	//Sprite_Draw(g_TextureIndex, 0, 0);
 	pTitle->m_Sprite_Draw(CTexture::TEX_TITLE, 0, 0, 0, 0, pTitle->Texture_GetWidth(CTexture::TEX_TITLE), pTitle->Texture_GetHeight(CTexture::TEX_TITLE));
-	//CBilboard::BilBoard3_Draw(g_TextureIndex, D3DXVECTOR3(Camera_GetData().x - 6.5f, Camera_GetData().y - 6.6f, Camera_GetData().z - 1.0f));
-	//BilBoard3_Draw(g_TextureIndex, D3DXVECTOR3(-6.4f, -3.6f, 0.0f));
+	//DebugFont_Draw(0, 350, "js.rgdwPOV[0]= %d", js.rgdwPOV[0]);
 }

@@ -19,17 +19,21 @@ public:
 		SUNAKEMURI_SKILL,
 		KOMORIUTA_SKILL,
 		POIZUN_SKILL,
+		TOUZOKU_SKILL,//盗む
+		NOTOUZOKU_SKILL,//盗む失敗
 	};
 	static void Attack_PlayerUpdate(int charatype, float vec, int str, float str2);
 	static void Attack_PlayerSkill(int skill_number, float vec, int str, float str2);
 	//目の前の3マス攻撃
 	static int Attack_PlayerThreeRenge(int skill_number, float vec, int str, float str2);
+	static int Attack_PlayerTuranukiSkill(int skill_number, float vec, int str, float str2);
 	static void Attack_EnemyUpdate(int enemy_wepon_type, int charatype, int str, float str2 ,float angle);
-	static void Attack_EnemySkill(int skill_number, int enemy_wepon_type, int charatype, int str, float str2, float angle, bool escape_check);
+	static void Attack_EnemySkill(C3DObj *enemy, int skill_number, int enemy_wepon_type, int charatype, int str, float str2, float angle, bool escape_check);
 	static void Skill_PlayerEffect(C3DObj *enemy, int skill_number, int damage, int week_check);//プレイヤーの対応するスキル効果
-	static void Skill_Effect(int skill_number, int damage, int week_check, float angle, int charatype);//敵の対応するスキル効果
+	static void Skill_EnemyEffect(C3DObj *enemy, int skill_number, int damage, int week_check, float angle, int charatype);//敵の対応するスキル効果
 	static bool Attack_Check(void);//攻撃当たるか避けるか
 	static int Attack_WeekCheck(int attack_wepontype, int damage_wepontype);//相性を比較
 	static int Attack_DamegeKeisan(int week_check, C3DObj *enemy, int str, float str2);//ダメージを計算して返す
+	static int Attack_NoDefDamegeKeisan(int week_check, C3DObj *enemy, int str, float str2);//敵の防御を無視してダメージ計算
 };
 #endif

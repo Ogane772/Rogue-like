@@ -59,8 +59,3 @@ void CObjectLadder::Draw(void)
 		CBilboard::BilBoard3_Draw(CTexture::TEX_LADDER, m_Position);
 	}
 }
-
-bool CObjectLadder::Damage(int str, float angle, int week_type)
-{
-	return 0;
-}

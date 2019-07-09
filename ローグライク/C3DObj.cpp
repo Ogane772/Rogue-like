@@ -21,6 +21,10 @@
 //===========================================================================
 C3DObj *C3DObj::p3DObj[MAX_GAMEOBJ];
 int C3DObj::m_3DObjNum = 0;
+DIJOYSTATE2 C3DObj::js;
+LPDIRECTINPUTDEVICE8 C3DObj::pJoyDevice;
+HRESULT C3DObj::hr;
+bool C3DObj::trigger;//ボタンをトリガー入力させる用
 
 C3DObj::MaterialFileData C3DObj::NORMAL_MODEL_FILES[] = {
 	{ "asset/model/sraim1_10.x" },
@@ -30,6 +34,7 @@ C3DObj::MaterialFileData C3DObj::NORMAL_MODEL_FILES[] = {
 //	使いたいアニメモデルの数だけ書く
 C3DObj::MaterialFileData2 C3DObj::ANIME_MODEL_FILES[] = {
 	{ "asset/model/player.x" },
+	{ "asset/model/gensan.x" },
 };
 int C3DObj::MODEL_FILES_MAX = sizeof(C3DObj::NORMAL_MODEL_FILES) / sizeof(NORMAL_MODEL_FILES[0]);
 int C3DObj::ANIME_MODEL_FILES_MAX = sizeof(C3DObj::ANIME_MODEL_FILES) / sizeof(ANIME_MODEL_FILES[0]);
@@ -729,3 +734,39 @@ bool C3DObj::VFCulling(D3DXVECTOR3* pPosition)
 
 	return true;
 }
+
+void C3DObj::GamePadInit(void)
+{
+	//XBOXゲームパッド読み込み
+	js = { 0 };
+	pJoyDevice = *JoyDevice_Get();
+	if (pJoyDevice)
+	{
+		hr = pJoyDevice->Acquire();
+	}
+	trigger = true;
+}
+
+bool C3DObj::JoyDevice_IsTrigger(int nKey)
+{
+	return (js.rgbButtons[nKey] & 0x80) ? true : false;
+}
+
+bool C3DObj::JoyDevice_IsPress(int nKey)
+{
+	return (js.rgbButtons[nKey] & 0x80) ? true : false;
+}
+
+
+bool C3DObj::JoyDevice_IsCrossTrigger(int nKey)
+{
+	return (js.rgdwPOV[0] == nKey) ? true : false;
+}
+
+bool C3DObj::JoyDevice_IsCrossPress(int nKey)
+{
+	return (js.rgdwPOV[0] == nKey) ? true : false;
+}
+
+
+

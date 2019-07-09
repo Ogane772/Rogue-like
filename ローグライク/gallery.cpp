@@ -16,14 +16,15 @@
 グローバル変数
 ======================================================================*/
 //static int g_TextureIndex = TEXTURE_INVALID_INDEX;
-static bool g_bIsFade;
-static int tFlag = 0;
-C2DObj *pGallery;
-static int cursor = 0;
-static bool tipsflag = false;//データ集開いてるときtrue
-static bool galleryflag = false;//ギャラリー開いてるときtrue
+bool CGallery::g_bIsFade;
+int CGallery::tFlag;
+C2DObj *CGallery::pGallery;
+int CGallery::cursor = 0;
+bool CGallery::tipsflag = false;//データ集開いてるときtrue
+bool CGallery::galleryflag = false;//ギャラリー開いてるときtrue
 C3DObj::NormalModelData CGallery::Gallery_model[GALLERY_MODELMAX];
 
+//ギャラリー用カメラ変数
 static D3DXMATRIX mtxWorld;			//	ワールド変換用行列
 static D3DXMATRIX mtxTranslation;	//	移動行列
 static D3DXMATRIX mtxRotation;		//	移動行列
@@ -60,6 +61,7 @@ void CGallery::Gallery_Initialize(void)
 	tipsflag = false;
 	galleryflag = false;
 	Gallery_ModelInitialize();
+	GamePadInit();
 }
 
 void CGallery::Gallery_CameraInitialize(void)
@@ -71,9 +73,7 @@ void CGallery::Gallery_CameraInitialize(void)
 	D3DXVec3Normalize(&Front, &Front);
 
 	Up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	// 外積
-	//D3DXVec3Cross(&g_right, &g_front, &g_up);
-	// 逆かも
+
 	D3DXVec3Cross(&Right, &Up, &Front);
 	D3DXVec3Normalize(&Right, &Right);
 
@@ -111,61 +111,34 @@ void CGallery::Gallery_Finalize(void)
 
 void CGallery::Gallery_Update(void)
 {
+	//XBOXコントローラー情報があるときのみ取得
+	if (pJoyDevice)
+	{
+		pJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+	}
+	//何もキーが押されてなければボタンを押していい状態にする
+	if (!(JoyDevice_IsTrigger(CONTROLLER::A_BUTTON)) && !(JoyDevice_IsTrigger(CONTROLLER::B_BUTTON)) && !(JoyDevice_IsCrossTrigger(LEFT_BUTTON)) && !(JoyDevice_IsCrossTrigger(RIGHT_BUTTON)) && !(JoyDevice_IsCrossTrigger(UP_BUTTON)) && !(JoyDevice_IsCrossTrigger(DOWN_BUTTON)))
+	{
+		trigger = false;
+	}
 	if (!g_bIsFade)
 	{
-		if (Keyboard_IsTrigger(DIK_RETURN))
+		if (Keyboard_IsTrigger(DIK_RETURN) || JoyDevice_IsTrigger(CONTROLLER::A_BUTTON) && !trigger || JoyDevice_IsTrigger(CONTROLLER::B_BUTTON) && !trigger)
 		{
-			if (tipsflag)
-			{
-				PlaySound(CURSOR_OK_SE);
-				tipsflag = false;
-				return;
-			}
-			if (galleryflag)
-			{
-				PlaySound(CURSOR_OK_SE);
-				galleryflag = false;
-				return;
-			}
-			if(!tipsflag && !galleryflag)
-			{
-				switch (cursor)
-				{
-				case GALLERY_IROIRO:
-					PlaySound(CURSOR_OK_SE);
-					tipsflag = true;
-					break;
-				case GALLERY_JIXTUSEKI:
-					PlaySound(CURSOR_OK_SE);
-					galleryflag = true;
-					break;
-				case GALLERY_BACK:
-					PlaySound(CURSOR_OK_SE);
-					Fade_Start(true, 90, 0, 0, 0);
-					g_bIsFade = true;
-					break;
-				}
-			}
+			OK_BUTTON_SELECT();
+			trigger = true;
 		}
 		if (!tipsflag && !galleryflag)
 		{
-			if (Keyboard_IsTrigger(DIK_W))
+			if (Keyboard_IsTrigger(DIK_W) || JoyDevice_IsCrossTrigger(UP_BUTTON) && !trigger)
 			{
-				PlaySound(CURSOR_SE);
-				cursor--;
-				if (cursor < GALLERY_IROIRO)
-				{
-					cursor = GALLERY_BACK;
-				}
+				UP_BUTTON_SELECT();
+				trigger = true;
 			}
-			if (Keyboard_IsTrigger(DIK_S))
+			if (Keyboard_IsTrigger(DIK_S) || JoyDevice_IsCrossTrigger(DOWN_BUTTON) && !trigger)
 			{
-				PlaySound(CURSOR_SE);
-				cursor++;
-				if (cursor > GALLERY_BACK)
-				{
-					cursor = GALLERY_IROIRO;
-				}
+				DOWN_BUTTON_SELECT();
+				trigger = true;
 			}
 		}
 	}
@@ -304,4 +277,59 @@ void CGallery::Gallery_JIXTUSEKI_Draw(void)
 	//左右のカーソル
 	pGallery->Sprite_Draw(CTexture::TEX_CURSOL, 925.0f - 70, 200.0f, 0.0f, 0.0f, (float)CTexture::Texture_GetWidth(CTexture::TEX_CURSOL), (float)CTexture::Texture_GetHeight(CTexture::TEX_CURSOL), 0.0f, 0.0f, 0.3f, 0.3f, 0.0f);
 	pGallery->Sprite_Draw(CTexture::TEX_CURSOL, 475.0f - 70, 256.3f, 0.0f, 0.0f, (float)CTexture::Texture_GetWidth(CTexture::TEX_CURSOL), (float)CTexture::Texture_GetHeight(CTexture::TEX_CURSOL), 0.0f, 0.0f, 0.3f, 0.3f, D3DXToRadian(180.0f));
+}
+
+void CGallery::OK_BUTTON_SELECT(void)
+{
+	if (tipsflag)
+	{
+		PlaySound(CURSOR_OK_SE);
+		tipsflag = false;
+		return;
+	}
+	if (galleryflag)
+	{
+		PlaySound(CURSOR_OK_SE);
+		galleryflag = false;
+		return;
+	}
+	if (!tipsflag && !galleryflag)
+	{
+		switch (cursor)
+		{
+		case GALLERY_IROIRO:
+			PlaySound(CURSOR_OK_SE);
+			tipsflag = true;
+			break;
+		case GALLERY_JIXTUSEKI:
+			PlaySound(CURSOR_OK_SE);
+			galleryflag = true;
+			break;
+		case GALLERY_BACK:
+			PlaySound(CURSOR_OK_SE);
+			Fade_Start(true, 90, 0, 0, 0);
+			g_bIsFade = true;
+			break;
+		}
+	}
+}
+
+void CGallery::UP_BUTTON_SELECT(void)
+{
+	PlaySound(CURSOR_SE);
+	cursor--;
+	if (cursor < GALLERY_IROIRO)
+	{
+		cursor = GALLERY_BACK;
+	}
+}
+
+void CGallery::DOWN_BUTTON_SELECT(void)
+{
+	PlaySound(CURSOR_SE);
+	cursor++;
+	if (cursor > GALLERY_BACK)
+	{
+		cursor = GALLERY_IROIRO;
+	}
 }

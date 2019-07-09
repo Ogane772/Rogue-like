@@ -58,8 +58,3 @@ void CWeponAx::Draw(void)
 		CBilboard::BilBoard3_Draw(CTexture::TEX_AX_ICON, m_Position);
 	}
 }
-
-bool CWeponAx::Damage(int str, float angle, int week_type)
-{
-	return 0;
-}
