@@ -760,12 +760,28 @@ bool C3DObj::JoyDevice_IsPress(int nKey)
 
 bool C3DObj::JoyDevice_IsCrossTrigger(int nKey)
 {
-	return (js.rgdwPOV[0] == nKey) ? true : false;
+	if (pJoyDevice)
+	{
+		return (js.rgdwPOV[0] == nKey) ? true : false;
+	}
+	else if(pJoyDevice == nullptr)
+	{
+		return false;
+	}
+	return false;
 }
 
 bool C3DObj::JoyDevice_IsCrossPress(int nKey)
 {
-	return (js.rgdwPOV[0] == nKey) ? true : false;
+	if (pJoyDevice)
+	{
+		return (js.rgdwPOV[0] == nKey) ? true : false;
+	}
+	else if (pJoyDevice == nullptr)
+	{
+		return false;
+	}
+	return false;
 }
 
 
