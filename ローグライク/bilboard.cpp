@@ -126,16 +126,12 @@ void CBilboard::BilBoard_Update(void)
 
 void CBilboard::BilBoard3_Draw(const int TexIndex, D3DXVECTOR3 pos)
 {
-	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-	// 絶対合格
-	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	// アルファテストを使用
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	// アルファテスト合格値を設定
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, 10);
 	// 比較(しきい値 < α値)
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	D3DXMATRIX mtxT;
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -150,10 +146,8 @@ void CBilboard::BilBoard3_Draw(const int TexIndex, D3DXVECTOR3 pos)
 	CGameObj::m_pD3DDevice->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(Vertex3D));
 	CGameObj::m_pD3DDevice->SetIndices(g_pIndexBuffer);
 	CGameObj::m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
-	//CGameObj::m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, g_pVertexBuffer, sizeof(Vertex3D));
 	// アルファテストを使用
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
 	// アルファテストを使用
@@ -162,13 +156,6 @@ void CBilboard::BilBoard3_Draw(const int TexIndex, D3DXVECTOR3 pos)
 
 void CBilboard::BilBoard_ChangeSizeColor(float sizeX, float sizeY, D3DCOLOR color)
 {
-	/*board[] = {
-		// 前
-		{ D3DXVECTOR3(-0.5f, 0.5f,0.0f),color,D3DXVECTOR2(0.0f,0.0f) },	// 0
-		{ D3DXVECTOR3(6.5f, 0.5f,0.0f), color,D3DXVECTOR2(1.0f,0.0f) },	// 1
-		{ D3DXVECTOR3(6.5f,-0.5f,0.0f), color,D3DXVECTOR2(1.0f,1.0f) },	// 2
-		{ D3DXVECTOR3(-0.5f,-0.5f,0.0f),color,D3DXVECTOR2(0.0f,1.0f) }		// 3
-	};*/
 	board[0] = { D3DXVECTOR3(0.0f, sizeY,0.0f),color,D3DXVECTOR2(0.0f,0.0f) };
 	board[1] = { D3DXVECTOR3(sizeX, sizeY,0.0f),color,D3DXVECTOR2(1.0f,0.0f) };
 	board[2] = { D3DXVECTOR3(sizeX, 0.0f,0.0f),color,D3DXVECTOR2(1.0f,1.0f) };
@@ -180,13 +167,6 @@ void CBilboard::BilBoard_ChangeSizeColor(float sizeX, float sizeY, D3DCOLOR colo
 
 void CBilboard::BilBoard_ChangeMapPos(float sizeX, float sizeY, D3DCOLOR color)
 {
-	/*board[] = {
-		// 前
-		{ D3DXVECTOR3(-0.5f, 0.5f,0.0f),color,D3DXVECTOR2(0.0f,0.0f) },	// 0
-		{ D3DXVECTOR3(6.5f, 0.5f,0.0f), color,D3DXVECTOR2(1.0f,0.0f) },	// 1
-		{ D3DXVECTOR3(6.5f,-0.5f,0.0f), color,D3DXVECTOR2(1.0f,1.0f) },	// 2
-		{ D3DXVECTOR3(-0.5f,-0.5f,0.0f),color,D3DXVECTOR2(0.0f,1.0f) }		// 3
-	};*/
 	board[0] = { D3DXVECTOR3(sizeX,         sizeY + 0.05f,0.0f),color,D3DXVECTOR2(0.0f,0.0f) };
 	board[1] = { D3DXVECTOR3(sizeX + 0.05f, sizeY + 0.05f,0.0f),color,D3DXVECTOR2(1.0f,0.0f) };
 	board[2] = { D3DXVECTOR3(sizeX + 0.05f, sizeY,0.0f),color,D3DXVECTOR2(1.0f,1.0f) };

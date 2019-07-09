@@ -58,7 +58,7 @@ void CTrapDamage ::Draw(void)
 		D3DXMatrixIdentity(&mtxWorld);
 
 		D3DXMatrixTranslation(&mtxTranslotation, m_Position.x, m_Position.y, m_Position.z);
-		CBilboard::BilBoard_ChangeSizeColor(5.0f, 4.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
+		CBilboard::BilBoard_ChangeSizeColor(4.0f, 3.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
 		CBilboard::BilBoard3_Draw(CTexture::TEX_TRAP_DAMAGE, m_Position);
 	}
 }
