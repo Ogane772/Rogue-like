@@ -80,6 +80,7 @@ public:
 		char player_name[MAX_NAME];
 		char name[MAX_NAME];				// 対象のエネミーの名前
 		char item_log[MAX_NAME];			// アイテム効果の説明
+		char snatch_log[MAX_NAME];			// 盗まれたアイテム名
 		char skill_log[MAX_NAME];//スキル特技名
 		char heal_log[MAX_NAME];//状態異常回復ログ
 		char free_message[MAX_NAME];//自由に記入ログ
@@ -113,6 +114,7 @@ public:
 	static void UI_TextCreate(CHARATYPE chara, ACTTYPE act, int type, int purasu_number);//装備用
 	static void UI_TextCreate(int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
 	static void UI_TextCreate(char *skill_effect, int week_type, CHARATYPE chara, int act, CHARATYPE hitchara, int damage, int type);
+	static void UI_TextCreateSnatch(int week_type, CHARATYPE chara, int act, CHARATYPE hitchara, int damage, int type, int item_type);
 	static void UI_TextPlayerSkill(char *skill_effect, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
 	static void UI_TextPlayerSkillCondition(char *skill_effect, char *skill_log, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int damage, int type);
 	static void UI_TextPlayerNodamageSkill(char *skill_effect, char *skill_log, int week_type, CHARATYPE chara, ACTTYPE act, CHARATYPE hitchara, int type);

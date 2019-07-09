@@ -26,7 +26,6 @@
 #include "CWepon.h"
 #include "fade.h"
 #include "sound.h"
-//#include "CGameObj.h"
 #include "C2DObj.h"
 
 #include "C3DObj.h"

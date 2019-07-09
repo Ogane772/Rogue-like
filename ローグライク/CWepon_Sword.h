@@ -15,6 +15,5 @@ public:
 	void Finalize(void);
 	void Update(void);
 	void Draw(void);
-	bool Damage(int str, float angle, int week_type);
 };
 #endif

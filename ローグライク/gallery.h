@@ -18,6 +18,17 @@ public:
 	static void Gallery_ModelDraw(void);
 	static void Tips_Draw(void);
 	static void Gallery_JIXTUSEKI_Draw(void);
+private:
+	static bool g_bIsFade;
+	static int tFlag;
+	static C2DObj *pGallery;
+	static int cursor;
+	static bool tipsflag;//データ集開いてるときtrue
+	static bool galleryflag;//ギャラリー開いてるときtrue
+
+	static void OK_BUTTON_SELECT(void);
+	static void UP_BUTTON_SELECT(void);
+	static void DOWN_BUTTON_SELECT(void);
 };
 
 #endif

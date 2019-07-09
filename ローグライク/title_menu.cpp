@@ -11,13 +11,12 @@
 /*======================================================================
 グローバル変数
 ======================================================================*/
-static bool g_bIsFade;
-static int tFlag = 0;
-C2DObj *pTitleMenu;
-static int cursor = 0;
-static int save_delete_cursor = 0;
-static bool save_delete = false;
-static bool save_delete_on = false;//セーブデータ消去時true
+bool CTitleMenu::g_bIsFade;
+C2DObj *CTitleMenu::pTitleMenu;
+int CTitleMenu::cursor;
+int CTitleMenu::save_delete_cursor;
+bool CTitleMenu::save_delete;
+bool CTitleMenu::save_delete_on;//セーブデータ消去時true
 
 enum menu_command
 {
@@ -26,109 +25,52 @@ enum menu_command
 	SAVE_DELETE,
 	GAME_END,
 };
-void TitleMenu_Initialize(void)
+
+void CTitleMenu::TitleMenu_Initialize(void)
 {
 	pTitleMenu = new C2DObj;
 	g_bIsFade = false;
-	tFlag++;
 	Fade_Start(false, 10, 0, 0, 0);
 	cursor = 0;
 	save_delete = false;
 	save_delete_cursor = 0;
 	save_delete_on = false;
+	GamePadInit();
 }
 
-void TitleMenu_Finalize(void)
+void CTitleMenu::TitleMenu_Finalize(void)
 {
 	delete pTitleMenu;
 }
 
-void TitleMenu_Update(void)
+void CTitleMenu::TitleMenu_Update(void)
 {
-	 
+	//XBOXコントローラー情報があるときのみ取得
+	if (pJoyDevice)
+	{
+		pJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+	}
+	//何もキーが押されてなければボタンを押していい状態にする
+	if (!(JoyDevice_IsTrigger(CONTROLLER::A_BUTTON)) && !(JoyDevice_IsTrigger(CONTROLLER::B_BUTTON)) && !(JoyDevice_IsCrossTrigger(UP_BUTTON)) && !(JoyDevice_IsCrossTrigger(DOWN_BUTTON)))
+	{
+		trigger = false;
+	}
 	if (!g_bIsFade)
 	{
-		if (Keyboard_IsTrigger(DIK_RETURN))
+		if (Keyboard_IsTrigger(DIK_RETURN) || JoyDevice_IsTrigger(CONTROLLER::A_BUTTON) && !trigger || JoyDevice_IsTrigger(CONTROLLER::B_BUTTON) && !trigger)
 		{
-			if (!save_delete)
-			{
-				switch (cursor)
-				{
-				case GAME_START:
-				case GAME_GALLERY:
-				case GAME_END:
-					PlaySound(CURSOR_OK_SE);
-					Fade_Start(true, 90, 0, 0, 0);
-					g_bIsFade = true;
-					break;
-				case SAVE_DELETE:
-					PlaySound(CURSOR_OK_SE);
-					save_delete = true;
-					save_delete_cursor = 1;
-					break;
-				}
-			}
-			else if(save_delete && !save_delete_on)
-			{
-				if (save_delete_cursor == 0)
-				{
-					PlaySound(CURSOR_OK_SE);
-					save_delete_on = true;
-					//ここでセーブデータ消去
-					SaveDelete();
-				}
-				if (save_delete_cursor == 1)
-				{
-					PlaySound(CURSOR_OK_SE);
-					save_delete = false;
-				}
-			}
-			else if (save_delete && save_delete_on)
-			{
-				PlaySound(CURSOR_OK_SE);
-				save_delete = false;
-				save_delete_on = false;
-			}
+			OK_BUTTON_SELECT();
+			trigger = true;
 		}
-		if (Keyboard_IsTrigger(DIK_W))
+		if (Keyboard_IsTrigger(DIK_W) || JoyDevice_IsCrossTrigger(UP_BUTTON) && !trigger)
 		{
-			if (!save_delete)
-			{
-				PlaySound(CURSOR_SE);
-				cursor--;
-				if (cursor < GAME_START)
-				{
-					cursor = GAME_END;
-				}
-			}
-			else if (save_delete && !save_delete_on)
-			{
-				if (save_delete_cursor > 0)
-				{
-					PlaySound(CURSOR_SE);
-					save_delete_cursor--;
-				}
-			}
+			UP_BUTTON_SELECT();
+			trigger = true;
 		}
-		if (Keyboard_IsTrigger(DIK_S))
+		if (Keyboard_IsTrigger(DIK_S) || JoyDevice_IsCrossTrigger(DOWN_BUTTON) && !trigger)
 		{
-			if (!save_delete)
-			{
-				cursor++;
-				PlaySound(CURSOR_SE);
-				if (cursor > GAME_END)
-				{
-					cursor = GAME_START;
-				}
-			}
-			else if (save_delete && !save_delete_on)
-			{
-				if (save_delete_cursor < 1)
-				{
-					PlaySound(CURSOR_SE);
-					save_delete_cursor++;
-				}
-			}
+			DOWN_BUTTON_SELECT();
+			trigger = true;
 		}
 	}
 	else
@@ -164,7 +106,7 @@ void TitleMenu_Update(void)
 	}
 }
 
-void TitleMenu_Draw(void)
+void CTitleMenu::TitleMenu_Draw(void)
 {
 	pTitleMenu->m_Sprite_Draw(CTexture::TEX_BLACK, 0, 0, 0, 0, pTitleMenu->Texture_GetWidth(CTexture::TEX_BLACK), pTitleMenu->Texture_GetHeight(CTexture::TEX_BLACK));
 	pTitleMenu->Sprite_Draw(CTexture::TEX_WIDTH_WINDOW, 50.0f, 50.0f, 0.0f, 0.0f, (float)CTexture::Texture_GetWidth(CTexture::TEX_WIDTH_WINDOW), (float)CTexture::Texture_GetHeight(CTexture::TEX_WIDTH_WINDOW), 0.0f, 0.0f, 1.7f, 0.72f, D3DXToRadian(0.0f));
@@ -195,6 +137,91 @@ void TitleMenu_Draw(void)
 		{
 			pTitleMenu->Sprite_Draw(CTexture::TEX_WIDTH_WINDOW, 300.0f, 162.0f, 0.0f, 0.0f, (float)CTexture::Texture_GetWidth(CTexture::TEX_WIDTH_WINDOW), (float)CTexture::Texture_GetHeight(CTexture::TEX_WIDTH_WINDOW), 0.0f, 0.0f, 3.7f, 0.23f, D3DXToRadian(0.0f));
 			CUserinterface::UI_TextDraw(350, 175, D3DCOLOR_RGBA(255, 255, 255, 255), "セ－ブデータを消去しました");
+		}
+	}
+}
+
+void CTitleMenu::OK_BUTTON_SELECT(void)
+{
+	if (!save_delete)
+	{
+		switch (cursor)
+		{
+		case GAME_START:
+		case GAME_GALLERY:
+		case GAME_END:
+			PlaySound(CURSOR_OK_SE);
+			Fade_Start(true, 90, 0, 0, 0);
+			g_bIsFade = true;
+			break;
+		case SAVE_DELETE:
+			PlaySound(CURSOR_OK_SE);
+			save_delete = true;
+			save_delete_cursor = 1;
+			break;
+		}
+	}
+	else if (save_delete && !save_delete_on)
+	{
+		if (save_delete_cursor == 0)
+		{
+			PlaySound(CURSOR_OK_SE);
+			save_delete_on = true;
+			//ここでセーブデータ消去
+			SaveDelete();
+		}
+		if (save_delete_cursor == 1)
+		{
+			PlaySound(CURSOR_OK_SE);
+			save_delete = false;
+		}
+	}
+	else if (save_delete && save_delete_on)
+	{
+		PlaySound(CURSOR_OK_SE);
+		save_delete = false;
+		save_delete_on = false;
+	}
+}
+
+void CTitleMenu::UP_BUTTON_SELECT(void)
+{
+	if (!save_delete)
+	{
+		PlaySound(CURSOR_SE);
+		cursor--;
+		if (cursor < GAME_START)
+		{
+			cursor = GAME_END;
+		}
+	}
+	else if (save_delete && !save_delete_on)
+	{
+		if (save_delete_cursor > 0)
+		{
+			PlaySound(CURSOR_SE);
+			save_delete_cursor--;
+		}
+	}
+}
+
+void CTitleMenu::DOWN_BUTTON_SELECT(void)
+{
+	if (!save_delete)
+	{
+		cursor++;
+		PlaySound(CURSOR_SE);
+		if (cursor > GAME_END)
+		{
+			cursor = GAME_START;
+		}
+	}
+	else if (save_delete && !save_delete_on)
+	{
+		if (save_delete_cursor < 1)
+		{
+			PlaySound(CURSOR_SE);
+			save_delete_cursor++;
 		}
 	}
 }

@@ -60,8 +60,3 @@ void CObjectKaki::Draw(void)
 		CBilboard::BilBoard3_Draw(CTexture::TEX_KAKI_ICON, m_Position);
 	}
 }
-
-bool CObjectKaki::Damage(int str, float angle, int week_type)
-{
-	return 0;
-}

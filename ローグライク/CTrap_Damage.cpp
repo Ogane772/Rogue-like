@@ -63,7 +63,3 @@ void CTrapDamage ::Draw(void)
 	}
 }
 
-bool CTrapDamage ::Damage(int str, float angle, int week_type)
-{
-	return 0;
-}

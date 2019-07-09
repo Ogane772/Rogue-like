@@ -1090,6 +1090,12 @@ void CMap::MapItemSet(void)
 	}
 }
 
+void CMap::MapItemPosSet(int item_type, int x, int z)
+{
+		CObject::Create(item_type, x, z);
+		g_map[x][z].have = HAVEITEM;
+}
+
 void CMap::MapWeponSet(void)
 {
 	std::random_device rd;
@@ -1253,7 +1259,7 @@ void CMap::MapEnemySet(void)
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	// 敵生成数の誤差
-	int setenemy = 5;
+	int setenemy = 3;
 	for (int i = 0; i < setenemy; i++)
 		//for (int i = 0; i < 1; i++)	// デバッグ用
 	{

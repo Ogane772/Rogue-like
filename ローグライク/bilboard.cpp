@@ -152,7 +152,7 @@ void CBilboard::BilBoard3_Draw(const int TexIndex, D3DXVECTOR3 pos)
 	CGameObj::m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
 	//CGameObj::m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, g_pVertexBuffer, sizeof(Vertex3D));
 	// アルファテストを使用
-	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
@@ -235,14 +235,14 @@ void CBilboard::Shadow_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos)
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	/*
 	// アルファテストを使用
-	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
 	// アルファテストを使用
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	*/
-	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 void CBilboard::Hukidasi_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos, int texture)
@@ -263,10 +263,13 @@ void CBilboard::Hukidasi_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos, int texture)
 
 	D3DXMATRIX mtxTranslation;
 	D3DXMATRIX mtxRotation;
+	D3DXMATRIX mtxScale;
 	// 
-	D3DXMatrixTranslation(&mtxTranslation, (pos.x - 3.5f * 0.5f) - 0.0f, 2.1f, pos.z - 3.5f * 0.5f);
+
+	D3DXMatrixTranslation(&mtxTranslation, (pos.x - 3.5f * 0.5f) - 0.0f, pos.y, pos.z - 3.5f * 0.5f);
 	D3DXMatrixRotationYawPitchRoll(&mtxRotation, 0.0f, D3DXToRadian(90), 0.0f);
-	mtxS = mtxRotation * mtxTranslation;
+	D3DXMatrixScaling(&mtxScale, 1, 1, 1);
+	mtxS = mtxRotation * mtxScale * mtxTranslation;
 
 
 
@@ -284,14 +287,14 @@ void CBilboard::Hukidasi_Draw(D3DXMATRIX mtxS, D3DXVECTOR3 pos, int texture)
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	/*
 	// アルファテストを使用
-	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
 	// アルファテストを使用
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	*/
-	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 void CBilboard::Shadow_Finalize(void)
@@ -373,7 +376,7 @@ void CBilboard::BillBoard_Exp_Draw(float x, float y, float z, int texture_index,
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	// アルファテストを使用
-	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	//CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 	CGameObj::m_pD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 

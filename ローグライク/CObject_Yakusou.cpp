@@ -61,7 +61,3 @@ void CObjectYakusou::Draw(void)
 	}
 }
 
-bool CObjectYakusou::Damage(int str, float angle, int week_type)
-{
-	return 0;
-}

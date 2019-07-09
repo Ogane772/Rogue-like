@@ -200,9 +200,7 @@ private:
 	void Player_TurborighttopMove(void);
 	void Player_TurboleftbottomMove(void);
 	void Player_TurborightbottomMove(void);
-	void Player_GamepadMove(void);			//	ゲームパッドの移動処理
 	void AngleChange(float Angle);	//	方向変換
-	void ControllerAngleChange(int index);	//	コントローラーの方向変換
 	void Player_Act(void);
 	void Player_Destroy(void);
 	void Player_BackCheck(void);//アイテム取得中にモンスターが攻撃してこないよう事前確認
@@ -215,6 +213,7 @@ private:
 	bool JoyDevice_IsTrigger(int nKey);//コントローラーのトリガー処理
 	int WeponPurasuSet(void);//+値を決めて返す
 	bool SkillHpCheck(void);//スキル使用HPがあるか返す　true=使用できる
+	int ItemSnatch(void);//アイテムを盗まれたときの処理　戻り値　盗まれたアイテム番号
 	int m_PadDirection;
 	enum
 	{

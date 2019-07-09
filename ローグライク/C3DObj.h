@@ -8,6 +8,7 @@
 #define _3DOBJ_H_
 #include <crtdbg.h>
 
+#include "gamepad.h"
 #include "CGameObj.h"
 #include <d3dx9.h>
 #include "CSkinAnimation.h"
@@ -23,7 +24,18 @@
 #define PLAYER_W_DAMAGEKEISAN ((str * str2) / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
 #define PLAYER_NORMAL_DAMAGEKEISAN ((str * str2) / 2) - ((getplayer->Get_Def() + CPlayer::GetPlayerWeponData(CPlayer::WEPON_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::SHELD_NUMBER)->wepon_def + CPlayer::GetPlayerWeponData(CPlayer::RING_NUMBER)->wepon_def) / 4)
 #define ENEMY_DAMAGEKEISAN ((str * str2) / 2) - (enemy->Get_Def() / 4)
+#define ENEMY_NODEF_DAMAGEKEISAN ((str * str2) / 2)
 #define HITSTOP (30)
+//XBOXコントローラーの十字キー
+#define LEFT_BUTTON (27000)
+#define RIGHT_BUTTON (9000)
+#define UP_BUTTON (0)
+#define DOWN_BUTTON (18000)
+#define RIGHT_DOWN_BUTTON (13500)
+#define RIGHT_TOP_BUTTON (4500)
+#define LEFT_DOWN_BUTTON (22500)
+#define LEFT_TOP_BUTTON (31500)
+
 class C3DObj :virtual public CGameObj
 {
 public:
@@ -106,7 +118,7 @@ public:
 	enum ANIME_MODEL
 	{
 		MODELL_ANIME_PLAYER,
-
+		MODELL_ANIME_GENSAN,
 
 		ANIME_MODEL_MAX,//アニメモデル最大数
 	}AnimeModelFileData;;
@@ -198,9 +210,12 @@ public:
 	D3DXVECTOR3 Get_Position(void) { return m_Position; } //座標取得
 	static char* Get_AnimeFileName(int index) { return ANIME_MODEL_FILES[index].filename; }
 	virtual bool Get_DrawCheck(void) = 0;
-	virtual bool Damage(int str, float angle, int week_type) = 0;
+	virtual bool Damage(int str, float angle, int week_type) { return 0; }
+	virtual int ItemSnatch(void) { return 0; }//アイテムを盗まれたときの処理　戻り値　盗まれたアイテム番号
 	virtual void Enemy_PoizunDamageStart(void) {};//エネミーの毒ダメージ計算
 	virtual void Enemy_ConditionCount(void) {};//エネミーの睡眠・暗闇・特技封じ処理
+	virtual void Set_EnemyItem(int type) { };//エネミーの所持アイテムセット
+	virtual int Get_EnemyItem(void) { return 0; }//エネミーの所持アイテムゲット
 	static HRESULT InitModelLoad();  //	モデル読み込み
 	//モデル情報取得
 	THING* C3DObj::GetAnimeModel(void);
@@ -284,7 +299,20 @@ protected:
 
 
 
+	//XBOXゲームパッド変数
+	static DIJOYSTATE2 js;
+	static LPDIRECTINPUTDEVICE8 pJoyDevice;
+	static HRESULT hr;
+	static bool trigger;//ボタンをトリガー入力させる用
 
+	//ゲームパッドのトリガー処理
+	static void GamePadInit(void);
+	static bool JoyDevice_IsTrigger(int nKey);
+	//ゲームパッド十字キーのトリガー処理
+	static bool JoyDevice_IsCrossTrigger(int nKey);
+	//ゲームパッドプレス処理
+	static bool JoyDevice_IsPress(int nKey);
+	static bool JoyDevice_IsCrossPress(int nKey);
 	//static THING Thing[];//読み込むモデルの最大数+1
 	THING anime_model;//読み込むモデルの最大数+1
 	NormalModelData Normal_model;//読み込むモデルの最大数+1

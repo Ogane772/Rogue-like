@@ -18,41 +18,7 @@ public:
 	void Initialize(int x, int z, ENEMY_Data enemy_data);
 	void Update(void);
 	void Draw(void);
-
-	void Enemy_AI(void);
-
-	void Enemy_Act(void);
-	void Enemy_TurboMove(void);
-	void Enemy_Move(void);
-	// Î‚ßˆÚ“®(—Í‹Z)
-	void Enemy_lefttopMove(void);
-	void Enemy_righttopMove(void);
-	void Enemy_leftbottomMove(void);
-	void Enemy_rightbottomMove(void);
-	void Enemy_TurbolefttopMove(void);
-	void Enemy_TurborighttopMove(void);
-	void Enemy_TurboleftbottomMove(void);
-	void Enemy_TurborightbottomMove(void);
-	// ˆÚ“®•ûŒüŠm’èŠÖ”
-	void Enemy_LeftMoveCheck(void);
-	void Enemy_RightMoveCheck(void);
-	void Enemy_BottomMoveCheck(void);
-	void Enemy_TopMoveCheck(void);
-	void Enemy_TopLeftMoveCheck(void);
-	void Enemy_TopRightMoveCheck(void);
-	void Enemy_BottomLeftMoveCheck(void);
-	void Enemy_BottomRightMoveCheck(void);
-	//‚Á”ò‚ÑˆÚ“®ŠÖ”
-	void Enemy_BackMove(void);
-	//ƒ[ƒvˆÚ“®ŠÖ”
-	void Enemy_WarpMove(void);
-	bool Damage(int str, float angle, int week_type);
-	bool PoizunDamage(int str);
-	void Enemy_Destroy(void);
-	void Enemy_SetWorpPos(int pposZ, int pposX);
-	void Enemy_PoizunDamageStart(void);
-	void Enemy_PoizunDamage(void);
-	void Enemy_ConditionCount(void);
+	void EnemySkill(void)override;
 	
 };
 #endif 

@@ -58,8 +58,3 @@ void CWeponBigSword::Draw(void)
 		CBilboard::BilBoard3_Draw(CTexture::TEX_BIGSWORD_ICON, m_Position);
 	}
 }
-
-bool CWeponBigSword::Damage(int str, float angle, int week_type)
-{
-	return 0;
-}
