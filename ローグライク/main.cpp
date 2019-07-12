@@ -286,7 +286,7 @@ bool Begin(HINSTANCE hInstance, HWND hWnd)
 	//CSVÇÃì«Ç›çûÇ›
 	CObject::ObjectDataInit();
 	CWepon::WeponDataInit();
-	CEnemy::EnemyDataInit();
+ 	CEnemy::EnemyDataInit();
 	CTrap::TrapDataInit();
 
 	CUserinterface::UI_Initialize();

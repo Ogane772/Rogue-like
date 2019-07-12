@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CTRAP_DAMAGE_H_
-#define CTRAP_DAMAGE_H_
+#ifndef CTRAP_DONSOKU_H_
+#define CTRAP_DONSOKU_H_
 
 #include <d3dx9.h>
 #include "CTrap.h"
@@ -8,11 +8,11 @@
 // íËêî
 //===================================
 
-class CTrapDamage : public CTrap
+class CTrapDonsoku : public CTrap
 {
 public:
-	CTrapDamage(int x, int z, int trap_type);
-	~CTrapDamage();
+	CTrapDonsoku(int x, int z, int trap_type);
+	~CTrapDonsoku();
 
 	void Initialize(int x, int z, int trap_type);
 	void Finalize(void);

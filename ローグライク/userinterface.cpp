@@ -1174,11 +1174,13 @@ void CUserinterface::UI_UpDraw(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
 	//上のUI表示///////////////////
+	//HPウィンドウ
+	Sprite_Draw(TEX_WIDTH_WINDOW, 470, UI_Y - 7, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 2.1f, 0.16f, D3DXToRadian(0.0f));
 	UI_TextDraw(570, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%.0f", getplayer->Get_Hp());
 	UI_TextDraw(710, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%.0f", getplayer->Get_MaxHp());
 
-	UI_TextDraw(500, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "HP        /");
-
+	UI_TextDraw(500, UI_Y, D3DCOLOR_RGBA(255, 255, 20, 255), "HP        /");
+	
 	//HPバー
 	Sprite_Draw(TEX_HPGAGE_REDBAR, 500, 50 + UI_Y, 0, 0, (float)Texture_GetWidth(TEX_HPGAGE_REDBAR), (float)Texture_GetHeight(TEX_HPGAGE_REDBAR), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 	Sprite_Draw(TEX_HPGAGE_WAKU, 500, 50 + UI_Y, 0, 0, (float)Texture_GetWidth(TEX_HPGAGE_WAKU), (float)Texture_GetHeight(TEX_HPGAGE_WAKU), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
@@ -1194,40 +1196,49 @@ void CUserinterface::UI_UpDraw(void)
 	{
 		Sprite_Draw(TEX_HPGAGE_ONAKA, 512, 60 + UI_Y, 0, 0, 250 * getplayer->Get_Hp() / getplayer->Get_MaxHp(), (float)Texture_GetHeight(TEX_HPGAGE_GREENBAR), 0.0f, 0.0f, 0.91f, 0.5f, 0.0f);
 	}
-	UI_TextDraw(100, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", CStage::Stage_GetLevel());
-	UI_TextDraw(120, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "  F");
+	//レベルとフロアウィンドウ
+	Sprite_Draw(TEX_WIDTH_WINDOW, 240, UI_Y - 7, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 1.2f, 0.16f, D3DXToRadian(0.0f));
+	UI_TextDraw(100+140, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", CStage::Stage_GetLevel());
+	UI_TextDraw(120+150, UI_Y, D3DCOLOR_RGBA(255, 255, 20, 255), "  F");
 
-	UI_TextDraw(320, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", getplayer->Get_Lv());
-	UI_TextDraw(220, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "  Lv");
+	UI_TextDraw(290+100, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%2d", getplayer->Get_Lv());
+	UI_TextDraw(220+100, UI_Y, D3DCOLOR_RGBA(255, 255, 20, 255), "  Lv");
 
 	//UI_TextDraw(910, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%4d", getplayer->Get_Gold());
 	//UI_TextDraw(980, UI_Y, D3DCOLOR_RGBA(0, 255, 200, 255), "  G");
+	//武器アイコンウィンドウ
+	Sprite_Draw(TEX_WIDTH_WINDOW, 835, UI_Y - 7, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 1.6f, 0.16f, D3DXToRadian(0.0f));
 	//武器アイコン表示
 	switch (CPlayer::GetPlayerWeponData(0)->wepon_type)
 	{
 	case CWepon::TYPE_SWORD:
-		Sprite_Draw(TEX_SWORD_ICON, 810, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SWORD_ICON), (float)Texture_GetHeight(TEX_SWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		Sprite_Draw(TEX_SWORD_ICON, 810 + 30, UI_Y -10, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SWORD_ICON), (float)Texture_GetHeight(TEX_SWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		break;
 	case CWepon::TYPE_BIGSWORD:
-		Sprite_Draw(TEX_BIGSWORD_ICON, 800, UI_Y - 5, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		Sprite_Draw(TEX_BIGSWORD_ICON, 800 + 30, UI_Y - 15, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		break;
 	case CWepon::TYPE_REIPIA:
-		Sprite_Draw(TEX_REIPIA_ICON, 800, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		Sprite_Draw(TEX_REIPIA_ICON, 800 + 30, UI_Y - 10, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		break;
 	case CWepon::TYPE_RANCE:
-		Sprite_Draw(TEX_RANCE_ICON, 800, UI_Y - 5, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		Sprite_Draw(TEX_RANCE_ICON, 800 + 30, UI_Y - 15, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		break;
 	case CWepon::TYPE_MEISU:
-		Sprite_Draw(TEX_MEISU_ICON, 800, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		Sprite_Draw(TEX_MEISU_ICON, 800 + 30, UI_Y - 10, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		break;
 	case CWepon::TYPE_AX:
-		Sprite_Draw(TEX_AX_ICON, 790, UI_Y - 5, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
+		Sprite_Draw(TEX_AX_ICON, 790 + 30, UI_Y - 15, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		break;
 	}
-	UI_TextDraw(850, UI_Y + 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d",CPlayer::GetPlayerWeponData(0)->wepon_str + CPlayer::GetPlayerWeponData(1)->wepon_str + CPlayer::GetPlayerWeponData(2)->wepon_str + getplayer->Get_Str());
+	//攻撃力表示
 	
-	Sprite_Draw(TEX_SHELD_ICON, 960, UI_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SHELD_ICON), (float)Texture_GetHeight(TEX_SHELD_ICON), 0.0f, 0.0f, 0.3f, 0.3f, 0.0f);
-	UI_TextDraw(1000, UI_Y + 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d", CPlayer::GetPlayerWeponData(0)->wepon_def + CPlayer::GetPlayerWeponData(1)->wepon_def + CPlayer::GetPlayerWeponData(2)->wepon_def + getplayer->Get_Def());
+	//UI_TextDraw(850, UI_Y + 10, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d",CPlayer::GetPlayerWeponData(0)->wepon_str + CPlayer::GetPlayerWeponData(1)->wepon_str + CPlayer::GetPlayerWeponData(2)->wepon_str + getplayer->Get_Str());
+	UI_TextDraw(850 + 30, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d", CPlayer::GetPlayerWeponData(0)->wepon_str + CPlayer::GetPlayerWeponData(1)->wepon_str + CPlayer::GetPlayerWeponData(2)->wepon_str);
+
+	Sprite_Draw(TEX_SHELD_ICON, 960, UI_Y - 10, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SHELD_ICON), (float)Texture_GetHeight(TEX_SHELD_ICON), 0.0f, 0.0f, 0.3f, 0.3f, 0.0f);
+	UI_TextDraw(1000 + 30, UI_Y, D3DCOLOR_RGBA(255, 255, 255, 255), "%3d", CPlayer::GetPlayerWeponData(0)->wepon_def + CPlayer::GetPlayerWeponData(1)->wepon_def + CPlayer::GetPlayerWeponData(2)->wepon_def + getplayer->Get_Def());
+
+	/*
 	//相性武器表示
 	if (CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_SWORD || CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_BIGSWORD)
 	{
@@ -1258,6 +1269,24 @@ void CUserinterface::UI_UpDraw(void)
 		Sprite_Draw(TEX_SWORD_ICON, 1060, UI_Y + 60, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_SWORD_ICON), (float)Texture_GetHeight(TEX_SWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		Sprite_Draw(TEX_BIGSWORD_ICON, 1135, UI_Y - 5 + 60, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		Sprite_Draw(TEX_PLAYER_YAJIRUSI2, 1195, UI_Y + 68, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_YAJIRUSI), (float)Texture_GetHeight(TEX_PLAYER_YAJIRUSI), 0.0f, 0.0f, 0.1f, 0.08f, 0.0f);
+	}*/
+	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_KEY_INPUT && !g_text.alive && !getplayer->Get_TurboMode())
+	{
+		//相性表
+		Sprite_Draw(TEX_WIDTH_WINDOW, 790.0f + 65, 145.0f + (TEXT_Y + 290), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 2.43f, 0.553f, D3DXToRadian(0.0f));
+		Sprite_Draw(TEX_AISYOU_ICON, 840.0f + 65, 150.5f + (TEXT_Y + 290), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_AISYOU_ICON), (float)Texture_GetHeight(TEX_AISYOU_ICON), 0.0f, 0.0f, 0.33f, 0.31f, 0.0f);
+		if (CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_SWORD || CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_BIGSWORD)
+		{
+			Sprite_Draw(TEX_BUKI_MARU, 930.0f + 65, 140.0f + (TEXT_Y + 290), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BUKI_MARU), (float)Texture_GetHeight(TEX_BUKI_MARU), 0.0f, 0.0f, 0.3f, 0.3f, 0.0f);
+		}
+		else if (CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_REIPIA || CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_RANCE)
+		{
+			Sprite_Draw(TEX_BUKI_MARU, 1020.0f + 65, 260.0f + (TEXT_Y + 290), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BUKI_MARU), (float)Texture_GetHeight(TEX_BUKI_MARU), 0.0f, 0.0f, 0.3f, 0.3f, 0.0f);
+		}
+		else if (CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_MEISU || CPlayer::GetPlayerWeponData(0)->wepon_type == CWepon::TYPE_AX)
+		{
+			Sprite_Draw(TEX_BUKI_MARU, 830.0f + 65, 255.0f + (TEXT_Y + 290), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BUKI_MARU), (float)Texture_GetHeight(TEX_BUKI_MARU), 0.0f, 0.0f, 0.3f, 0.3f, 0.0f);
+		}
 	}
 }
 
@@ -1303,7 +1332,8 @@ void CUserinterface::Map_Draw(void)
 			}
 		}
 		//プレイヤーアイコン表示
-		Sprite_Draw(TEX_PLAYER_ICON, getplayer->Get_Position().x + MAP_POS_X, (getplayer->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+		Sprite_Draw(TEX_PLAYER_ICON, getplayer->Get_Position().x + MAP_POS_X, (getplayer->Get_Position().z*-1) + MAP_POS_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_ICON), (float)Texture_GetHeight(TEX_PLAYER_ICON), 0.0f, 0.0f, 0.78f, 0.78f, 0.0f);
+		//Sprite_Draw(TEX_PLAYER_ICON, getplayer->Get_Position().x + MAP_POS_X, (getplayer->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 4, 4);
 		for (i = 0; i < MAX_GAMEOBJ; i++)
 		{
 			enemy = CEnemy::Get_Enemy(i);
@@ -1314,14 +1344,14 @@ void CUserinterface::Map_Draw(void)
 				{
 					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
 					{
-						Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+						Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_ICON), (float)Texture_GetHeight(TEX_PLAYER_ICON), 0.0f, 0.0f, 0.78f, 0.78f, 0.0f);
 					}
 				}
 				if (getplayer->Get_EnemyONFlag())
 				{
 					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
 					{
-						Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+						Sprite_Draw(CTexture::TEX_ENEMY_ICON, enemy->Get_Position().x + MAP_POS_X, (enemy->Get_Position().z*-1) + MAP_POS_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_ICON), (float)Texture_GetHeight(TEX_PLAYER_ICON), 0.0f, 0.0f, 0.78f, 0.78f, 0.0f);
 					}
 				}
 			}
@@ -1343,11 +1373,11 @@ void CUserinterface::Map_Draw(void)
 					{
 						if (object->m_ObjectType == CObject::TYPE_LADDER)
 						{
-							Sprite_Draw(CTexture::TEX_LADDER_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+							Sprite_Draw(CTexture::TEX_LADDER_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_ICON), (float)Texture_GetHeight(TEX_PLAYER_ICON), 0.0f, 0.0f, 0.78f, 0.78f, 0.0f);
 						}
 						if (object->m_ObjectType != CObject::TYPE_LADDER)
 						{
-							Sprite_Draw(CTexture::TEX_ITEM_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+							Sprite_Draw(CTexture::TEX_ITEM_ICON, object->Get_Position().x + MAP_POS_X, (object->Get_Position().z*-1) + MAP_POS_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_ICON), (float)Texture_GetHeight(TEX_PLAYER_ICON), 0.0f, 0.0f, 0.78f, 0.78f, 0.0f);
 						}
 					}
 				}
@@ -1368,7 +1398,7 @@ void CUserinterface::Map_Draw(void)
 				{
 					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
 					{
-						Sprite_Draw(CTexture::TEX_ITEM_ICON, wepon->Get_Position().x + MAP_POS_X, (wepon->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+						Sprite_Draw(CTexture::TEX_ITEM_ICON, wepon->Get_Position().x + MAP_POS_X, (wepon->Get_Position().z*-1) + MAP_POS_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_ICON), (float)Texture_GetHeight(TEX_PLAYER_ICON), 0.0f, 0.0f, 0.78f, 0.78f, 0.0f);
 					}
 				}
 			}
@@ -1388,7 +1418,7 @@ void CUserinterface::Map_Draw(void)
 				{
 					if (getplayer->Get_Condition() != C3DObj::KURAYAMI_CONDITION)
 					{
-						Sprite_Draw(CTexture::TEX_TRAP_ICON, trap->Get_Position().x + MAP_POS_X, (trap->Get_Position().z*-1) + MAP_POS_Y, 0, 0, 8, 8);
+						Sprite_Draw(CTexture::TEX_TRAP_ICON, trap->Get_Position().x + MAP_POS_X, (trap->Get_Position().z*-1) + MAP_POS_Y, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_ICON), (float)Texture_GetHeight(TEX_PLAYER_ICON), 0.0f, 0.0f, 0.78f, 0.78f, 0.0f);
 					}
 				}
 			}

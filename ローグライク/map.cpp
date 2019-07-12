@@ -1092,8 +1092,8 @@ void CMap::MapItemSet(void)
 
 void CMap::MapItemPosSet(int item_type, int x, int z)
 {
-		CObject::Create(item_type, x, z);
-		g_map[x][z].have = HAVEITEM;
+	CObject::Create(item_type, x, z);
+	g_map[x][z].have = HAVEITEM;
 }
 
 void CMap::MapWeponSet(void)
@@ -1215,7 +1215,7 @@ void CMap::MapPlayerSet(void)
 	CPlayer::Player_SetPos(pposZ, pposX);
 }
 
-void CMap::WorpPlayerSet(void)
+void CMap::WorpPlayerSet(int z, int x)
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -1227,14 +1227,16 @@ void CMap::WorpPlayerSet(void)
 	{
 		pposX = random(mt);
 		pposZ = random(mt);
-		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE)
+		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE &&
+			g_map[pposZ][pposX].Group != g_map[z][x].Group &&
+			g_map[pposZ][pposX].have != HAVEENEMY)
 			break;
 	}
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetWorpPos(pposZ, pposX);
 }
 
-void CMap::WorpEnemySet(C3DObj *enemy)
+void CMap::WorpEnemySet(C3DObj *enemy, int z, int x)
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -1246,7 +1248,8 @@ void CMap::WorpEnemySet(C3DObj *enemy)
 	{
 		pposX = random(mt);
 		pposZ = random(mt);
-		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE)
+		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE &&
+			g_map[pposZ][pposX].Group != g_map[z][x].Group)
 			break;
 	}
 	g_map[pposZ][pposX].have = HAVEENEMY;
@@ -1258,22 +1261,48 @@ void CMap::MapEnemySet(void)
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
-	// 敵生成数の誤差
 	int setenemy = 3;
-	for (int i = 0; i < setenemy; i++)
-		//for (int i = 0; i < 1; i++)	// デバッグ用
+	int enemysummon_number[100] = { 0 };//エネミー出現率格納
+	int kakuritu_start = 0;//どの配列番号から数えるか
+	int lposX;
+	int lposZ;
+	int i, j, k;
+	//その階で出るアイテムを検索し確率を代入していく
+	for (j = 0; j< CEnemy::Get_ENEMYDATAMAX(); j++)
 	{
-		int eposX;
-		int eposZ;
+		if (CEnemy::Get_EnemyData(j)->first_floor <= CStage::Stage_GetLevel() &&
+			CEnemy::Get_EnemyData(j)->end_floor >= CStage::Stage_GetLevel())
+		{
+			for (k = kakuritu_start; k < kakuritu_start + CEnemy::Get_EnemyData(j)->enemychance; k++)
+			{
+				if (enemysummon_number[k] == 0)
+				{
+					enemysummon_number[k] = CEnemy::Get_EnemyData(j)->enemy_type;
+				}
+			}
+			kakuritu_start += CEnemy::Get_EnemyData(j)->enemychance;
+		}
+	}
+	//もしも100％埋まってなかったら空きに最初のエネミーを入れておく
+	for (k = 0; k < 100; k++)
+	{
+		if (enemysummon_number[k] == 0)
+		{
+			enemysummon_number[k] = enemysummon_number[0];
+		}
+	}
+	//乱数で取得した分だけエネミーをを配置する
+	for (i = 0; i < setenemy; i++)
+	{
 		for (;;)
 		{
-			eposX = random(mt);
-			eposZ = random(mt);
-			if (g_map[eposZ][eposX].type == 1 && g_map[eposZ][eposX].have == NOTHAVE)
+			lposX = random(mt);
+			lposZ = random(mt);
+			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
 				break;
 		}
-		g_map[eposZ][eposX].have = HAVEENEMY;
-		CEnemy::Create(CEnemy::TYPE_SRIME, eposX, eposZ);
+		CEnemy::Create(enemysummon_number[random(mt)], lposX, lposZ);
+		g_map[lposZ][lposX].have = HAVEENEMY;
 	}
 }
 
@@ -2534,4 +2563,19 @@ void CMap::MapdeletePassage(int passagenum)
 				g_map[z][x].type = 1;
 		}
 	}
+}
+
+void CMap::MapPlayerPosSet(int mapz, int mapx, int oldz, int oldx)
+{
+	if (g_map[oldz][oldx].have == HAVEPLAYER)
+		g_map[oldz][oldx].have = NOTHAVE;
+	if (g_map[mapz][mapx].have == NOTHAVE)
+		g_map[mapz][mapx].have = HAVEPLAYER;
+}
+void CMap::MapEnemyPosSet(int mapz, int mapx, int oldz, int oldx)
+{
+	if (g_map[oldz][oldx].have == HAVEENEMY)
+		g_map[oldz][oldx].have = NOTHAVE;
+	if (g_map[mapz][mapx].have == NOTHAVE)
+		g_map[mapz][mapx].have = HAVEENEMY;
 }
