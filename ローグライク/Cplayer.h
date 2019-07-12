@@ -145,6 +145,7 @@ public:
 	void Set_PlayerTurn(int turn) { m_Turn = turn; }
 	void SetEnemyBack(bool type) { m_EnemyBack = type; }
 	void SetEnemyDeath(bool type) { m_EnemyDeath = type; }
+	bool Get_Hold(void) {return m_Hold; }
 	bool Get_DarkFlag(void) { return m_DarkFlag; }
 	bool Get_WMode(void) { return m_Wmode; }
 	bool Get_TurboMode(void) { return turbo; }
@@ -255,6 +256,7 @@ private:
 	bool right_trigger = false;
 	bool left_trigger = false;
 	bool right_on;//右スティック入力確認
+	bool m_Hold;//キーおしっぱでtrue
 	bool m_DarkFlag;//暗闇の通路にいたらtrue
 	bool m_NanameFlag;//斜め移動モードの時true
 	bool m_HealFlag;//自動回復高速化フラグ
