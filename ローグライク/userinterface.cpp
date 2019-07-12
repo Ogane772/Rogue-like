@@ -1270,7 +1270,7 @@ void CUserinterface::UI_UpDraw(void)
 		Sprite_Draw(TEX_BIGSWORD_ICON, 1135, UI_Y - 5 + 60, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_BIGSWORD_ICON), (float)Texture_GetHeight(TEX_BIGSWORD_ICON), 0.0f, 0.0f, 0.4f, 0.4f, 0.0f);
 		Sprite_Draw(TEX_PLAYER_YAJIRUSI2, 1195, UI_Y + 68, 0.0f, 0.0f, (float)Texture_GetWidth(TEX_PLAYER_YAJIRUSI), (float)Texture_GetHeight(TEX_PLAYER_YAJIRUSI), 0.0f, 0.0f, 0.1f, 0.08f, 0.0f);
 	}*/
-	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_KEY_INPUT && !g_text.alive && !getplayer->Get_TurboMode())
+	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_KEY_INPUT && !g_text.alive && !getplayer->Get_TurboMode() && !getplayer->Get_Hold())
 	{
 		//相性表
 		Sprite_Draw(TEX_WIDTH_WINDOW, 790.0f + 65, 145.0f + (TEXT_Y + 290), 0.0f, 0.0f, (float)Texture_GetWidth(TEX_WIDTH_WINDOW), (float)Texture_GetHeight(TEX_WIDTH_WINDOW), 0.0f, 0.0f, 2.43f, 0.553f, D3DXToRadian(0.0f));
