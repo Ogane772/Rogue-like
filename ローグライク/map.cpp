@@ -1103,7 +1103,7 @@ void CMap::MapWeponSet(void)
 	std::uniform_int_distribution<int> random(0, 99);
 	std::uniform_int_distribution<int> randomwepon(1, 8);
 	//int setitem = mt() % 3 + 4;
-	int setitem = 5;
+	int setitem = 100;
 	int lposX;
 	int lposZ;
 	int i;
@@ -2534,4 +2534,19 @@ void CMap::MapdeletePassage(int passagenum)
 				g_map[z][x].type = 1;
 		}
 	}
+}
+
+void CMap::MapPlayerPosSet(int mapz, int mapx, int oldz, int oldx)
+{
+	if (g_map[oldz][oldx].have == HAVEPLAYER)
+		g_map[oldz][oldx].have = NOTHAVE;
+	if (g_map[mapz][mapx].have == NOTHAVE)
+		g_map[mapz][mapx].have = HAVEPLAYER;
+}
+void CMap::MapEnemyPosSet(int mapz, int mapx, int oldz, int oldx)
+{
+	if (g_map[oldz][oldx].have == HAVEENEMY)
+		g_map[oldz][oldx].have = NOTHAVE;
+	if (g_map[mapz][mapx].have == NOTHAVE)
+		g_map[mapz][mapx].have = HAVEENEMY;
 }

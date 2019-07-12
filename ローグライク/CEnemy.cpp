@@ -352,11 +352,16 @@ void CEnemy::Enemy_Update(void)
 				break;
 
 			case CPlayer::PLAYER_MOVE:
+			case CPlayer::PLAYER_WARP_WAIT:
 				//プレイヤーが移動中にオブジェクトに当たった時は殴らない
 				//プレイヤーが複数攻撃中も
+				if (enemyturn == ENEMY_ACTION && getplayer->Get_PlayerTurn() == CPlayer::PLAYER_WARP_WAIT)
+					enemyturn = ENEMY_TURN_END;
+
 				if (getplayer->m_Judge_player.HitItem || getplayer->Get_PlayerTurn() == CPlayer::PLAYER_RANGEHIT_WAIT)
 				{
-					break;
+					if(getplayer->Get_PlayerTurn() == CPlayer::PLAYER_MOVE)
+						break;
 				}
 			case CPlayer::PLAYER_ACT_END:
 			case CPlayer::PLAYER_MOVE_END:
@@ -922,12 +927,19 @@ void CEnemy::Enemy_AI(void)
 	case ENEMY_MOVE_END:
 		enemyturn = ENEMY_TURN_END;
 		Animation_Change(IDLE, 0.005f);
+		m_Oldmz = m_Mapz;
+		m_Oldmx = m_Mapx;
+		m_Mapz = (int)(m_EnemyMyColision.position.z - 247.5f) / -5;
+		m_Mapx = (int)(m_EnemyMyColision.position.x + 247.5f) / 5;
+		CMap::MapEnemyPosSet(m_Mapz, m_Mapx, m_Oldmz, m_Oldmx);
 		break;
 
 		//===================================================
 		// 攻撃中
 		//===================================================
 	case ENEMY_ACTION:
+		
+			
 		if (attackflag)	// 1フレームに2体以上同時に攻撃させない
 			break;
 
@@ -950,6 +962,11 @@ void CEnemy::Enemy_AI(void)
 	case ENEMY_ACT_END:
 		enemyturn = ENEMY_TURN_END;
 		Animation_Change(IDLE, 0.005f);
+		m_Oldmz = m_Mapz;
+		m_Oldmx = m_Mapx;
+		m_Mapz = (int)(m_EnemyMyColision.position.z - 247.5f) / -5;
+		m_Mapx = (int)(m_EnemyMyColision.position.x + 247.5f) / 5;
+		CMap::MapEnemyPosSet(m_Mapz, m_Mapx, m_Oldmz, m_Oldmx);
 		break;
 	}
 }
