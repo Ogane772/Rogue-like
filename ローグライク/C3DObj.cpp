@@ -35,6 +35,7 @@ C3DObj::MaterialFileData C3DObj::NORMAL_MODEL_FILES[] = {
 C3DObj::MaterialFileData2 C3DObj::ANIME_MODEL_FILES[] = {
 	{ "asset/model/player.x" },
 	{ "asset/model/gensan.x" },
+	{ "asset/model/piel.x" },
 };
 int C3DObj::MODEL_FILES_MAX = sizeof(C3DObj::NORMAL_MODEL_FILES) / sizeof(NORMAL_MODEL_FILES[0]);
 int C3DObj::ANIME_MODEL_FILES_MAX = sizeof(C3DObj::ANIME_MODEL_FILES) / sizeof(ANIME_MODEL_FILES[0]);

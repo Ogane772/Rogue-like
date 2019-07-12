@@ -119,7 +119,7 @@ public:
 	{
 		MODELL_ANIME_PLAYER,
 		MODELL_ANIME_GENSAN,
-
+		MODELL_ANIME_PIEL,
 		ANIME_MODEL_MAX,//アニメモデル最大数
 	}AnimeModelFileData;;
 
@@ -237,6 +237,9 @@ public:
 	// マップ二次元配列用
 	int m_Mapx;
 	int m_Mapz;
+	// 1ターン前座標
+	int m_Oldmx;
+	int m_Oldmz;
 	bool alive;			// 使われているか
 
 	static Sphere m_EnemyColision;	// プレイヤーのエネミーとの当たり判定専用

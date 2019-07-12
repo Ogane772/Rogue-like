@@ -111,9 +111,6 @@
     <ClCompile Include="CEnemy.cpp">
       <Filter>ソース ファイル\エネミー</Filter>
     </ClCompile>
-    <ClCompile Include="CEnemy_Srime.cpp">
-      <Filter>ソース ファイル\エネミー</Filter>
-    </ClCompile>
     <ClCompile Include="CGameObj.cpp">
       <Filter>ソース ファイル\親クラス</Filter>
     </ClCompile>
@@ -231,6 +228,39 @@
     <ClCompile Include="CTrap_Damage.cpp">
       <Filter>ソース ファイル\ワナ</Filter>
     </ClCompile>
+    <ClCompile Include="CTrap_Kuhuku.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Warp.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Sleep.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Poizun.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Kurayami.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Donsoku.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Jyosou.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrap_Sabi.cpp">
+      <Filter>ソース ファイル\ワナ</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemy_Knight.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemy_Piel.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemy_Gen.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C2DObj.h">
@@ -252,9 +282,6 @@
       <Filter>ヘッダー ファイル\画像</Filter>
     </ClInclude>
     <ClInclude Include="CEnemy.h">
-      <Filter>ヘッダー ファイル\エネミー</Filter>
-    </ClInclude>
-    <ClInclude Include="CEnemy_Srime.h">
       <Filter>ヘッダー ファイル\エネミー</Filter>
     </ClInclude>
     <ClInclude Include="CGameObj.h">
@@ -376,6 +403,39 @@
     </ClInclude>
     <ClInclude Include="CTrap_Damage.h">
       <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Kuhuku.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Warp.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Sleep.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Poizun.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Kurayami.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Donsoku.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Jyosou.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrap_Sabi.h">
+      <Filter>ヘッダー ファイル\ワナ</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy_Knight.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy_Piel.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy_Gen.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

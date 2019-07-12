@@ -66,12 +66,15 @@ public:
 	static void Map_Finalize(void);
 	static void Map_Draw(void);
 	static void MapPlayerSet(void);//マップにプレイヤー配置処理
-	static void WorpPlayerSet(void);//ワープ時のプレイヤー配置処理
+	static void WorpPlayerSet(int z, int x);//ワープ時のプレイヤー配置処理
 	static MAP Map_GetData(int z, int x) { return g_map[z][x]; }
 	static void Map_SetHaveData(int z, int x, HAVEMAP have) { g_map[z][x].have = have; }
 	static void Map_SetData(int z, int x, int alpha) { g_map[z][x].alpha = alpha; }
-	static void WorpEnemySet(C3DObj *enemy);//ワープエネミー配置処理
+	static void WorpEnemySet(C3DObj *enemy, int z, int x);//ワープエネミー配置処理
 	static void MapItemPosSet(int item_type, int x, int z);//指定場所にアイテム配置
+	static void MapPlayerPosSet(int mapz, int mapx, int oldz, int oldx);
+
+	static void MapEnemyPosSet(int mapz, int mapx, int oldz, int oldx);
 private:
 	//static int g_TexWood2;
 	static void MapWallSet(void);//マップに壁配置処理

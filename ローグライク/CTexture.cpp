@@ -69,6 +69,15 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/buki_maru.png",458,278 },
 	{ "asset/texture/trap.png",200,200 },
 	{ "asset/texture/trap_icon.png",8,8 },
+	{ "asset/texture/trap_damage.png",200,200 },
+	{ "asset/texture/trap_warp.png",200,200 },
+	{ "asset/texture/trap_kuhuku.png",200,200 },
+	{ "asset/texture/trap_sleep.png",200,200 },
+	{ "asset/texture/trap_poizun.png",200,200 },
+	{ "asset/texture/trap_kuyarami.png",200,200 },
+	{ "asset/texture/trap_donsoku.png",200,200 },
+	{ "asset/texture/trap_jyosou.png",200,200 },
+	{ "asset/texture/trap_sabi.png",200,200 },
 };
 
 int CTexture::TEXTURE_MAX = sizeof(CTexture::TEXTURE_FILES) / sizeof(TEXTURE_FILES[0]);

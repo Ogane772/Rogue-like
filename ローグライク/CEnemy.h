@@ -13,6 +13,7 @@
 #define ENEMY_SLEEP_HEALTURN (2 + 1)//2ターンで回復
 #define ENEMY_KURAYAMI_HEALTURN (10 + 1)//10ターンで回復
 #define ENEMY_TOKUGI_HEALTURN (10 + 1)//10ターンで回復
+#define ENEMY_RADIUS	 (2.6f)				// 当たり判定半径
 class CEnemy :virtual public C3DObj
 {
 public:
@@ -31,13 +32,27 @@ public:
 		WALK,
 		ATTACK,
 	};
-
+	typedef struct {
+		int enemy_type;
+		int wepon_type;
+		char enemy_name[MAX_NAME];
+		float Hp;
+		int str,
+			def,
+			exp,
+			gold;
+		int first_floor;//出現開始フロア
+		int end_floor;//出現終わりフロア
+		int enemychance;//出現率
+	}ENEMY_Data;
 	// 敵の種類
 	enum
 	{
 		TYPE_ALL = 0,
 
-		TYPE_SRIME,	
+		TYPE_GEN,
+		TYPE_KNIGHT,
+		TYPE_PIEL,
 
 		TYPE_MAXENEMY
 	};
@@ -59,7 +74,6 @@ public:
 	static int Get_EnemyNum(int EnemyType) { return m_EnemyNum[EnemyType]; }
 	static int Get_EnemyIndex(int EnemyType) { return m_EnemyNum[EnemyType] - 1; }
 
-	static int Get_EnemyMaxNum(void) { return m_ENEMY_MAX; }
 	static C3DObj *Get_Enemy(int index);
 	bool Get_DrawCheck(void) { return alive; }
 	bool Get_RangeHit(void) { return m_RangeHit; }
@@ -69,24 +83,15 @@ public:
 	void Set_EnemyTurn(int turn) { enemyturn = turn;}
 	void Set_Warp(bool type) { m_Warp = type; }
 	void Set_EnemyItem(int type) { set_item = type; }
+	static ENEMY_Data* Get_EnemyData(int index) { return &m_EnemyData[index]; }
 	static int Get_EnemyExp(int index) { return m_EnemyData[index].exp; }
 	static char* Get_EnemyName(int index) { return m_EnemyData[index].enemy_name; }
 	static void Reset_EnemyEnableNum(void) {  m_EnemyEnableNum = 0; }
 	static void DeleteAllEnemy(void);
 	static void EnemyVsWall(JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
+	static int Get_ENEMYDATAMAX(void) { return m_ENEMYDATA_MAX; }
 protected:
-	typedef struct {
-		int wepon_type;
-		char enemy_name[MAX_NAME];
-		float Hp;				
-		int str,
-			def,		
-			exp,	
-			gold;
-		int first_floor;//出現開始フロア
-		int end_floor;//出現終わりフロア
-		int enemychance;//出現率
-	}ENEMY_Data;
+
 	int enemyturn;
 
 	//所持アイテム格納
@@ -165,8 +170,8 @@ protected:
 	void Enemy_ItemDrop(void);
 private:
 	static int m_EnemyMaxNum;//エネミーの総数
-	static int m_ENEMY_MAX;
 	static ENEMY_Data m_EnemyData[];
+	static int m_ENEMYDATA_MAX;//エネミーデータの最大数
 
 	static int CEnemy::CSV_EnemyLoad(ENEMY_Data* enemydata, const int num);
 };

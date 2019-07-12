@@ -1,7 +1,7 @@
 #include "CTrap.h"
 #include "bilboard.h"
 #include "CTexture.h"
-#include "CTrap_Damage.h"
+#include "CTrap_Kuhuku.h"
 #include "C3DObj.h"
 #include "debug_font.h"
 //===================================
@@ -11,7 +11,7 @@
 //	生成
 //=============================================================================
 
-CTrapDamage ::CTrapDamage (int x, int z, int trap_type) :CTrap(trap_type), C3DObj(C3DObj::TYPE_TRAP)
+CTrapKuhuku::CTrapKuhuku(int x, int z, int trap_type) :CTrap(trap_type), C3DObj(C3DObj::TYPE_TRAP)
 {
 	Initialize(x, z, trap_type);
 }
@@ -20,12 +20,12 @@ CTrapDamage ::CTrapDamage (int x, int z, int trap_type) :CTrap(trap_type), C3DOb
 //	破棄
 //=============================================================================
 
-CTrapDamage ::~CTrapDamage ()
+CTrapKuhuku ::~CTrapKuhuku()
 {
 
 }
 
-void CTrapDamage ::Initialize(int x, int z, int trap_type)
+void CTrapKuhuku::Initialize(int x, int z, int trap_type)
 {
 	alive = true;
 	m_Mapz = z;
@@ -37,17 +37,17 @@ void CTrapDamage ::Initialize(int x, int z, int trap_type)
 	m_WanaEffectOn = false;
 }
 
-void CTrapDamage ::Finalize(void)
+void CTrapKuhuku::Finalize(void)
 {
 
 }
 
-void CTrapDamage ::Update(void)
+void CTrapKuhuku::Update(void)
 {
 
 }
 
-void CTrapDamage ::Draw(void)
+void CTrapKuhuku::Draw(void)
 {
 	// ワールド座標変換行列の作成と設定
 	D3DXMATRIX mtxWorld;
@@ -58,8 +58,8 @@ void CTrapDamage ::Draw(void)
 		D3DXMatrixIdentity(&mtxWorld);
 
 		D3DXMatrixTranslation(&mtxTranslotation, m_Position.x, m_Position.y, m_Position.z);
-		CBilboard::BilBoard_ChangeSizeColor(5.0f, 3.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
-		CBilboard::BilBoard3_Draw(CTexture::TEX_DAMAGETRAP_ICON, m_Position);
+		CBilboard::BilBoard_ChangeSizeColor(4.0f, 3.2f, D3DCOLOR_RGBA(255, 255, 255, 255));
+		CBilboard::BilBoard3_Draw(CTexture::TEX_KUHUKUTRAP_ICON, m_Position);
 	}
 }
 

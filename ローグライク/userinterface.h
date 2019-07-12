@@ -132,7 +132,7 @@ private:
 	static void SetItemOnWindow(void);//所持アイテム選択した時のウィンドウ
 	static void SetItemTips(void);//所持アイテム説明文
 	static void StatusWindow_Draw(void);
-	static void UI_UpDraw(void);
+	static void UI_UpDraw(void);//上のUI表示
 	static void Map_Draw(void);
 	static void UI_TextDraw(void);
 	static void SkillAttackLog(void);

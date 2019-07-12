@@ -13,7 +13,15 @@
 #include "map.h"
 #include "sound.h"
 #include "CTrap_Damage.h"
-
+#include "CTrap_Damage.h"
+#include "CTrap_Donsoku.h"
+#include "CTrap_Jyosou.h"
+#include "CTrap_Kuhuku.h"
+#include "CTrap_Kurayami.h"
+#include "CTrap_Poizun.h"
+#include "CTrap_Sabi.h"
+#include "CTrap_Sleep.h"
+#include "CTrap_Warp.h"
 #define _CRTDBG_MAP_ALLOC
 #define TRAP_CSV_NAME "CSV/TRAP_CSV.csv"
 #define MAX_TRAP 99
@@ -67,18 +75,42 @@ CTrap::CTrap(int TrapType)
 void CTrap::Create(int trap_type, int x, int z)
 {
 	CTrapDamage *pdamage = NULL;
+	CTrapKuhuku *pkuhuku = NULL;
+	CTrapWarp *pwarp = NULL;
+	CTrapSleep *psleep = NULL;
+	CTrapPoizun *ppoizun = NULL;
+	CTrapKurayami *pkurayami = NULL;
+	CTrapDonsoku *pdonsoku = NULL;
+	CTrapJyosou *pjyosou = NULL;
+	CTrapSabi *psabi = NULL;
 	switch (trap_type)
 	{
 	case TYPE_DAMAGE:
-	case TYPE_KUHUKU:
-	case TYPE_WARP_TRAP:
-	case TYPE_SLEEP_TRAP:
-	case TYPE_POIZUN_TRAP:
-	case TYPE_KUYARAMI_TRAP:
-	case TYPE_DONSOKU_TRAP:
-	case TYPE_ITEMDELETE_TRAP:
-	case TYPE_SABIRU_TRAP:
 		pdamage = new CTrapDamage(x, z, trap_type);
+		break;
+	case TYPE_KUHUKU:
+		pkuhuku = new CTrapKuhuku(x, z, trap_type);
+		break;
+	case TYPE_WARP_TRAP:
+		pwarp = new CTrapWarp(x, z, trap_type);
+		break;
+	case TYPE_SLEEP_TRAP:
+		psleep = new CTrapSleep(x, z, trap_type);
+		break;
+	case TYPE_POIZUN_TRAP:
+		ppoizun = new CTrapPoizun(x, z, trap_type);
+		break;
+	case TYPE_KUYARAMI_TRAP:
+		pkurayami = new CTrapKurayami(x, z, trap_type);
+		break;
+	case TYPE_DONSOKU_TRAP:
+		pdonsoku = new CTrapDonsoku(x, z, trap_type);
+		break;
+	case TYPE_ITEMDELETE_TRAP:
+		pjyosou = new CTrapJyosou(x, z, trap_type);
+		break;
+	case TYPE_SABIRU_TRAP:
+		psabi = new CTrapSabi(x, z, trap_type);
 		break;
 	}
 }
