@@ -941,11 +941,7 @@ void CEnemy::Enemy_AI(void)
 	case ENEMY_MOVE_END:
 		enemyturn = ENEMY_TURN_END;
 		Animation_Change(IDLE, 0.005f);
-		m_Oldmz = m_Mapz;
-		m_Oldmx = m_Mapx;
-		m_Mapz = (int)(m_EnemyMyColision.position.z - 247.5f) / -5;
-		m_Mapx = (int)(m_EnemyMyColision.position.x + 247.5f) / 5;
-		CMap::MapEnemyPosSet(m_Mapz, m_Mapx, m_Oldmz, m_Oldmx);
+		
 		break;
 
 		//===================================================
@@ -974,13 +970,14 @@ void CEnemy::Enemy_AI(void)
 	case ENEMY_ACT_END:
 		enemyturn = ENEMY_TURN_END;
 		Animation_Change(IDLE, 0.005f);
-		m_Oldmz = m_Mapz;
-		m_Oldmx = m_Mapx;
-		m_Mapz = (int)(m_EnemyMyColision.position.z - 247.5f) / -5;
-		m_Mapx = (int)(m_EnemyMyColision.position.x + 247.5f) / 5;
-		CMap::MapEnemyPosSet(m_Mapz, m_Mapx, m_Oldmz, m_Oldmx);
+		
 		break;
 	}
+	m_Oldmz = m_Mapz;
+	m_Oldmx = m_Mapx;
+	m_Mapz = (int)(m_EnemyMyColision.position.z - 247.5f) / -5;
+	m_Mapx = (int)(m_EnemyMyColision.position.x + 247.5f) / 5;
+	CMap::MapEnemyPosSet(m_Mapz, m_Mapx, m_Oldmz, m_Oldmx);
 }
 
 void CEnemy::Enemy_Act(void)
@@ -1566,7 +1563,6 @@ void CEnemy::Enemy_BottomMoveCheck(void)
 
 	// ìñÇΩÇËîªíËÇÃê›íË
 	m_EnemyMyColision.position = m_Position;
-	m_Mapz += 1;
 
 	m_Position += m_Front * 5.0f;
 
@@ -1611,7 +1607,6 @@ void CEnemy::Enemy_TopMoveCheck(void)
 
 	// ìñÇΩÇËîªíËÇÃê›íË
 	m_EnemyMyColision.position = m_Position;
-	m_Mapz -= 1;
 	//g_player.col.position = g_player.walkpos;
 
 	m_Position -= m_Front * 5.0f;
