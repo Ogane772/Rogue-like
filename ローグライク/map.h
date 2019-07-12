@@ -72,7 +72,6 @@ public:
 	static void Map_SetData(int z, int x, int alpha) { g_map[z][x].alpha = alpha; }
 	static void WorpEnemySet(C3DObj *enemy, int z, int x);//ワープエネミー配置処理
 	static void MapItemPosSet(int item_type, int x, int z);//指定場所にアイテム配置
-
 	static void MapPlayerPosSet(int mapz, int mapx, int oldz, int oldx);
 
 	static void MapEnemyPosSet(int mapz, int mapx, int oldz, int oldx);

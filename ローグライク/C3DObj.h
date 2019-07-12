@@ -119,7 +119,7 @@ public:
 	{
 		MODELL_ANIME_PLAYER,
 		MODELL_ANIME_GENSAN,
-
+		MODELL_ANIME_PIEL,
 		ANIME_MODEL_MAX,//ƒAƒjƒƒ‚ƒfƒ‹Å‘å”
 	}AnimeModelFileData;;
 

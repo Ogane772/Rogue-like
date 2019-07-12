@@ -1,26 +1,13 @@
 #include "CEnemy.h"
 #include <d3dx9.h>
-#include "CEnemy_Srime.h"
-#include "input.h"
-#include "CPlayer.h"
-#include "sound.h"
-#include "userinterface.h"
-#include "debug_font.h"
 #include "Attack.h"
-#include "save_load.h"
-#include "map.h"
-#include "collision.h"
-#include "bilboard.h"
-#include "exp.h"
-#include "C2DObj.h"
-#include "C3DObj.h"
-#define MAXHP (20)
-#define STR (4)
+#include "CEnemy_Gen.h"
+#include "Cplayer.h"
 //=============================================================================
 //	生成
 //=============================================================================
 
-CEnemy_Srime::CEnemy_Srime(int x, int z, ENEMY_Data enemy_data) :CEnemy(TYPE_SRIME), C3DObj(C3DObj::TYPE_ENEMY)
+CEnemy_Gen::CEnemy_Gen(int x, int z, ENEMY_Data enemy_data) :CEnemy(enemy_data.enemy_type), C3DObj(C3DObj::TYPE_ENEMY)
 {
 	Initialize(x, z, enemy_data);
 }
@@ -29,7 +16,7 @@ CEnemy_Srime::CEnemy_Srime(int x, int z, ENEMY_Data enemy_data) :CEnemy(TYPE_SRI
 //	破棄
 //=============================================================================
 
-CEnemy_Srime::~CEnemy_Srime()
+CEnemy_Gen::~CEnemy_Gen()
 {
 	AnimeModel_Finalize(&anime_model);
 	//NormalModel_Finalize(&Normal_model);
@@ -37,13 +24,11 @@ CEnemy_Srime::~CEnemy_Srime()
 }
 
 
-void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
+void CEnemy_Gen::Initialize(int x, int z, ENEMY_Data enemy_data)
 {
 	int i;
 	strcpy_s(name, MAX_NAME, enemy_data.enemy_name);
 	m_EnemyIndex = Get_EnemyIndex(TYPE_ALL);
-	//Normal_model = GetNormalModel(MODELL_ENEMY_1);
-	//C3DObj::InitNormalModelLoad(&Normal_model, "asset/model/piel_wepon.x");
 	TurnCount = 0;
 	m_Condition = NORMAL_CONDITION;
 	get_turbo = false;
@@ -58,7 +43,7 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 	m_EnemyMyColision.position = m_Position;
 	m_EnemyMyColision.radius = ENEMY_RADIUS;
 	enemyturn = ENEMY_WAIT;
-	m_Type = TYPE_SRIME;
+	m_Type = enemy_data.enemy_type;
 	m_MaxHp = enemy_data.Hp;
 	m_Hp = m_MaxHp;
 	m_Str = enemy_data.str;
@@ -108,7 +93,6 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 	SkinMesh.InitThing(m_pD3DDevice, &anime_model, animefile);
 
 	//モデル情報取得
-	//Thing_Anime_model = GetAnimeModel();
 	for (i = 0; i < (signed)anime_model.pAnimController->GetNumAnimationSets(); i++)
 	{//AnimSetにアニメーション情報格納
 		anime_model.pAnimController->GetAnimationSet(i, &pAnimSet[i]);
@@ -124,12 +108,12 @@ void CEnemy_Srime::Initialize(int x, int z, ENEMY_Data enemy_data)
 	Animation_Change(IDLE, 0.005f);
 }
 
-void CEnemy_Srime::Update(void)
+void CEnemy_Gen::Update(void)
 {
 	Enemy_Update();
 }
 
-void CEnemy_Srime::Draw(void)
+void CEnemy_Gen::Draw(void)
 {
 	Enemy_Draw();
 
@@ -167,7 +151,7 @@ void CEnemy_Srime::Draw(void)
 	*/
 }
 
-void CEnemy_Srime::EnemySkill(void)
+void CEnemy_Gen::EnemySkill(void)
 {
 		std::random_device rd;
 	std::mt19937 mt(rd());
@@ -178,7 +162,9 @@ void CEnemy_Srime::EnemySkill(void)
 	switch (attack_number)
 	{
 	case 0:
+		CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Str2, m_Angle);
 		//CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Angle);
+		/*
 		if (set_item == 0)
 		{//盗む処理
 			CAttack::Attack_EnemySkill(this, CAttack::TOUZOKU_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
@@ -197,6 +183,7 @@ void CEnemy_Srime::EnemySkill(void)
 		}
 		//チャージ倍率増やすときはここに書く
 		//m_Str2 = CHARGE_BUFF;
+		*/
 		break;
 	case 1:
 		//CAttack::Attack_EnemySkill(CAttack::HIGH_ATTACK_SKILL, m_WeponType, m_Type, m_Str, m_Angle, ESCAPE_CHECK_OK);

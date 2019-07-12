@@ -980,22 +980,22 @@ int CAttack::Attack_DamegeKeisan(int week_check, C3DObj *enemy, int str, float s
 	{
 		if (!getplayer->Get_GekikaFlag())
 		{
-			damage *= (int)WEEK_BAIRITU;
+			damage = damage * WEEK_BAIRITU;
 		}
 		else
 		{
-			damage *= (int)WEEK_GEKIKA_BAIRITU;
+			damage = damage * WEEK_GEKIKA_BAIRITU;
 		}
 	}
 	else if (week_check == CUserinterface::RESIST_TYPE)
 	{
 		if (!getplayer->Get_GekikaFlag())
 		{
-			damage *= (int)RESIST_BAIRITU;
+			damage = damage * RESIST_BAIRITU;
 		}
 		else
 		{
-			damage *= (int)RESIST_GEKIKA_BAIRITU;
+			damage = damage * RESIST_GEKIKA_BAIRITU;
 		}
 	}
 	if (damage < 0)

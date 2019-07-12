@@ -1,5 +1,5 @@
-#ifndef CENEMYSRIME_H_
-#define CENEMYSRIME_H_
+#ifndef CENEMYPIEL_H_
+#define CENEMYPIEL_H_
 
 #include <d3dx9.h>
 #include "collision.h"
@@ -7,18 +7,17 @@
 //===================================
 // íËêî
 //===================================
-#define ENEMY_RADIUS	 (2.6f)				// ìñÇΩÇËîªíËîºåa
 
-class CEnemy_Srime : public CEnemy
+class CEnemy_Piel : public CEnemy
 {
 public:
-	CEnemy_Srime(int x, int z, ENEMY_Data enemy_data);
-	~CEnemy_Srime();
+	CEnemy_Piel(int x, int z, ENEMY_Data enemy_data);
+	~CEnemy_Piel();
 
 	void Initialize(int x, int z, ENEMY_Data enemy_data);
 	void Update(void);
 	void Draw(void);
 	void EnemySkill(void)override;
-	
+
 };
 #endif 

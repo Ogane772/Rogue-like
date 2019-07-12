@@ -10,7 +10,9 @@
 //=============================================================================
 #define _CRT_SECURE_NO_WARNINGS
 #include "CEnemy.h"
-#include "CEnemy_Srime.h"
+#include "CEnemy_Gen.h"
+#include "CEnemy_Knight.h"
+#include "CEnemy_Piel.h"
 #include "Cplayer.h"
 #include "map.h"
 #include "sound.h"
@@ -39,9 +41,9 @@ int CEnemy::m_EnemyNum[TYPE_MAXENEMY] = {};
 int CEnemy::m_EnemyEnableNum = 0;
 int CEnemy::m_EnemyMaxNum = 0;
 int CEnemy::TurnCount = 0;
+int CEnemy::m_ENEMYDATA_MAX = 0;
 bool CEnemy::attackflag = false;
 CEnemy::ENEMY_Data CEnemy::m_EnemyData[ENEMY_MAX] = { 0 };
-int CEnemy::m_ENEMY_MAX;
 //=============================================================================
 //	生成
 //=============================================================================
@@ -76,14 +78,14 @@ void CEnemy::EnemyDataInit(void)
 {
 	int i = 0;
 	int end_check = 0;//CSVの行の終わりか確認
-	for (i = 0; i < MAX_WEPON; i++)
+	for (i = 0; i < ENEMY_MAX; i++)
 	{//2行目から読むので+1する
 		end_check = CSV_EnemyLoad(&m_EnemyData[i], i + 1);
 		if (m_EnemyData[i].wepon_type == 0)
 		{
 			break;
 		}
-		m_ENEMY_MAX++;
+		m_ENEMYDATA_MAX++;
 	}
 }
 
@@ -91,9 +93,21 @@ void CEnemy::Create(int enemy_type, int x, int z)
 {
 	switch (enemy_type)
 	{
-	case TYPE_SRIME:
-		CEnemy_Srime *penemy_srime = new CEnemy_Srime(x, z , m_EnemyData[0]);
+	case TYPE_GEN:
+	{
+		CEnemy_Gen *penemy_gen = new CEnemy_Gen(x, z, m_EnemyData[enemy_type]);
 		break;
+	}
+	case TYPE_KNIGHT:
+	{
+		CEnemy_Knight *penemy_knight = new CEnemy_Knight(x, z, m_EnemyData[enemy_type]);
+		break;
+	}
+	case TYPE_PIEL:
+	{
+		CEnemy_Piel *penemy_piel = new CEnemy_Piel(x, z, m_EnemyData[enemy_type]);
+		break;
+	}
 	}
 }
 
@@ -148,7 +162,7 @@ void CEnemy::EnemyTurnEnd(void)
 						eposZ = mt() % MAX_MAPHEIGHT;
 					} while (CMap::Map_GetData(eposZ, eposX).type != 1);
 
-					Create(TYPE_SRIME, eposX, eposZ);
+					Create(TYPE_GEN, eposX, eposZ);
 				}
 			}
 		}
@@ -190,7 +204,7 @@ void CEnemy::EnemyTurnEnd(void)
 					eposZ = mt() % MAX_MAPHEIGHT;
 				} while (CMap::Map_GetData(eposZ, eposX).type != 1);
 
-				Create(TYPE_SRIME, eposX, eposZ);
+				Create(TYPE_GEN, eposX, eposZ);
 			}
 		}
 	}
@@ -289,7 +303,7 @@ int CEnemy::CSV_EnemyLoad(ENEMY_Data* enemydata, const int num)
 	}
 	//データを読み込む
 	while (fgets(buf, size, file) != NULL && num > ++cnt);
-	fscanf(file, "%d,%[^,],%f,%d,%d,%d,%d,%d,%d,%d", &enemydata->wepon_type, enemydata->enemy_name , &enemydata->Hp, &enemydata->str, &enemydata->def, &enemydata->exp, &enemydata->gold, &enemydata->first_floor, &enemydata->end_floor, &enemydata->enemychance);
+	fscanf(file, "%d,%d,%[^,],%f,%d,%d,%d,%d,%d,%d,%d",&enemydata->enemy_type, &enemydata->wepon_type, enemydata->enemy_name , &enemydata->Hp, &enemydata->str, &enemydata->def, &enemydata->exp, &enemydata->gold, &enemydata->first_floor, &enemydata->end_floor, &enemydata->enemychance);
 
 	fclose(file);
 
@@ -360,7 +374,7 @@ void CEnemy::Enemy_Update(void)
 
 				if (getplayer->m_Judge_player.HitItem || getplayer->Get_PlayerTurn() == CPlayer::PLAYER_RANGEHIT_WAIT)
 				{
-					if(getplayer->Get_PlayerTurn() == CPlayer::PLAYER_MOVE)
+					if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_MOVE)
 						break;
 				}
 			case CPlayer::PLAYER_ACT_END:
@@ -938,7 +952,6 @@ void CEnemy::Enemy_AI(void)
 		// 攻撃中
 		//===================================================
 	case ENEMY_ACTION:
-			
 		if (attackflag)	// 1フレームに2体以上同時に攻撃させない
 			break;
 
@@ -1473,7 +1486,6 @@ void CEnemy::Enemy_LeftMoveCheck(void)
 
 	// 当たり判定の設定
 	m_EnemyMyColision.position = m_Position;
-	m_Mapx -= 1;
 
 	m_Position += m_Right * 5.0f;
 
@@ -1517,7 +1529,7 @@ void CEnemy::Enemy_RightMoveCheck(void)
 
 	// 当たり判定の設定
 	m_EnemyMyColision.position = m_Position;
-	m_Mapx += 1;
+
 
 	m_Position -= m_Right * 5.0f;
 
@@ -1639,8 +1651,7 @@ void CEnemy::Enemy_TopLeftMoveCheck(void)
 
 	// 当たり判定の設定
 	m_EnemyMyColision.position = m_Position;
-	m_Mapz -= 1;
-	m_Mapx -= 1;
+
 
 	m_Position -= m_Front * 5.0f;
 	m_Position += m_Right * 5.0f;
@@ -1681,8 +1692,7 @@ void CEnemy::Enemy_TopRightMoveCheck(void)
 
 	// 当たり判定の設定
 	m_EnemyMyColision.position = m_Position;
-	m_Mapz -= 1;
-	m_Mapx += 1;
+
 
 	m_Position -= m_Front * 5.0f;
 	m_Position -= m_Right * 5.0f;
@@ -1723,8 +1733,7 @@ void CEnemy::Enemy_BottomLeftMoveCheck(void)
 
 	// 当たり判定の設定
 	m_EnemyMyColision.position = m_Position;
-	m_Mapz += 1;
-	m_Mapx -= 1;
+
 
 	m_Position += m_Front * 5.0f;
 	m_Position += m_Right * 5.0f;
@@ -1765,8 +1774,6 @@ void CEnemy::Enemy_BottomRightMoveCheck(void)
 
 	// 当たり判定の設定
 	m_EnemyMyColision.position = m_Position;
-	m_Mapz += 1;
-	m_Mapx += 1;
 
 	m_Position += m_Front * 5.0f;
 	m_Position -= m_Right * 5.0f;
