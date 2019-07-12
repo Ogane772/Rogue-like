@@ -1103,7 +1103,7 @@ void CMap::MapWeponSet(void)
 	std::uniform_int_distribution<int> random(0, 99);
 	std::uniform_int_distribution<int> randomwepon(1, 8);
 	//int setitem = mt() % 3 + 4;
-	int setitem = 100;
+	int setitem = 5;
 	int lposX;
 	int lposZ;
 	int i;
@@ -1215,7 +1215,7 @@ void CMap::MapPlayerSet(void)
 	CPlayer::Player_SetPos(pposZ, pposX);
 }
 
-void CMap::WorpPlayerSet(void)
+void CMap::WorpPlayerSet(int z, int x)
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -1227,14 +1227,16 @@ void CMap::WorpPlayerSet(void)
 	{
 		pposX = random(mt);
 		pposZ = random(mt);
-		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE)
+		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE &&
+			g_map[pposZ][pposX].Group != g_map[z][x].Group &&
+			g_map[pposZ][pposX].have != HAVEENEMY)
 			break;
 	}
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetWorpPos(pposZ, pposX);
 }
 
-void CMap::WorpEnemySet(C3DObj *enemy)
+void CMap::WorpEnemySet(C3DObj *enemy, int z, int x)
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -1246,7 +1248,8 @@ void CMap::WorpEnemySet(C3DObj *enemy)
 	{
 		pposX = random(mt);
 		pposZ = random(mt);
-		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE)
+		if (g_map[pposZ][pposX].type == 1 && g_map[pposZ][pposX].have == NOTHAVE &&
+			g_map[pposZ][pposX].Group != g_map[z][x].Group)
 			break;
 	}
 	g_map[pposZ][pposX].have = HAVEENEMY;
@@ -1259,7 +1262,7 @@ void CMap::MapEnemySet(void)
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
 	// 敵生成数の誤差
-	int setenemy = 3;
+	int setenemy = 5;
 	for (int i = 0; i < setenemy; i++)
 		//for (int i = 0; i < 1; i++)	// デバッグ用
 	{

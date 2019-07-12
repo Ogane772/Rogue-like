@@ -938,7 +938,6 @@ void CEnemy::Enemy_AI(void)
 		// UŒ‚’†
 		//===================================================
 	case ENEMY_ACTION:
-		
 			
 		if (attackflag)	// 1ƒtƒŒ[ƒ€‚É2‘ÌˆÈã“¯Žž‚ÉUŒ‚‚³‚¹‚È‚¢
 			break;
@@ -2069,7 +2068,7 @@ void CEnemy::Enemy_WarpMove(void)
 	}
 	if (m_BackFrame == 21)
 	{
-		CMap::WorpEnemySet(this);
+		CMap::WorpEnemySet(this, m_Mapz, m_Mapx);
 	}
 	if (m_BackFrame> 20 && m_BackFrame < WAIT_FRAME - 5)
 	{
