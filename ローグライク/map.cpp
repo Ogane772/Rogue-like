@@ -72,6 +72,7 @@ void CMap::Map_Initialize(void)
 			g_map[z][x].use = false;
 			g_map[z][x].Cxwall = false;
 			g_map[z][x].Czwall = false;
+			g_map[z][x].Cellingwall = false;
 			g_map[z][x].Cxtopwall = false;
 			g_map[z][x].Cxbotwall = false;
 			g_map[z][x].CzRwall = false;
@@ -1213,6 +1214,7 @@ void CMap::MapPlayerSet(void)
 	}
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetPos(pposZ, pposX);
+	//CPlayer::Player_SetPos(50, 50);
 }
 
 void CMap::WorpPlayerSet(int z, int x)
@@ -1261,7 +1263,7 @@ void CMap::MapEnemySet(void)
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
-	int setenemy = 3;
+	int setenemy = 0;
 	int enemysummon_number[100] = { 0 };//ÉGÉlÉ~Å[èoåªó¶äiî[
 	int kakuritu_start = 0;//Ç«ÇÃîzóÒî‘çÜÇ©ÇÁêîÇ¶ÇÈÇ©
 	int lposX;
@@ -1331,6 +1333,62 @@ void CMap::MapWallSet(void)
 	{
 		for (int x = 0; x < MAX_MAPWIDTH; x++)
 		{
+			//===================================================
+			// ìVà‰çÏê¨
+			//===================================================
+			if (g_map[z][x].type == 0 && !g_map[z][x].Cellingwall)
+			{
+				int celingwidth = 0;
+				int celingheightcount;
+				int celingheight = 0;
+				for (int Xwall = 0; Xwall + x  < MAX_MAPWIDTH && g_map[z][x + Xwall].type == 0; Xwall++)
+				{
+					celingwidth++;
+					
+					// çÇÇ≥ïùÇìoò^
+					if (celingwidth == 1)
+					{
+						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+						{
+							g_map[z + Zwall][x + Xwall].Cellingwall = true;
+							
+							celingheight++;
+						}
+					}
+					
+					// ìoò^ÇµÇΩçÇÇ≥ïùÇ∆àÍèèÇ»ÇÁâ°ïùâ¡éZ
+					if (celingwidth > 1)
+					{
+						int delz = 0;
+						celingheightcount = 0;
+						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+						{
+							g_map[z + Zwall][x + Xwall].Cellingwall = true;
+	
+							celingheightcount++;
+							delz++;		// è¡Ç∑èÍçáCelingwallÇfalseÇ…ñﬂÇ∑
+							if (celingheight == celingheightcount)
+								break;
+						}
+						if (celingheight > celingheightcount)
+						{
+							for (int dz = 0; dz <= delz; dz++)
+							{
+								g_map[z + dz][x + Xwall].Cellingwall = false;
+							}
+							celingwidth -= 1;
+							//Xwall -= 1;
+							
+							break;
+						}
+							
+					}
+
+
+				}
+				CMeshField::MeshField_Create(CTexture::TEX_BLACKUP, celingwidth * 5, celingheight * 5, celingwidth, celingheight, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z + celingheight - 1][x + celingwidth - 1].pos.x) / 2, 5.0f, (g_map[z][x].pos.z + g_map[z + celingheight - 1][x + celingwidth - 1].pos.z) / 2));	// 1ñ   = 5.0f * 5.0f
+			
+			}
 
 			//===================================================
 			// ÉtÉçÉA

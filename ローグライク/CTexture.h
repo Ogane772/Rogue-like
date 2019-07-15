@@ -23,6 +23,7 @@ public:
 		TEX_BLUE,
 		TEX_WOOD,
 		TEX_KUSA,
+		TEX_BLACKUP,
 		TEX_BLOCK,
 		TEX_LADDER,
 		TEX_1F,

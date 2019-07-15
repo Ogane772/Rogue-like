@@ -1,7 +1,7 @@
 #ifndef MESHFIELD_H_
 #define MESHFIELD_H_
 #include <d3dx9.h>
-#define MESH_MAX (20)		// メッシュ作成可能数
+#define MESH_MAX (500)		// メッシュ作成可能数
 #include "C2DObj.h"
 
 class CMeshField : public C2DObj

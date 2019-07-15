@@ -42,19 +42,20 @@ public:
 	typedef struct
 	{
 		D3DXVECTOR3 pos;	// 使うかも
-		bool use;	// 足場になっているか 0 = 足場無し ,1 = フロア, 2 = 通路, 3 = フロアの通路出入口
-		int type;	// 足場の種類
-		HAVEMAP have;	// 足場に何かあるか(いるか)
-		bool Czwall;	// 壁が作られたか
-		bool Cxwall;	// 壁が作られたか
-		int Group;		// 短径グループ
-		int alpha; // ミニマップ用のアルファ値操作用
-		bool Cxtopwall;	// 通路上壁が作られたか
-		bool Cxbotwall;	// 通路下壁が作られたか
-		bool CzRwall;	// 通路右壁が作られたか
-		bool CzLwall;	// 通路左壁が作られたか
-		int passageNum;	// 通路番号
-		bool passagecheck; // そのフロアに通路があるか
+		bool use;			// 足場になっているか 0 = 足場無し ,1 = フロア, 2 = 通路, 3 = フロアの通路出入口
+		int type;			// 足場の種類
+		HAVEMAP have;		// 足場に何かあるか(いるか)
+		bool Czwall;		// 壁が作られたか
+		bool Cxwall;		// 壁が作られたか
+		bool Cellingwall;	// 天井が作られたか
+		int Group;			// 短径グループ
+		int alpha;			// ミニマップ用のアルファ値操作用
+		bool Cxtopwall;		// 通路上壁が作られたか
+		bool Cxbotwall;		// 通路下壁が作られたか
+		bool CzRwall;		// 通路右壁が作られたか
+		bool CzLwall;		// 通路左壁が作られたか
+		int passageNum;		// 通路番号
+		bool passagecheck;	// そのフロアに通路があるか
 
 	}MAP;
 

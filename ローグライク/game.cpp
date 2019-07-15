@@ -74,7 +74,11 @@ void Game_Initialize(void)
 	//Number_Initialize(3);
 	CMap::Map_Initialize();
 	CMeshField::MeshField_Create(CTexture::TEX_KUSA, 500, 500, 100, 100, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1ñ   = 5.0f * 5.0f
-
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 15, 5, 3, 1, D3DXVECTOR3(5.0f, 0.0f, -10.0f));	// 1ñ   = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 10, 5, 2, 1, D3DXVECTOR3(2.5f, 0.0f, -5.0f));	// 1ñ   = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 5, 5, 1, 1, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1ñ   = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 5, 10, 1, 2, D3DXVECTOR3(-5.0f, 0.0f, -2.5f));	// 1ñ   = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 5, 5, 1, 1, D3DXVECTOR3(5.0f, 0.0f, 0.0f));	// 1ñ   = 5.0f * 5.0f
 																					// É}ÉbÉvê∂ê¨
 	//CMap::Map_CreateOneFloor();
 	//CMap::Map_Create();

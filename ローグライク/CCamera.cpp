@@ -138,7 +138,7 @@ void CCamera::Update(void)
 				view = false;
 			}
 			m_CameraPos.y += 200.0f;
-			m_CameraPos.z -= 50.0f;
+			m_CameraPos.z -= 0.0f;
 		}
 	}
 
