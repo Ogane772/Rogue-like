@@ -17,6 +17,7 @@ int CMap::GroupHeight;
 int CMap::DeletePassageNum;
 //int CMap::g_TexWood2;
 CMap::MAP **CMap::g_map, *CMap::base_g_map;
+CMap::CONNECTCHECK *CMap::g_connect;
 
 CMap::DELETEPASSAGE *CMap::g_deletepassage;
 void CMap::Map_Initialize(void)
@@ -30,7 +31,7 @@ void CMap::Map_Initialize(void)
 	if (CStage::Stage_GetLevel() == 1)
 	{
 		GroupWidth = 3;
-		GroupHeight = 2;
+		GroupHeight = 3;
 	}
 
 	if (CStage::Stage_GetLevel() == 2)
@@ -50,10 +51,19 @@ void CMap::Map_Initialize(void)
 	g_map = (MAP**)malloc(sizeof(MAP *) * MAX_MAPHEIGHT);
 	base_g_map = (MAP*)malloc(sizeof(MAP) * MAX_MAPHEIGHT * MAX_MAPWIDTH);
 
+	g_connect = (CONNECTCHECK*)malloc(sizeof(CONNECTCHECK) * GroupWidth * GroupHeight);	// ÉOÉãÅ[ÉvëSÇƒåqÇ™Ç¡ÇƒÇ¢ÇÈÇ©
+
 	DeletePassageNum = GroupHeight * GroupWidth / 3;
 	for (i = 0; i < MAX_MAPHEIGHT; i++)
 	{
 		g_map[i] = base_g_map + i * MAX_MAPWIDTH;
+	}
+
+	for (i = 0; i < GroupWidth * GroupHeight; i++)
+	{
+		g_connect[i].check = false;
+		g_connect[i].use = false;
+		g_connect[i].exitcount = 0;
 	}
 
 	/*for (int i = 0; i < MAX_MAPHEIGHT; i++) {
@@ -1033,6 +1043,7 @@ void CMap::Map_Finalize(void)
 	// ÉÅÉÇÉäÇÃâï˙
 	free(base_g_map);
 	free(g_map);
+	free(g_connect);
 }
 
 void CMap::Map_Draw(void)
@@ -1336,59 +1347,59 @@ void CMap::MapWallSet(void)
 			//===================================================
 			// ìVà‰çÏê¨
 			//===================================================
-			//if (g_map[z][x].type == 0 && !g_map[z][x].Cellingwall)
-			//{
-			//	int celingwidth = 0;
-			//	int celingheightcount;
-			//	int celingheight = 0;
-			//	for (int Xwall = 0; Xwall + x  < MAX_MAPWIDTH && g_map[z][x + Xwall].type == 0; Xwall++)
-			//	{
-			//		celingwidth++;
-			//		
-			//		// çÇÇ≥ïùÇìoò^
-			//		if (celingwidth == 1)
-			//		{
-			//			for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
-			//			{
-			//				g_map[z + Zwall][x + Xwall].Cellingwall = true;
-			//				
-			//				celingheight++;
-			//			}
-			//		}
-			//		
-			//		// ìoò^ÇµÇΩçÇÇ≥ïùÇ∆àÍèèÇ»ÇÁâ°ïùâ¡éZ
-			//		if (celingwidth > 1)
-			//		{
-			//			int delz = 0;
-			//			celingheightcount = 0;
-			//			for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
-			//			{
-			//				g_map[z + Zwall][x + Xwall].Cellingwall = true;
+			if (g_map[z][x].type == 0 && !g_map[z][x].Cellingwall)
+			{
+				int celingwidth = 0;
+				int celingheightcount;
+				int celingheight = 0;
+				for (int Xwall = 0; Xwall + x  < MAX_MAPWIDTH && g_map[z][x + Xwall].type == 0; Xwall++)
+				{
+					celingwidth++;
+					
+					// çÇÇ≥ïùÇìoò^
+					if (celingwidth == 1)
+					{
+						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+						{
+							g_map[z + Zwall][x + Xwall].Cellingwall = true;
+							
+							celingheight++;
+						}
+					}
+					
+					// ìoò^ÇµÇΩçÇÇ≥ïùÇ∆àÍèèÇ»ÇÁâ°ïùâ¡éZ
+					if (celingwidth > 1)
+					{
+						int delz = 0;
+						celingheightcount = 0;
+						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+						{
+							g_map[z + Zwall][x + Xwall].Cellingwall = true;
 	
-			//				celingheightcount++;
-			//				delz++;		// è¡Ç∑èÍçáCelingwallÇfalseÇ…ñﬂÇ∑
-			//				if (celingheight == celingheightcount)
-			//					break;
-			//			}
-			//			if (celingheight > celingheightcount)
-			//			{
-			//				for (int dz = 0; dz <= delz; dz++)
-			//				{
-			//					g_map[z + dz][x + Xwall].Cellingwall = false;
-			//				}
-			//				celingwidth -= 1;
-			//				//Xwall -= 1;
-			//				
-			//				break;
-			//			}
-			//				
-			//		}
+							celingheightcount++;
+							delz++;		// è¡Ç∑èÍçáCelingwallÇfalseÇ…ñﬂÇ∑
+							if (celingheight == celingheightcount)
+								break;
+						}
+						if (celingheight > celingheightcount)
+						{
+							for (int dz = 0; dz <= delz; dz++)
+							{
+								g_map[z + dz][x + Xwall].Cellingwall = false;
+							}
+							celingwidth -= 1;
+							//Xwall -= 1;
+							
+							break;
+						}
+							
+					}
 
 
-			//	}
-			//	CMeshField::MeshField_Create(CTexture::TEX_BLACKUP, celingwidth * 5, celingheight * 5, celingwidth, celingheight, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z + celingheight - 1][x + celingwidth - 1].pos.x) / 2, 5.0f, (g_map[z][x].pos.z + g_map[z + celingheight - 1][x + celingwidth - 1].pos.z) / 2));	// 1ñ   = 5.0f * 5.0f
-			//
-			//}
+				}
+				CMeshField::MeshField_Create(CTexture::TEX_BLACKUP, celingwidth * 5, celingheight * 5, celingwidth, celingheight, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z + celingheight - 1][x + celingwidth - 1].pos.x) / 2, 5.0f, (g_map[z][x].pos.z + g_map[z + celingheight - 1][x + celingwidth - 1].pos.z) / 2));	// 1ñ   = 5.0f * 5.0f
+			
+			}
 
 			//===================================================
 			// ÉtÉçÉA
@@ -2572,7 +2583,22 @@ void CMap::Map_Create_B(void)
 		Passagenum(mt);
 	}
 
+	//===================================================
+	// ïîâÆëSÇƒÇ™Ç¬Ç»Ç™Ç¡ÇƒÇ¢ÇÈÇ©
+	//===================================================
+	MapConnectCheck();
 
+	for (int i = 0; i < GroupWidth * GroupHeight; i++)
+	{
+		if (!g_connect[i].use)
+		{
+			Map_Finalize();
+			Map_Initialize();
+			Map_Create_B();
+			return;
+		}
+	}
+	
 	// åàÇﬂÇΩë´èÍÇ…âàÇ¡Çƒï«Çîzíu
 	//===================================================
 	// ï«Çê∂ê¨
@@ -2636,4 +2662,72 @@ void CMap::MapEnemyPosSet(int mapz, int mapx, int oldz, int oldx)
 		g_map[oldz][oldx].have = NOTHAVE;
 	if (g_map[mapz][mapx].have == NOTHAVE)
 		g_map[mapz][mapx].have = HAVEENEMY;
+}
+
+void CMap::MapConnectCheck()
+{
+	for (int z = 0; z < MAX_MAPHEIGHT; z++)
+	{
+		for (int x = 0; x < MAX_MAPWIDTH; x++)
+		{
+			// ïîâÆÇ≤Ç∆ÇÃèoì¸ÇËå˚ÇÃêîÇåvë™
+			if (g_map[z][x].type == 3)
+			{
+				g_connect[g_map[z][x].Group - 1].exitcount++;
+
+				// ÉOÉãÅ[Év1Ç∆åqÇ™Ç¡ÇƒÇ¢ÇÈïîâÆÇíTÇ∑
+				if (g_map[z][x].Group == 1)
+				{
+					MapConnectGroup(z, x);
+				}
+			}
+			g_connect[0].check = true;
+			g_connect[0].use = true;
+		}
+	}
+
+	for (int c = 0; c < MAP_CHECKCONNECT; c++)
+	{
+		for (int i = 0; i < GroupWidth * GroupHeight; i++)
+		{
+			if (!g_connect[i].use || g_connect[i].check)
+			{
+				continue;
+			}
+			for (int z = 0; z < MAX_MAPHEIGHT; z++)
+			{
+				for (int x = 0; x < MAX_MAPWIDTH; x++)
+				{
+					// ïîâÆÇ≤Ç∆ÇÃèoì¸ÇËå˚ÇÃêîÇåvë™
+					if (g_map[z][x].type == 3)
+					{
+						// ÉOÉãÅ[Év1Ç∆åqÇ™Ç¡ÇƒÇ¢ÇÈïîâÆÇíTÇ∑
+						if (g_map[z][x].Group == i + 1)
+						{
+							MapConnectGroup(z, x);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	
+
+}
+
+void CMap::MapConnectGroup(int z, int x)
+{
+	int posztrace = z;
+	int posxtrace = x;
+	
+	if (g_map[posztrace + 1][posxtrace].type == 2)
+		g_connect[g_map[z][x].Group - 1 + GroupWidth].use = true;
+	if (g_map[posztrace - 1][posxtrace].type == 2)
+		g_connect[g_map[z][x].Group - 1 - GroupWidth].use = true;
+	if (g_map[posztrace][posxtrace + 1].type == 2)
+		g_connect[g_map[z][x].Group].use = true;
+	if (g_map[posztrace][posxtrace - 1].type == 2)
+		g_connect[g_map[z][x].Group - 2].use = true;
+	
 }

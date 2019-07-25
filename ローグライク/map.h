@@ -13,6 +13,8 @@
 
 #define MAP_AXIS_MAX (4)		// 各軸の最大フロア数
 
+#define MAP_CHECKCONNECT (5)	// フロア通路繋がり確認回数
+
 //#define GroupWidth  (3)		// 横の短径グループ数
 //#define GroupHeight (2)		// 縦の短径グループ数
 
@@ -56,7 +58,6 @@ public:
 		bool CzLwall;		// 通路左壁が作られたか
 		int passageNum;		// 通路番号
 		bool passagecheck;	// そのフロアに通路があるか
-
 	}MAP;
 
 	static void Map_Initialize(void);
@@ -89,6 +90,8 @@ private:
 
 	static void MapdeletePassage(int passagenum);// 選んだ通路ナンバーを削除
 
+	static void MapConnectCheck(void);			//
+	static void MapConnectGroup(int z, int x);	// 繋がっているグループを探す
 	static MAP **g_map, *base_g_map;
 
 	static int GroupWidth;
@@ -102,6 +105,15 @@ private:
 	}DELETEPASSAGE;
 
 	static DELETEPASSAGE *g_deletepassage;
+
+	typedef struct
+	{
+		bool check;		// チェック済みか
+		bool use;		// 繋がっている
+		int exitcount;	// 出入口数
+	}CONNECTCHECK;
+
+	static CONNECTCHECK *g_connect;	// グループ全て繋がっているか
 
 };
 
