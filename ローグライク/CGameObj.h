@@ -24,6 +24,7 @@ public:
 		TYPE_CAMERA, //	カメラ
 		TYPE_MESH,	 // メッシュフィールド
 		TYPE_UI,	 //	UI
+		TYPE_GRID,	 // グリッド線
 
 		TYPE_MAX
 

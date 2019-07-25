@@ -8,6 +8,7 @@
 #include "CCamera.h"
 #include "game.h"
 #include "meshField.h"
+#include "CGrid.h"
 #include "Cplayer.h"
 #include "bilboard.h"
 #include "exp.h"
@@ -68,6 +69,7 @@ void Game_Initialize(void)
 	CBilboard::BilBoard_Initialize();
 	CBilboard::Shadow_Init();
 	CMeshField::MeshField_Init();
+	CGrid::Init();
 	CWall::MeshWall_Init();
 	CUserinterface::UI_NameInitialize();
 	Exp_Init();
@@ -104,6 +106,7 @@ void Game_Initialize(void)
 void Game_Finalize(void)
 {
 	CMeshField::MeshField_Finalize();
+	CGrid::Finalize();
 	CBilboard::Shadow_Finalize();	
 }
 
@@ -131,6 +134,7 @@ void Game_Draw(void)
 	CGameObj::DrawAll();	//	2Dオブジェクト描画
 	CMeshField::MeshField_Draw();
 	CWall::MeshWall_Draw();
+	CGrid::Draw();
 	Exp_Draw();
 	CUserinterface::UI_Draw();
 }

@@ -29,7 +29,7 @@ void CMap::Map_Initialize(void)
 	//g_TexWood2 = -1;
 	if (CStage::Stage_GetLevel() == 1)
 	{
-		GroupWidth = 2;
+		GroupWidth = 3;
 		GroupHeight = 2;
 	}
 
@@ -1336,59 +1336,59 @@ void CMap::MapWallSet(void)
 			//===================================================
 			// ìVà‰çÏê¨
 			//===================================================
-			if (g_map[z][x].type == 0 && !g_map[z][x].Cellingwall)
-			{
-				int celingwidth = 0;
-				int celingheightcount;
-				int celingheight = 0;
-				for (int Xwall = 0; Xwall + x  < MAX_MAPWIDTH && g_map[z][x + Xwall].type == 0; Xwall++)
-				{
-					celingwidth++;
-					
-					// çÇÇ≥ïùÇìoò^
-					if (celingwidth == 1)
-					{
-						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
-						{
-							g_map[z + Zwall][x + Xwall].Cellingwall = true;
-							
-							celingheight++;
-						}
-					}
-					
-					// ìoò^ÇµÇΩçÇÇ≥ïùÇ∆àÍèèÇ»ÇÁâ°ïùâ¡éZ
-					if (celingwidth > 1)
-					{
-						int delz = 0;
-						celingheightcount = 0;
-						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
-						{
-							g_map[z + Zwall][x + Xwall].Cellingwall = true;
+			//if (g_map[z][x].type == 0 && !g_map[z][x].Cellingwall)
+			//{
+			//	int celingwidth = 0;
+			//	int celingheightcount;
+			//	int celingheight = 0;
+			//	for (int Xwall = 0; Xwall + x  < MAX_MAPWIDTH && g_map[z][x + Xwall].type == 0; Xwall++)
+			//	{
+			//		celingwidth++;
+			//		
+			//		// çÇÇ≥ïùÇìoò^
+			//		if (celingwidth == 1)
+			//		{
+			//			for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+			//			{
+			//				g_map[z + Zwall][x + Xwall].Cellingwall = true;
+			//				
+			//				celingheight++;
+			//			}
+			//		}
+			//		
+			//		// ìoò^ÇµÇΩçÇÇ≥ïùÇ∆àÍèèÇ»ÇÁâ°ïùâ¡éZ
+			//		if (celingwidth > 1)
+			//		{
+			//			int delz = 0;
+			//			celingheightcount = 0;
+			//			for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+			//			{
+			//				g_map[z + Zwall][x + Xwall].Cellingwall = true;
 	
-							celingheightcount++;
-							delz++;		// è¡Ç∑èÍçáCelingwallÇfalseÇ…ñﬂÇ∑
-							if (celingheight == celingheightcount)
-								break;
-						}
-						if (celingheight > celingheightcount)
-						{
-							for (int dz = 0; dz <= delz; dz++)
-							{
-								g_map[z + dz][x + Xwall].Cellingwall = false;
-							}
-							celingwidth -= 1;
-							//Xwall -= 1;
-							
-							break;
-						}
-							
-					}
+			//				celingheightcount++;
+			//				delz++;		// è¡Ç∑èÍçáCelingwallÇfalseÇ…ñﬂÇ∑
+			//				if (celingheight == celingheightcount)
+			//					break;
+			//			}
+			//			if (celingheight > celingheightcount)
+			//			{
+			//				for (int dz = 0; dz <= delz; dz++)
+			//				{
+			//					g_map[z + dz][x + Xwall].Cellingwall = false;
+			//				}
+			//				celingwidth -= 1;
+			//				//Xwall -= 1;
+			//				
+			//				break;
+			//			}
+			//				
+			//		}
 
 
-				}
-				CMeshField::MeshField_Create(CTexture::TEX_BLACKUP, celingwidth * 5, celingheight * 5, celingwidth, celingheight, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z + celingheight - 1][x + celingwidth - 1].pos.x) / 2, 5.0f, (g_map[z][x].pos.z + g_map[z + celingheight - 1][x + celingwidth - 1].pos.z) / 2));	// 1ñ   = 5.0f * 5.0f
-			
-			}
+			//	}
+			//	CMeshField::MeshField_Create(CTexture::TEX_BLACKUP, celingwidth * 5, celingheight * 5, celingwidth, celingheight, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z + celingheight - 1][x + celingwidth - 1].pos.x) / 2, 5.0f, (g_map[z][x].pos.z + g_map[z + celingheight - 1][x + celingwidth - 1].pos.z) / 2));	// 1ñ   = 5.0f * 5.0f
+			//
+			//}
 
 			//===================================================
 			// ÉtÉçÉA

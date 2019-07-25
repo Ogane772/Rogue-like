@@ -261,6 +261,9 @@
     <ClCompile Include="CEnemy_Gen.cpp">
       <Filter>ソース ファイル\エネミー</Filter>
     </ClCompile>
+    <ClCompile Include="CGrid.cpp">
+      <Filter>ソース ファイル\マップ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C2DObj.h">
@@ -436,6 +439,9 @@
     </ClInclude>
     <ClInclude Include="CEnemy_Gen.h">
       <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="CGrid.h">
+      <Filter>ヘッダー ファイル\マップ</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
