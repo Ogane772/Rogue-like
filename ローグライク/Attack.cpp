@@ -38,16 +38,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 				{
 					if (enemy->m_Judge_enemy.HitEnemyTop && atk_check == ESCAPE_NO)
 					{
-						getplayer->Set_Attack_End(ATTACK_END);
-						getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
 						CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
+						getplayer->Set_Attack_End(ATTACK_END);
+						getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));		
 						break;
 					}
 					else if (enemy->m_Judge_enemy.HitEnemyTop && atk_check == ESCAPE_OK)
 					{
-						getplayer->Set_Attack_End(ATTACK_END);
-						getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
 						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
+						getplayer->Set_Attack_End(ATTACK_END);
+						getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));				
 						break;
 					}			
 				}
@@ -56,16 +56,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 					// 当たっていたらダメージを与える
 					if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_NO)
 					{
+						CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 						break;
 					}
 					else if (enemy->m_Judge_enemy.HitEnemyRight && atk_check == ESCAPE_OK)
 					{
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 						break;
 					}
 				}
@@ -74,16 +74,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 					// 当たっていたらダメージを与える
 					if (enemy->m_Judge_enemy.HitEnemyBottom && atk_check == ESCAPE_NO)
 					{
+						CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-						CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 						break;
 					}
 					else if (enemy->m_Judge_enemy.HitEnemyBottom && atk_check == ESCAPE_OK)
 					{
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 						break;
 					}
 				}
@@ -92,16 +92,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 					// 当たっていたらダメージを与える
 					if (enemy->m_Judge_enemy.HitEnemyLeft && atk_check == ESCAPE_NO)
 					{
+						CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-						CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 						break;
 					}
 					else if (enemy->m_Judge_enemy.HitEnemyLeft && atk_check == ESCAPE_OK)
 					{
+						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 						getplayer->Set_Attack_End(ATTACK_END);
 						getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
-						CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 						break;
 					}
 				}
@@ -115,16 +115,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyBottomLeft && atk_check == ESCAPE_NO)
 						{
+							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							break;
 						}
 						else if (enemy->m_Judge_enemy.HitEnemyBottomLeft && atk_check == ESCAPE_OK)
 						{
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							break;
 						}
 					}
@@ -134,16 +134,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_NO)
 						{
+							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							break;
 						}
 						else if (enemy->m_Judge_enemy.HitEnemyTopLeft && atk_check == ESCAPE_OK)
 						{
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							break;
 						}
 					}
@@ -153,16 +153,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyTopRight && atk_check == ESCAPE_NO)
 						{
+							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							break;
 						}
 						else if (enemy->m_Judge_enemy.HitEnemyTopRight && atk_check == ESCAPE_OK)
 						{
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							break;
 						}
 					}
@@ -172,16 +172,16 @@ void CAttack::Attack_PlayerUpdate(int charatype, float vec, int str, float str2)
 						// 当たっていたらダメージを与える
 						if (enemy->m_Judge_enemy.HitEnemyBottomRight && atk_check == ESCAPE_NO)
 						{
+							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(damage, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(week_check, CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, damage, enemy->Get_Type());
 							break;
 						}
 						else if (enemy->m_Judge_enemy.HitEnemyBottomRight && atk_check == ESCAPE_OK)
 						{
+							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							getplayer->Set_Attack_End(ATTACK_END);
 							getplayer->Set_RivalFlag(enemy->Damage(0, getplayer->Get_Angle(), week_check));
-							CUserinterface::UI_TextCreate(CUserinterface::PLAYERCHARA, CUserinterface::REGULARATTACK, CUserinterface::ENEMY, 0, enemy->Get_Type());
 							break;
 						}
 					}

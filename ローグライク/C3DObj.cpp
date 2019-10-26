@@ -28,14 +28,16 @@ bool C3DObj::trigger;//ボタンをトリガー入力させる用
 
 C3DObj::MaterialFileData C3DObj::NORMAL_MODEL_FILES[] = {
 	{ "asset/model/sraim1_10.x" },
-	{ "asset/model/sraimv3.x" },
-	{ "asset/model/knight.x" },
 };
 //	使いたいアニメモデルの数だけ書く
 C3DObj::MaterialFileData2 C3DObj::ANIME_MODEL_FILES[] = {
 	{ "asset/model/player.x" },
 	{ "asset/model/gensan.x" },
-	{ "asset/model/piel.x" },
+	{ "asset/model/piel.blend.x" },
+	{ "asset/model/knight.blend.x"},
+	{ "asset/model/dowa.x"},
+	{ "asset/model/haniwa.x" },
+	{ "asset/model/sekizou.x" },
 };
 int C3DObj::MODEL_FILES_MAX = sizeof(C3DObj::NORMAL_MODEL_FILES) / sizeof(NORMAL_MODEL_FILES[0]);
 int C3DObj::ANIME_MODEL_FILES_MAX = sizeof(C3DObj::ANIME_MODEL_FILES) / sizeof(ANIME_MODEL_FILES[0]);
@@ -97,23 +99,7 @@ C3DObj::C3DObj(int type)
 //=============================================================================
 C3DObj::~C3DObj()
 {
-	
-	/*
-	if (anime_model.pFrameRoot)
-	{
-		SkinMesh.cHierarchy.DestroyFrame(anime_model.pFrameRoot);
-	}
-	*/
-	/*if (Thing.pSphereMeshMaterials)
-	{
-	for (DWORD i = 0; i < Thing.dwNumMaterials; i++)
-	{
-	delete[]Thing.pSphereMeshMaterials;
-	}
-	}*/
 	THING();
-
-	//delete &SkinMesh;
 
 	m_3DObjNum--;
 	p3DObj[m_3DObjIndex] = NULL;
@@ -159,7 +145,6 @@ void C3DObj::UpdateAll()
 void C3DObj::DrawAll()
 {
 	int i;
-	int dc = 0;
 	for (i = 0; i < MAX_GAMEOBJ; i++)
 	{
 		// ポリモーフィズムによって派生クラスのDraw()が呼ばれる
@@ -340,11 +325,13 @@ void C3DObj::AnimeModel_Finalize(THING *DeleteAnimeModel)
 
 void C3DObj::PlayerVsWall(JUDGE *player_judge, Sphere *m_PlayerColision)
 {
-	for (int i = 0; i < WALL_MAX; i++)
+	int i = 0;
+	int c = 0;
+	for (i = 0; i < WALL_MAX; i++)
 	{
 		if (CWall::Wall_GetData(i).wuse)
 		{
-			for (int c = 0; c < WALL_WIDTH_MAX; c++)
+			for (c = 0; c < WALL_WIDTH_MAX; c++)
 			{
 				// プレイヤーと壁の当たり判定
 				if (Collision_IsHitVtoS(CWall::Wall_GetCollision(i, c), m_PlayerColision))
@@ -462,9 +449,6 @@ void C3DObj::Collision_AnimeVSAnime(JUDGE *player_judge, Sphere *m_PlayerEnemyCo
 			player_judge->Hitnaname = true;
 			enemy_judge->Hitnaname = true;
 		}
-		/*HitBottom = true;
-		HitRight = true;
-		HitLeft = true;*/
 	}
 }
 
@@ -537,7 +521,6 @@ void C3DObj::Collision_EnemyVSEnemy(JUDGE *enemy_judge, Sphere *m_EnemyMyColisio
 //=============================================================================
 void C3DObj::DrawDX_Anime(D3DXMATRIX mtxWorld, THING* pNomalModel)
 {
-	//static float fAnimTimeHold = fAnimTime;
 	float fAnimTimeHold = fAnimTime;
 	if (boPlayAnim)
 	{
@@ -545,13 +528,6 @@ void C3DObj::DrawDX_Anime(D3DXMATRIX mtxWorld, THING* pNomalModel)
 	}
 
 	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-	//	m_pD3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
-	//	m_pD3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_COLOR1);
-	//m_pD3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
-	//m_pD3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
-
-
-	D3DXMATRIXA16 mat;
 
 	m_pD3DDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
@@ -560,17 +536,6 @@ void C3DObj::DrawDX_Anime(D3DXMATRIX mtxWorld, THING* pNomalModel)
 	SkinMesh.DrawFrame(m_pD3DDevice, pNomalModel->pFrameRoot, pNomalModel, true);
 	pNomalModel->pAnimController->AdvanceTime(fAnimTime - fAnimTimeHold, NULL);
 
-	mtxWorld *= mat;
-
-	m_pD3DDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
-
-	////////////////////////////////
-	//アニメ再生時間を+
-	/*	fAnimTimeHold = fAnimTime;
-	if (boPlayAnim)
-	{
-	fAnimTime += 0.01f;
-	}*/
 }
 
 
@@ -581,11 +546,6 @@ void C3DObj::DrawDX_Anime(D3DXMATRIX mtxWorld, THING* pNomalModel)
 void C3DObj::DrawDX_Normal(D3DXMATRIX mtxWorld, NormalModelData * pNomalModel)
 {
 	DWORD i;
-
-	//m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-	//m_pD3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
-	//m_pD3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
-
 
 	// マトリックスのセット
 	m_pD3DDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
@@ -608,16 +568,6 @@ THING* C3DObj::GetAnimeModel(void)
 	return &anime_model;
 }
 
-/*THING C3DObj::GetAnimeModel(int index)
-{
-return Thing_Anime[index];
-}*/
-
-
-/*NormalModelFile C3DObj::GetNormal(int index)
-{
-return NormalModelFile[index];
-}*/
 //=============================================================================
 // アニメーション変更
 //=============================================================================

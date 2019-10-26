@@ -118,10 +118,10 @@ void Game_Update(void)
 {
 	C3DObj::UpdateAll();	//	3Dオブジェクト更新
 	CGameObj::UpdateAll();	//	2Dオブジェクト更新
-	CBilboard::BilBoard_Update();
-	CUserinterface::UI_Update();
+	CBilboard::BilBoard_Update();	
 	CEnemy::EnemyTurnEnd();
 	Exp_Update();
+	CUserinterface::UI_Update();
 }
 
 //=============================================================================

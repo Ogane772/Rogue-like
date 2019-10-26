@@ -53,6 +53,9 @@ public:
 		TYPE_GEN,
 		TYPE_KNIGHT,
 		TYPE_PIEL,
+		TYPE_DWARF,
+		TYPE_HANIWA,
+		TYPE_SEKIZOU,
 
 		TYPE_MAXENEMY
 	};
@@ -91,7 +94,9 @@ public:
 	static void EnemyVsWall(JUDGE *enemy_judge, Sphere *m_EnemyMyColision);
 	static int Get_ENEMYDATAMAX(void) { return m_ENEMYDATA_MAX; }
 protected:
-
+	float m_IdleAnimeTime;
+	float m_WalkAnimeTime;
+	float m_AttackAnimeTime;
 	int enemyturn;
 
 	//èäéùÉAÉCÉeÉÄäiî[
