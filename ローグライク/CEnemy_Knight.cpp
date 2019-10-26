@@ -86,7 +86,7 @@ void CEnemy_Knight::Initialize(int x, int z, ENEMY_Data enemy_data)
 	set_item = 0;
 
 	char animefile[TEXTURE_FILENAME_MAX] = {};
-	strcpy_s(animefile, C3DObj::Get_AnimeFileName(MODELL_ANIME_GENSAN));
+	strcpy_s(animefile, C3DObj::Get_AnimeFileName(MODELL_ANIME_KNIGHT));
 
 	SkinMesh.InitThing(m_pD3DDevice, &anime_model, animefile);
 
@@ -102,8 +102,11 @@ void CEnemy_Knight::Initialize(int x, int z, ENEMY_Data enemy_data)
 	TrackDesc.Speed = 0.005f;//モーションスピード
 	anime_model.pAnimController->SetTrackDesc(0, &TrackDesc);//アニメ情報セット
 	anime_model.pAnimController->SetTrackAnimationSet(0, pAnimSet[IDLE]);//初期アニメーションセット
+	m_IdleAnimeTime = 0.005f;
+	m_WalkAnimeTime = 0.005f;
+	m_AttackAnimeTime = 0.014f;
 	m_AnimationType = IDLE;
-	Animation_Change(IDLE, 0.005f);
+	Animation_Change(IDLE, m_IdleAnimeTime);
 }
 
 void CEnemy_Knight::Update(void)

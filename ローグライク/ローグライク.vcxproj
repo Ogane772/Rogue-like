@@ -154,8 +154,11 @@
     <ClCompile Include="C3DObj.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CEnemy.cpp" />
+    <ClCompile Include="CEnemy_Dwarf.cpp" />
+    <ClCompile Include="CEnemy_Haniwa.cpp" />
     <ClCompile Include="CEnemy_Knight.cpp" />
     <ClCompile Include="CEnemy_Piel.cpp" />
+    <ClCompile Include="CEnemy_Sekizou.cpp" />
     <ClCompile Include="CGameObj.cpp" />
     <ClCompile Include="CLight.cpp" />
     <ClCompile Include="CObject_Kaki.cpp" />
@@ -214,8 +217,11 @@
     <ClInclude Include="C3DObj.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CEnemy.h" />
+    <ClInclude Include="CEnemy_Dwarf.h" />
+    <ClInclude Include="CEnemy_Haniwa.h" />
     <ClInclude Include="CEnemy_Knight.h" />
     <ClInclude Include="CEnemy_Piel.h" />
+    <ClInclude Include="CEnemy_Sekizou.h" />
     <ClInclude Include="CGameObj.h" />
     <ClInclude Include="CLight.h" />
     <ClInclude Include="CObject_Kaki.h" />

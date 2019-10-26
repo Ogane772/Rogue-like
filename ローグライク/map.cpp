@@ -1256,6 +1256,56 @@ void CMap::WorpEnemySet(C3DObj *enemy, int z, int x)
 	enemy->Enemy_SetWorpPos(pposZ, pposX);
 }
 
+void CMap::MapEnemySingleSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
+	int setenemy = 1;
+	int enemysummon_number[100] = { 0 };//エネミー出現率格納
+	int kakuritu_start = 0;//どの配列番号から数えるか
+	int lposX;
+	int lposZ;
+	int i, j, k;
+	//その階で出るアイテムを検索し確率を代入していく
+	for (j = 0; j< CEnemy::Get_ENEMYDATAMAX(); j++)
+	{
+		if (CEnemy::Get_EnemyData(j)->first_floor <= CStage::Stage_GetLevel() &&
+			CEnemy::Get_EnemyData(j)->end_floor >= CStage::Stage_GetLevel())
+		{
+			for (k = kakuritu_start; k < kakuritu_start + CEnemy::Get_EnemyData(j)->enemychance; k++)
+			{
+				if (enemysummon_number[k] == 0)
+				{
+					enemysummon_number[k] = CEnemy::Get_EnemyData(j)->enemy_type;
+				}
+			}
+			kakuritu_start += CEnemy::Get_EnemyData(j)->enemychance;
+		}
+	}
+	//もしも100％埋まってなかったら空きに最初のエネミーを入れておく
+	for (k = 0; k < 100; k++)
+	{
+		if (enemysummon_number[k] == 0)
+		{
+			enemysummon_number[k] = enemysummon_number[0];
+		}
+	}
+	//乱数で取得した分だけエネミーをを配置する
+	for (i = 0; i < setenemy; i++)
+	{
+		for (;;)
+		{
+			lposX = random(mt);
+			lposZ = random(mt);
+			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
+				break;
+		}
+		CEnemy::Create(enemysummon_number[random(mt)], lposX, lposZ);
+		g_map[lposZ][lposX].have = HAVEENEMY;
+	}
+}
+
 void CMap::MapEnemySet(void)
 {
 	std::random_device rd;
@@ -1327,11 +1377,11 @@ void CMap::MapLadderSet(void)
 
 void CMap::MapWallSet(void)
 {
-	for (int z = 0; z < MAX_MAPHEIGHT; z++)
+	int z, x;
+	for (z = 0; z < MAX_MAPHEIGHT; z++)
 	{
-		for (int x = 0; x < MAX_MAPWIDTH; x++)
+		for (x = 0; x < MAX_MAPWIDTH; x++)
 		{
-
 			//===================================================
 			// フロア
 			//===================================================

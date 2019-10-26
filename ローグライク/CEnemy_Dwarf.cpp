@@ -1,13 +1,13 @@
 #include "CEnemy.h"
 #include <d3dx9.h>
 #include "Attack.h"
-#include "CEnemy_Gen.h"
+#include "CEnemy_Dwarf.h"
 #include "Cplayer.h"
 //=============================================================================
 //	生成
 //=============================================================================
 
-CEnemy_Gen::CEnemy_Gen(int x, int z, ENEMY_Data enemy_data) :CEnemy(enemy_data.enemy_type), C3DObj(C3DObj::TYPE_ENEMY)
+CEnemy_Dwarf::CEnemy_Dwarf(int x, int z, ENEMY_Data enemy_data) :CEnemy(enemy_data.enemy_type), C3DObj(C3DObj::TYPE_ENEMY)
 {
 	Initialize(x, z, enemy_data);
 }
@@ -16,15 +16,13 @@ CEnemy_Gen::CEnemy_Gen(int x, int z, ENEMY_Data enemy_data) :CEnemy(enemy_data.e
 //	破棄
 //=============================================================================
 
-CEnemy_Gen::~CEnemy_Gen()
+CEnemy_Dwarf::~CEnemy_Dwarf()
 {
 	AnimeModel_Finalize(&anime_model);
-	//NormalModel_Finalize(&Normal_model);
-	//delete this;
 }
 
 
-void CEnemy_Gen::Initialize(int x, int z, ENEMY_Data enemy_data)
+void CEnemy_Dwarf::Initialize(int x, int z, ENEMY_Data enemy_data)
 {
 	int i;
 	strcpy_s(name, MAX_NAME, enemy_data.enemy_name);
@@ -88,7 +86,7 @@ void CEnemy_Gen::Initialize(int x, int z, ENEMY_Data enemy_data)
 	set_item = 0;
 
 	char animefile[TEXTURE_FILENAME_MAX] = {};
-	strcpy_s(animefile, C3DObj::Get_AnimeFileName(MODELL_ANIME_GENSAN));
+	strcpy_s(animefile, C3DObj::Get_AnimeFileName(MODELL_ANIME_DOWA));
 
 	SkinMesh.InitThing(m_pD3DDevice, &anime_model, animefile);
 
@@ -104,19 +102,19 @@ void CEnemy_Gen::Initialize(int x, int z, ENEMY_Data enemy_data)
 	TrackDesc.Speed = 0.005f;//モーションスピード
 	anime_model.pAnimController->SetTrackDesc(0, &TrackDesc);//アニメ情報セット
 	anime_model.pAnimController->SetTrackAnimationSet(0, pAnimSet[IDLE]);//初期アニメーションセット
-	m_IdleAnimeTime = 0.005f;
-	m_WalkAnimeTime = 0.005f;
-	m_AttackAnimeTime = 0.005f;
+	m_IdleAnimeTime = 0.01f;
+	m_WalkAnimeTime = 0.003f;
+	m_AttackAnimeTime = 0.015f;
 	m_AnimationType = IDLE;
 	Animation_Change(IDLE, m_IdleAnimeTime);
 }
 
-void CEnemy_Gen::Update(void)
+void CEnemy_Dwarf::Update(void)
 {
 	Enemy_Update();
 }
 
-void CEnemy_Gen::Draw(void)
+void CEnemy_Dwarf::Draw(void)
 {
 	Enemy_Draw();
 
@@ -154,9 +152,9 @@ void CEnemy_Gen::Draw(void)
 	*/
 }
 
-void CEnemy_Gen::EnemySkill(void)
+void CEnemy_Dwarf::EnemySkill(void)
 {
-		std::random_device rd;
+	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 2);
 	int attack_number = 0;
@@ -165,9 +163,7 @@ void CEnemy_Gen::EnemySkill(void)
 	switch (attack_number)
 	{
 	case 0:
-		CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Str2, m_Angle);
 		//CAttack::Attack_EnemyUpdate(m_WeponType, m_Type, m_Str, m_Angle);
-		/*
 		if (set_item == 0)
 		{//盗む処理
 			CAttack::Attack_EnemySkill(this, CAttack::TOUZOKU_SKILL, m_WeponType, m_Type, m_Str, m_Str2, m_Angle, ESCAPE_CHECK_OK);
@@ -186,7 +182,6 @@ void CEnemy_Gen::EnemySkill(void)
 		}
 		//チャージ倍率増やすときはここに書く
 		//m_Str2 = CHARGE_BUFF;
-		*/
 		break;
 	case 1:
 		//CAttack::Attack_EnemySkill(CAttack::HIGH_ATTACK_SKILL, m_WeponType, m_Type, m_Str, m_Angle, ESCAPE_CHECK_OK);

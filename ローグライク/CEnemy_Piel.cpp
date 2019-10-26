@@ -102,8 +102,11 @@ void CEnemy_Piel::Initialize(int x, int z, ENEMY_Data enemy_data)
 	TrackDesc.Speed = 0.005f;//モーションスピード
 	anime_model.pAnimController->SetTrackDesc(0, &TrackDesc);//アニメ情報セット
 	anime_model.pAnimController->SetTrackAnimationSet(0, pAnimSet[IDLE]);//初期アニメーションセット
+	m_IdleAnimeTime = 0.005f;
+	m_WalkAnimeTime = 0.005f;
+	m_AttackAnimeTime = 0.015f;
 	m_AnimationType = IDLE;
-	Animation_Change(IDLE, 0.005f);
+	Animation_Change(IDLE, m_IdleAnimeTime);
 }
 
 void CEnemy_Piel::Update(void)

@@ -111,15 +111,17 @@ public:
 	} OBJTYPE;
 
 	typedef enum {
-		MODELL_PLAYER,
-		MODELL_ENEMY_1,
-		MODELL_KISHI,
+		NOMODEL,
 	}NorMalModelFileData;
 	enum ANIME_MODEL
 	{
 		MODELL_ANIME_PLAYER,
 		MODELL_ANIME_GENSAN,
 		MODELL_ANIME_PIEL,
+		MODELL_ANIME_KNIGHT,
+		MODELL_ANIME_DOWA,
+		MODELL_ANIME_HANIWA,
+		MODELL_ANIME_SEKIZOU,
 		ANIME_MODEL_MAX,//アニメモデル最大数
 	}AnimeModelFileData;;
 
@@ -350,16 +352,11 @@ private:
 	static int m_3DObjNum;	//	ゲームオブジェクト総数
 
 	static C3DObj *p3DObj[MAX_GAMEOBJ];
-
-
 	
 	static bool VFCulling(D3DXVECTOR3* pPosition);
 
 	FLOAT fAnimTime = 0.0f;
 	BOOL boPlayAnim = true;
-	//float fAnimTimeHold;
-
-
 };
 
 #endif // !1

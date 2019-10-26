@@ -368,21 +368,15 @@ void CUserinterface::UI_TextCreate(CHARATYPE chara, ACTTYPE act, CHARATYPE hitch
 	g_text.hitchara = hitchara;
 	g_text.damage = damage;
 	g_text.act = act;
-	if (type > 0)
-	{
-		g_text.type = type;
-	}
 	//エネミーデータから名前と経験値をもらうのでｰ1する
 	if (hitchara > 1)
 	{
 		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
 		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
-		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
+	
 	}
-	if (chara > 1)
-	{
-		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
-	}
+	g_text.type = type;
+	strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
 	g_text.pos.x = TEXT_POSX;
 	g_text.pos.y = TEXT_POSY;
 	// 誕生日
@@ -442,13 +436,13 @@ void CUserinterface::UI_TextCreate(int week_type,CHARATYPE chara, ACTTYPE act, C
 		g_text.type = type;
 	}
 	//エネミーデータから名前と経験値をもらうのでｰ1する
-	if (hitchara > 1)
+	if (hitchara > 0)
 	{
 		g_text.exp = CEnemy::Get_EnemyExp(g_text.type - 1);
 		g_text.gold = CEnemy::Get_EnemyExp(g_text.type - 1);
 		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
 	}
-	if (chara > 1)
+	if (chara > 0)
 	{
 		strcpy_s(g_text.name, MAX_NAME, CEnemy::Get_EnemyName(g_text.type - 1));
 	}
@@ -1429,6 +1423,7 @@ void CUserinterface::Map_Draw(void)
 void CUserinterface::UI_TextDraw(void)
 {
 	C3DObj *getplayer = CPlayer::Get_Player();
+//	DebugFont_Draw(0, 200, "name = %s", g_text.name);
 	if (getplayer->Get_PlayerTurn() == CPlayer::PLAYER_WINDOW_STATUS)
 	{
 		return;
