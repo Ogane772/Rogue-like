@@ -151,6 +151,7 @@ public:
 	bool Get_TurboMode(void) { return turbo; }
 	bool Get_ItemOn(void) { return m_ItemOn; }
 	bool Get_ItemTips(void) { return m_ItemTips; }
+	bool Get_GridFlag(void) { return m_GridFlag; }
 	bool Get_NanameFlag(void) { return m_NanameFlag; }
 	bool Get_NextItemPage(void) { return m_NextItemPage; }
 	bool Get_DrawCheck(void) { return alive; }
@@ -259,6 +260,7 @@ private:
 	bool m_Hold;//キーおしっぱでtrue
 	bool m_DarkFlag;//暗闇の通路にいたらtrue
 	bool m_NanameFlag;//斜め移動モードの時true
+	bool m_GridFlag;//グリッドモードの時true
 	bool m_HealFlag;//自動回復高速化フラグ
 	bool turbo;//高速化フラグ
 	bool m_Gekika;//相性激化フラグ

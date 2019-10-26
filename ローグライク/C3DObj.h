@@ -166,6 +166,7 @@ public:
 	virtual int Get_EnemyTurn(void) { return 0; }//エネミーのターンモード取得
 	virtual void Set_EnemyTurn(int turn) {}//エネミーのターンモードセット
 	virtual bool Get_Hold(void) { return 0; }//キーおしっぱを取得
+	virtual bool Get_GridFlag(void) { return 0; }//斜め移動状態を取得
 	virtual bool Get_NanameFlag(void) { return 0; }//斜め移動状態を取得
 	virtual bool Get_GekikaFlag(void) { return 0; }//相性激化状態を取得
 	virtual bool Get_EnemyPoizunDeath(void) { return 0; }//敵が毒で死んでいるか返す

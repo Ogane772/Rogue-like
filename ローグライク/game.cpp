@@ -8,6 +8,7 @@
 #include "CCamera.h"
 #include "game.h"
 #include "meshField.h"
+#include "CGrid.h"
 #include "Cplayer.h"
 #include "bilboard.h"
 #include "exp.h"
@@ -68,13 +69,18 @@ void Game_Initialize(void)
 	CBilboard::BilBoard_Initialize();
 	CBilboard::Shadow_Init();
 	CMeshField::MeshField_Init();
+	CGrid::Init();
 	CWall::MeshWall_Init();
 	CUserinterface::UI_NameInitialize();
 	Exp_Init();
 	//Number_Initialize(3);
 	CMap::Map_Initialize();
 	CMeshField::MeshField_Create(CTexture::TEX_KUSA, 500, 500, 100, 100, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1面  = 5.0f * 5.0f
-
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 15, 5, 3, 1, D3DXVECTOR3(5.0f, 0.0f, -10.0f));	// 1面  = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 10, 5, 2, 1, D3DXVECTOR3(2.5f, 0.0f, -5.0f));	// 1面  = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 5, 5, 1, 1, D3DXVECTOR3(0.0f, 0.0f, 0.0f));	// 1面  = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 5, 10, 1, 2, D3DXVECTOR3(-5.0f, 0.0f, -2.5f));	// 1面  = 5.0f * 5.0f
+	//CMeshField::MeshField_Create(CTexture::TEX_KUSA, 5, 5, 1, 1, D3DXVECTOR3(5.0f, 0.0f, 0.0f));	// 1面  = 5.0f * 5.0f
 																					// マップ生成
 	//CMap::Map_CreateOneFloor();
 	//CMap::Map_Create();
@@ -100,6 +106,7 @@ void Game_Initialize(void)
 void Game_Finalize(void)
 {
 	CMeshField::MeshField_Finalize();
+	CGrid::Finalize();
 	CBilboard::Shadow_Finalize();	
 }
 
@@ -127,6 +134,7 @@ void Game_Draw(void)
 	CGameObj::DrawAll();	//	2Dオブジェクト描画
 	CMeshField::MeshField_Draw();
 	CWall::MeshWall_Draw();
+	CGrid::Draw();
 	Exp_Draw();
 	CUserinterface::UI_Draw();
 }

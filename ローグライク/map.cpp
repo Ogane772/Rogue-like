@@ -17,6 +17,7 @@ int CMap::GroupHeight;
 int CMap::DeletePassageNum;
 //int CMap::g_TexWood2;
 CMap::MAP **CMap::g_map, *CMap::base_g_map;
+CMap::CONNECTCHECK *CMap::g_connect;
 
 CMap::DELETEPASSAGE *CMap::g_deletepassage;
 void CMap::Map_Initialize(void)
@@ -29,8 +30,8 @@ void CMap::Map_Initialize(void)
 	//g_TexWood2 = -1;
 	if (CStage::Stage_GetLevel() == 1)
 	{
-		GroupWidth = 2;
-		GroupHeight = 2;
+		GroupWidth = 3;
+		GroupHeight = 3;
 	}
 
 	if (CStage::Stage_GetLevel() == 2)
@@ -50,10 +51,19 @@ void CMap::Map_Initialize(void)
 	g_map = (MAP**)malloc(sizeof(MAP *) * MAX_MAPHEIGHT);
 	base_g_map = (MAP*)malloc(sizeof(MAP) * MAX_MAPHEIGHT * MAX_MAPWIDTH);
 
+	g_connect = (CONNECTCHECK*)malloc(sizeof(CONNECTCHECK) * GroupWidth * GroupHeight);	// グループ全て繋がっているか
+
 	DeletePassageNum = GroupHeight * GroupWidth / 3;
 	for (i = 0; i < MAX_MAPHEIGHT; i++)
 	{
 		g_map[i] = base_g_map + i * MAX_MAPWIDTH;
+	}
+
+	for (i = 0; i < GroupWidth * GroupHeight; i++)
+	{
+		g_connect[i].check = false;
+		g_connect[i].use = false;
+		g_connect[i].exitcount = 0;
 	}
 
 	/*for (int i = 0; i < MAX_MAPHEIGHT; i++) {
@@ -72,6 +82,7 @@ void CMap::Map_Initialize(void)
 			g_map[z][x].use = false;
 			g_map[z][x].Cxwall = false;
 			g_map[z][x].Czwall = false;
+			g_map[z][x].Cellingwall = false;
 			g_map[z][x].Cxtopwall = false;
 			g_map[z][x].Cxbotwall = false;
 			g_map[z][x].CzRwall = false;
@@ -1032,6 +1043,7 @@ void CMap::Map_Finalize(void)
 	// メモリの解放
 	free(base_g_map);
 	free(g_map);
+	free(g_connect);
 }
 
 void CMap::Map_Draw(void)
@@ -1213,6 +1225,7 @@ void CMap::MapPlayerSet(void)
 	}
 	g_map[pposZ][pposX].have = HAVEPLAYER;
 	CPlayer::Player_SetPos(pposZ, pposX);
+	//CPlayer::Player_SetPos(50, 50);
 }
 
 void CMap::WorpPlayerSet(int z, int x)
@@ -1256,62 +1269,12 @@ void CMap::WorpEnemySet(C3DObj *enemy, int z, int x)
 	enemy->Enemy_SetWorpPos(pposZ, pposX);
 }
 
-void CMap::MapEnemySingleSet(void)
-{
-	std::random_device rd;
-	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> random(0, 99);
-	int setenemy = 1;
-	int enemysummon_number[100] = { 0 };//エネミー出現率格納
-	int kakuritu_start = 0;//どの配列番号から数えるか
-	int lposX;
-	int lposZ;
-	int i, j, k;
-	//その階で出るアイテムを検索し確率を代入していく
-	for (j = 0; j< CEnemy::Get_ENEMYDATAMAX(); j++)
-	{
-		if (CEnemy::Get_EnemyData(j)->first_floor <= CStage::Stage_GetLevel() &&
-			CEnemy::Get_EnemyData(j)->end_floor >= CStage::Stage_GetLevel())
-		{
-			for (k = kakuritu_start; k < kakuritu_start + CEnemy::Get_EnemyData(j)->enemychance; k++)
-			{
-				if (enemysummon_number[k] == 0)
-				{
-					enemysummon_number[k] = CEnemy::Get_EnemyData(j)->enemy_type;
-				}
-			}
-			kakuritu_start += CEnemy::Get_EnemyData(j)->enemychance;
-		}
-	}
-	//もしも100％埋まってなかったら空きに最初のエネミーを入れておく
-	for (k = 0; k < 100; k++)
-	{
-		if (enemysummon_number[k] == 0)
-		{
-			enemysummon_number[k] = enemysummon_number[0];
-		}
-	}
-	//乱数で取得した分だけエネミーをを配置する
-	for (i = 0; i < setenemy; i++)
-	{
-		for (;;)
-		{
-			lposX = random(mt);
-			lposZ = random(mt);
-			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
-				break;
-		}
-		CEnemy::Create(enemysummon_number[random(mt)], lposX, lposZ);
-		g_map[lposZ][lposX].have = HAVEENEMY;
-	}
-}
-
 void CMap::MapEnemySet(void)
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> random(0, 99);
-	int setenemy = 3;
+	int setenemy = 0;
 	int enemysummon_number[100] = { 0 };//エネミー出現率格納
 	int kakuritu_start = 0;//どの配列番号から数えるか
 	int lposX;
@@ -1377,11 +1340,67 @@ void CMap::MapLadderSet(void)
 
 void CMap::MapWallSet(void)
 {
-	int z, x;
-	for (z = 0; z < MAX_MAPHEIGHT; z++)
+	for (int z = 0; z < MAX_MAPHEIGHT; z++)
 	{
-		for (x = 0; x < MAX_MAPWIDTH; x++)
+		for (int x = 0; x < MAX_MAPWIDTH; x++)
 		{
+			//===================================================
+			// 天井作成
+			//===================================================
+			if (g_map[z][x].type == 0 && !g_map[z][x].Cellingwall)
+			{
+				int celingwidth = 0;
+				int celingheightcount;
+				int celingheight = 0;
+				for (int Xwall = 0; Xwall + x  < MAX_MAPWIDTH && g_map[z][x + Xwall].type == 0; Xwall++)
+				{
+					celingwidth++;
+					
+					// 高さ幅を登録
+					if (celingwidth == 1)
+					{
+						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+						{
+							g_map[z + Zwall][x + Xwall].Cellingwall = true;
+							
+							celingheight++;
+						}
+					}
+					
+					// 登録した高さ幅と一緒なら横幅加算
+					if (celingwidth > 1)
+					{
+						int delz = 0;
+						celingheightcount = 0;
+						for (int Zwall = 0;Zwall + z < MAX_MAPHEIGHT && g_map[z + Zwall][x + Xwall].type == 0 && !g_map[z + Zwall][x + Xwall].Cellingwall; Zwall++)
+						{
+							g_map[z + Zwall][x + Xwall].Cellingwall = true;
+	
+							celingheightcount++;
+							delz++;		// 消す場合Celingwallをfalseに戻す
+							if (celingheight == celingheightcount)
+								break;
+						}
+						if (celingheight > celingheightcount)
+						{
+							for (int dz = 0; dz <= delz; dz++)
+							{
+								g_map[z + dz][x + Xwall].Cellingwall = false;
+							}
+							celingwidth -= 1;
+							//Xwall -= 1;
+							
+							break;
+						}
+							
+					}
+
+
+				}
+				CMeshField::MeshField_Create(CTexture::TEX_BLACKUP, celingwidth * 5, celingheight * 5, celingwidth, celingheight, D3DXVECTOR3((g_map[z][x].pos.x + g_map[z + celingheight - 1][x + celingwidth - 1].pos.x) / 2, 5.0f, (g_map[z][x].pos.z + g_map[z + celingheight - 1][x + celingwidth - 1].pos.z) / 2));	// 1面  = 5.0f * 5.0f
+			
+			}
+
 			//===================================================
 			// フロア
 			//===================================================
@@ -2564,7 +2583,22 @@ void CMap::Map_Create_B(void)
 		Passagenum(mt);
 	}
 
+	//===================================================
+	// 部屋全てがつながっているか
+	//===================================================
+	MapConnectCheck();
 
+	for (int i = 0; i < GroupWidth * GroupHeight; i++)
+	{
+		if (!g_connect[i].use)
+		{
+			Map_Finalize();
+			Map_Initialize();
+			Map_Create_B();
+			return;
+		}
+	}
+	
 	// 決めた足場に沿って壁を配置
 	//===================================================
 	// 壁を生成
@@ -2615,6 +2649,57 @@ void CMap::MapdeletePassage(int passagenum)
 	}
 }
 
+void CMap::MapEnemySingleSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
+	int setenemy = 1;
+	int enemysummon_number[100] = { 0 };
+	int kakuritu_start = 0;
+	int lposX;
+	int lposZ;
+	int i, j, k;
+
+	for (j = 0; j< CEnemy::Get_ENEMYDATAMAX(); j++)
+	{
+		if (CEnemy::Get_EnemyData(j)->first_floor <= CStage::Stage_GetLevel() &&
+			CEnemy::Get_EnemyData(j)->end_floor >= CStage::Stage_GetLevel())
+		{
+			for (k = kakuritu_start; k < kakuritu_start + CEnemy::Get_EnemyData(j)->enemychance; k++)
+			{
+				if (enemysummon_number[k] == 0)
+				{
+					enemysummon_number[k] = CEnemy::Get_EnemyData(j)->enemy_type;
+				}
+			}
+			kakuritu_start += CEnemy::Get_EnemyData(j)->enemychance;
+		}
+	}
+
+	for (k = 0; k < 100; k++)
+	{
+		if (enemysummon_number[k] == 0)
+		{
+			enemysummon_number[k] = enemysummon_number[0];
+		}
+	}
+
+	for (i = 0; i < setenemy; i++)
+	{
+		for (;;)
+		{
+			lposX = random(mt);
+			lposZ = random(mt);
+			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
+				break;
+		}
+		CEnemy::Create(enemysummon_number[random(mt)], lposX, lposZ);
+		g_map[lposZ][lposX].have = HAVEENEMY;
+	}
+}
+
+
 void CMap::MapPlayerPosSet(int mapz, int mapx, int oldz, int oldx)
 {
 	if (g_map[oldz][oldx].have == HAVEPLAYER)
@@ -2628,4 +2713,72 @@ void CMap::MapEnemyPosSet(int mapz, int mapx, int oldz, int oldx)
 		g_map[oldz][oldx].have = NOTHAVE;
 	if (g_map[mapz][mapx].have == NOTHAVE)
 		g_map[mapz][mapx].have = HAVEENEMY;
+}
+
+void CMap::MapConnectCheck()
+{
+	for (int z = 0; z < MAX_MAPHEIGHT; z++)
+	{
+		for (int x = 0; x < MAX_MAPWIDTH; x++)
+		{
+			// 部屋ごとの出入り口の数を計測
+			if (g_map[z][x].type == 3)
+			{
+				g_connect[g_map[z][x].Group - 1].exitcount++;
+
+				// グループ1と繋がっている部屋を探す
+				if (g_map[z][x].Group == 1)
+				{
+					MapConnectGroup(z, x);
+				}
+			}
+			g_connect[0].check = true;
+			g_connect[0].use = true;
+		}
+	}
+
+	for (int c = 0; c < MAP_CHECKCONNECT; c++)
+	{
+		for (int i = 0; i < GroupWidth * GroupHeight; i++)
+		{
+			if (!g_connect[i].use || g_connect[i].check)
+			{
+				continue;
+			}
+			for (int z = 0; z < MAX_MAPHEIGHT; z++)
+			{
+				for (int x = 0; x < MAX_MAPWIDTH; x++)
+				{
+					// 部屋ごとの出入り口の数を計測
+					if (g_map[z][x].type == 3)
+					{
+						// グループ1と繋がっている部屋を探す
+						if (g_map[z][x].Group == i + 1)
+						{
+							MapConnectGroup(z, x);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	
+
+}
+
+void CMap::MapConnectGroup(int z, int x)
+{
+	int posztrace = z;
+	int posxtrace = x;
+	
+	if (g_map[posztrace + 1][posxtrace].type == 2)
+		g_connect[g_map[z][x].Group - 1 + GroupWidth].use = true;
+	if (g_map[posztrace - 1][posxtrace].type == 2)
+		g_connect[g_map[z][x].Group - 1 - GroupWidth].use = true;
+	if (g_map[posztrace][posxtrace + 1].type == 2)
+		g_connect[g_map[z][x].Group].use = true;
+	if (g_map[posztrace][posxtrace - 1].type == 2)
+		g_connect[g_map[z][x].Group - 2].use = true;
+	
 }

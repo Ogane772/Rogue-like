@@ -126,6 +126,7 @@ private:
 	static void CommandWindow_Draw(void);
 	static void ItemWindow_Draw(void);
 	static void RightWindow_Draw(void);//右の装備欄表示
+	
 	static void NanameYajirusi_Draw(void);//斜め移動モードの時の矢印表示
 	static void ConditionIconDraw(void);//状態異常アイコン表示
 	static void SetItemWindow(void);//所持アイテム表示

@@ -46,6 +46,15 @@ void CMeshField::MeshField_Create(int tex, int width, int height, int wcube, int
 			g_mesh[i].widthcube = wcube;
 			g_mesh[i].heightcube = hcube;
 			g_mesh[i].pos = pos;
+			if (wcube % 2 == 1)
+			{
+				g_mesh[i].pos.x -= 0.5f;
+			}
+
+			if (hcube % 2 == 1)
+			{
+				g_mesh[i].pos.z += 0.5f;
+			}
 
 			m_pD3DDevice->CreateVertexBuffer(		//
 				sizeof(Vertex3D) * ((g_mesh[i].widthcube + 1) * (g_mesh[i].heightcube + 1)),// 借りたい頂点の容量	//
@@ -70,7 +79,7 @@ void CMeshField::MeshField_Create(int tex, int width, int height, int wcube, int
 				for (int x = 0; x <= g_mesh[i].widthcube; x++)
 				{
 					// バーテックス
-					pV[y * g_mesh[i].widthcube + x + y].position = D3DXVECTOR3((float)(x * (g_mesh[i].widthmax / g_mesh[i].widthcube) - g_mesh[i].widthmax / 2), (float)g_mesh[i].pos.y, (float)(g_mesh[i].heightmax / 2 - (g_mesh[i].heightmax / g_mesh[i].heightcube) * y));
+					pV[y * g_mesh[i].widthcube + x + y].position = D3DXVECTOR3((float)(x * (g_mesh[i].widthmax / g_mesh[i].widthcube) - g_mesh[i].widthmax / 2 + g_mesh[i].pos.x), (float)g_mesh[i].pos.y, (float)(g_mesh[i].heightmax / 2 - (g_mesh[i].heightmax / g_mesh[i].heightcube) * y + g_mesh[i].pos.z));
 					pV[y * g_mesh[i].widthcube + x + y].normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 					pV[y * g_mesh[i].widthcube + x + y].color = D3DCOLOR_RGBA(255, 255, 255, 255);
 					pV[y * g_mesh[i].widthcube + x + y].texcoord = D3DXVECTOR2(1.0f * (x % 2), 1.0f * (y % 2));

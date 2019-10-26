@@ -19,6 +19,7 @@ CTexture::TextureFileData CTexture::TEXTURE_FILES[] = {
 	{ "asset/texture/blue.png",5,5 },
 	{ "asset/texture/wood.png",225,225 },
 	{ "asset/texture/Renga.jpg",1300,1300 },
+	{ "asset/texture/blackup.png",200,200 },
 	{ "asset/texture/block.png",128,128 },
 	{ "asset/texture/ladder.png",640,640 },
 	{ "asset/texture/1F.png",1284,720 },

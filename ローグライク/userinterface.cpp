@@ -15,6 +15,7 @@
 #include "stage.h"
 #include "debug_font.h"
 #include "CTrap.h"
+#include "CGrid.h"
 /*----------------------------------------------------------------------
 　　定数
  ----------------------------------------------------------------------*/
@@ -139,6 +140,7 @@ void CUserinterface::UI_Draw(void)
 	UI_UpDraw();
 	Map_Draw();
 	UI_TextDraw();
+	CGrid::Grid_Draw();
 	NanameYajirusi_Draw();
 	ConditionIconDraw();
 	CommandWindow_Draw();
@@ -866,6 +868,7 @@ void CUserinterface::RightWindow_Draw(void)
 
 void CUserinterface::NanameYajirusi_Draw(void)
 {
+
 	C3DObj *getplayer = CPlayer::Get_Player();
 	//斜め移動モードの時4方の斜めに矢印表示
 	if (getplayer->Get_NanameFlag())
