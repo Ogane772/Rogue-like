@@ -2649,6 +2649,57 @@ void CMap::MapdeletePassage(int passagenum)
 	}
 }
 
+void CMap::MapEnemySingleSet(void)
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> random(0, 99);
+	int setenemy = 1;
+	int enemysummon_number[100] = { 0 };
+	int kakuritu_start = 0;
+	int lposX;
+	int lposZ;
+	int i, j, k;
+
+	for (j = 0; j< CEnemy::Get_ENEMYDATAMAX(); j++)
+	{
+		if (CEnemy::Get_EnemyData(j)->first_floor <= CStage::Stage_GetLevel() &&
+			CEnemy::Get_EnemyData(j)->end_floor >= CStage::Stage_GetLevel())
+		{
+			for (k = kakuritu_start; k < kakuritu_start + CEnemy::Get_EnemyData(j)->enemychance; k++)
+			{
+				if (enemysummon_number[k] == 0)
+				{
+					enemysummon_number[k] = CEnemy::Get_EnemyData(j)->enemy_type;
+				}
+			}
+			kakuritu_start += CEnemy::Get_EnemyData(j)->enemychance;
+		}
+	}
+
+	for (k = 0; k < 100; k++)
+	{
+		if (enemysummon_number[k] == 0)
+		{
+			enemysummon_number[k] = enemysummon_number[0];
+		}
+	}
+
+	for (i = 0; i < setenemy; i++)
+	{
+		for (;;)
+		{
+			lposX = random(mt);
+			lposZ = random(mt);
+			if (g_map[lposZ][lposX].type == 1 && g_map[lposZ][lposX].have == NOTHAVE)
+				break;
+		}
+		CEnemy::Create(enemysummon_number[random(mt)], lposX, lposZ);
+		g_map[lposZ][lposX].have = HAVEENEMY;
+	}
+}
+
+
 void CMap::MapPlayerPosSet(int mapz, int mapx, int oldz, int oldx)
 {
 	if (g_map[oldz][oldx].have == HAVEPLAYER)
