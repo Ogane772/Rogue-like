@@ -51,7 +51,7 @@ void CTitleMenu::TitleMenu_Update(void)
 		pJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
 	}
 	//何もキーが押されてなければボタンを押していい状態にする
-	if (!(JoyDevice_IsTrigger(CONTROLLER::A_BUTTON)) && !(JoyDevice_IsTrigger(CONTROLLER::B_BUTTON)) && !(JoyDevice_IsCrossTrigger(UP_BUTTON)) && !(JoyDevice_IsCrossTrigger(DOWN_BUTTON)))
+	if (!(JoyDevice_IsTrigger(CONTROLLER::A_BUTTON)) && !(JoyDevice_IsTrigger(CONTROLLER::B_BUTTON)) && !(JoyDevice_IsCrossTrigger(UP_BUTTON)) && !(JoyDevice_IsCrossTrigger(DOWN_BUTTON)) && (js.lX >= -2 && js.lX <= 2 && js.lY >= -2 && js.lY <= 2))
 	{
 		trigger = false;
 	}
@@ -62,12 +62,12 @@ void CTitleMenu::TitleMenu_Update(void)
 			OK_BUTTON_SELECT();
 			trigger = true;
 		}
-		if (Keyboard_IsTrigger(DIK_W) || JoyDevice_IsCrossTrigger(UP_BUTTON) && !trigger)
+		if (Keyboard_IsTrigger(DIK_W) || JoyDevice_IsCrossTrigger(UP_BUTTON) && !trigger || (js.lX >= -2 && js.lX <= 2) && js.lY == -6 && !trigger)
 		{
 			UP_BUTTON_SELECT();
 			trigger = true;
 		}
-		if (Keyboard_IsTrigger(DIK_S) || JoyDevice_IsCrossTrigger(DOWN_BUTTON) && !trigger)
+		if (Keyboard_IsTrigger(DIK_S) || JoyDevice_IsCrossTrigger(DOWN_BUTTON) && !trigger || (js.lX >= -2 && js.lX <= 2) && js.lY == 6 && !trigger)
 		{
 			DOWN_BUTTON_SELECT();
 			trigger = true;

@@ -210,9 +210,9 @@ void C2DObj::SpriteDraw(int texture_index, float dx, float dy)
 	int w = Texture_GetWidth(texture_index);
 	int h = Texture_GetHeight(texture_index);
 	Vertex2D v[] = {
-		{ D3DXVECTOR4(dx , dy, 1.0f, 1) , D3DCOLOR_ARGB(255,255,255,255) | D3DFVF_DIFFUSE , D3DXVECTOR2(0, 0) },
-		{ D3DXVECTOR4(dx + w ,dy, 1.0f, 1) , D3DCOLOR_ARGB(255,255,255,255) | D3DFVF_DIFFUSE , D3DXVECTOR2(1 ,0) },
-		{ D3DXVECTOR4(dx , dy + h, 1.0f, 1) , D3DCOLOR_ARGB(255,255,255,255) | D3DFVF_DIFFUSE , D3DXVECTOR2(0 ,1) },
+		{ D3DXVECTOR4(dx , dy,        1.0f, 1) , D3DCOLOR_ARGB(255,255,255,255) | D3DFVF_DIFFUSE , D3DXVECTOR2(0, 0) },
+		{ D3DXVECTOR4(dx + w ,dy,     1.0f, 1) , D3DCOLOR_ARGB(255,255,255,255) | D3DFVF_DIFFUSE , D3DXVECTOR2(1 ,0) },
+		{ D3DXVECTOR4(dx , dy + h,    1.0f, 1) , D3DCOLOR_ARGB(255,255,255,255) | D3DFVF_DIFFUSE , D3DXVECTOR2(0 ,1) },
 		{ D3DXVECTOR4(dx + w, dy + h, 1.0f, 1) , D3DCOLOR_ARGB(255,255,255,255) | D3DFVF_DIFFUSE , D3DXVECTOR2(1 ,1) }
 	};
 

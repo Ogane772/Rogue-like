@@ -261,6 +261,15 @@
     <ClCompile Include="CEnemy_Gen.cpp">
       <Filter>ソース ファイル\エネミー</Filter>
     </ClCompile>
+    <ClCompile Include="CEnemy_Dwarf.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemy_Haniwa.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemy_Sekizou.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C2DObj.h">
@@ -435,6 +444,15 @@
       <Filter>ヘッダー ファイル\エネミー</Filter>
     </ClInclude>
     <ClInclude Include="CEnemy_Gen.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy_Dwarf.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy_Haniwa.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy_Sekizou.h">
       <Filter>ヘッダー ファイル\エネミー</Filter>
     </ClInclude>
   </ItemGroup>

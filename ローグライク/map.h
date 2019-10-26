@@ -74,6 +74,7 @@ public:
 	static void MapItemPosSet(int item_type, int x, int z);//指定場所にアイテム配置
 	static void MapPlayerPosSet(int mapz, int mapx, int oldz, int oldx);
 
+	static void MapEnemySingleSet(void);
 	static void MapEnemyPosSet(int mapz, int mapx, int oldz, int oldx);
 private:
 	//static int g_TexWood2;
@@ -81,9 +82,9 @@ private:
 	static void MapItemSet(void);//マップにアイテム配置処理
 	static void MapWeponSet(void);//マップに装備配置処理
 	static void MapTrapSet(void);//マップにワナ配置処理
-
-	
 	static void MapEnemySet(void);//マップにエネミー配置処理
+	
+	
 	static void MapLadderSet(void);//マップに階段配置処理
 
 	static void MapdeletePassage(int passagenum);// 選んだ通路ナンバーを削除

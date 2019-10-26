@@ -142,19 +142,11 @@ void CCamera::Update(void)
 		}
 	}
 
-	// ビュー座標変換行列の作成と設定
-	// カメラ座標
-	D3DXVECTOR3 eye(5.0f, 5.0f, -10.0f);
-	// 見てる場所(注視点)
-	D3DXVECTOR3 at(0.0f, 0.0f, 0.0f);
-	// カメラの上方向ベクトル
-	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
-
 
 	//g_front = D3DXVECTOR3(0, -0.1f, 1.0f);
 	//D3DXVec3TransformNormal(&g_front, &g_front);
 
-	D3DXMatrixLookAtLH(&m_mtxView, &m_CameraPos, &m_At, &up);
+	D3DXMatrixLookAtLH(&m_mtxView, &m_CameraPos, &m_At, &m_Up);
 
 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &m_mtxView);
 

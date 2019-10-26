@@ -142,7 +142,8 @@ void CMeshField::MeshField_Draw(void)
 {
 
 	//Set_Light();
-	for (int i = 0; i < MESH_MAX; i++)
+	int i = 0;
+	for (i = 0; i < MESH_MAX; i++)
 	{
 		if (g_mesh[i].muse)
 		{

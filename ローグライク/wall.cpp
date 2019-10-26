@@ -191,9 +191,9 @@ void CWall::MeshWall_Finalize(void)
 
 void CWall::MeshWall_Draw(void)
 {
-
+	int i = 0;
 	//Set_Light();
-	for (int i = 0; i < WALL_MAX; i++)
+	for (i = 0; i < WALL_MAX; i++)
 	{
 		if (g_wall[i].wuse)
 		{

@@ -13,6 +13,9 @@
 #include "CEnemy_Gen.h"
 #include "CEnemy_Knight.h"
 #include "CEnemy_Piel.h"
+#include "CEnemy_Dwarf.h"
+#include "CEnemy_Haniwa.h"
+#include "CEnemy_Sekizou.h"
 #include "Cplayer.h"
 #include "map.h"
 #include "sound.h"
@@ -95,17 +98,32 @@ void CEnemy::Create(int enemy_type, int x, int z)
 	{
 	case TYPE_GEN:
 	{
-		CEnemy_Gen *penemy_gen = new CEnemy_Gen(x, z, m_EnemyData[enemy_type]);
+		CEnemy_Gen *penemy_gen = new CEnemy_Gen(x, z, m_EnemyData[enemy_type - 1]);
 		break;
 	}
 	case TYPE_KNIGHT:
 	{
-		CEnemy_Knight *penemy_knight = new CEnemy_Knight(x, z, m_EnemyData[enemy_type]);
+		CEnemy_Knight *penemy_knight = new CEnemy_Knight(x, z, m_EnemyData[enemy_type - 1]);
 		break;
 	}
 	case TYPE_PIEL:
 	{
-		CEnemy_Piel *penemy_piel = new CEnemy_Piel(x, z, m_EnemyData[enemy_type]);
+		CEnemy_Piel *penemy_piel = new CEnemy_Piel(x, z, m_EnemyData[enemy_type - 1]);
+		break;
+	}
+	case TYPE_DWARF:
+	{
+		CEnemy_Dwarf *penemy_dwarf = new CEnemy_Dwarf(x, z, m_EnemyData[enemy_type - 1]);
+		break;
+	}
+	case TYPE_HANIWA:
+	{
+		CEnemy_Haniwa *penemy_haniwa = new CEnemy_Haniwa(x, z, m_EnemyData[enemy_type - 1]);
+		break;
+	}
+	case TYPE_SEKIZOU:
+	{
+		CEnemy_Sekizou *penemy_sekizou = new CEnemy_Sekizou(x, z, m_EnemyData[enemy_type - 1]);
 		break;
 	}
 	}
@@ -162,7 +180,7 @@ void CEnemy::EnemyTurnEnd(void)
 						eposZ = mt() % MAX_MAPHEIGHT;
 					} while (CMap::Map_GetData(eposZ, eposX).type != 1);
 
-					Create(TYPE_GEN, eposX, eposZ);
+					CMap::MapEnemySingleSet();
 				}
 			}
 		}
@@ -204,7 +222,7 @@ void CEnemy::EnemyTurnEnd(void)
 					eposZ = mt() % MAX_MAPHEIGHT;
 				} while (CMap::Map_GetData(eposZ, eposX).type != 1);
 
-				Create(TYPE_GEN, eposX, eposZ);
+				CMap::MapEnemySingleSet();
 			}
 		}
 	}
@@ -434,6 +452,8 @@ void CEnemy::Enemy_Draw(void)
 
 void CEnemy::Enemy_AI(void)
 {
+	int i = 0;
+	int e = 0;
 	C3DObj *getplayer = CPlayer::Get_Player();
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -454,14 +474,14 @@ void CEnemy::Enemy_AI(void)
 		C3DObj *enemy2;
 
 
-		for (int i = 0; i < MAX_GAMEOBJ; i++)
+		for (i = 0; i < MAX_GAMEOBJ; i++)
 		{
 			enemy = CEnemy::Get_Enemy(i);
 			if (enemy)
 			{
 				if (i != MAX_GAMEOBJ - 1)
 				{
-					for (int e = 0; e < MAX_GAMEOBJ; e++)
+					for (e = 0; e < MAX_GAMEOBJ; e++)
 					{
 						if (i != e)
 						{
@@ -940,7 +960,7 @@ void CEnemy::Enemy_AI(void)
 		//===================================================
 	case ENEMY_MOVE_END:
 		enemyturn = ENEMY_TURN_END;
-		Animation_Change(IDLE, 0.005f);
+		Animation_Change(IDLE, m_IdleAnimeTime);
 		
 		break;
 
@@ -985,7 +1005,7 @@ void CEnemy::Enemy_Act(void)
 	C3DObj *getplayer = CPlayer::Get_Player();
 	if (attackframe == 0)
 	{
-		Animation_Change(ATTACK, 0.0085f);
+		Animation_Change(ATTACK, m_AttackAnimeTime);
 	}
 	if (attackframe < 8)
 	{
@@ -1186,7 +1206,7 @@ void CEnemy::Enemy_TurboMove(void)
 {
 	if (walkf == 0 || walkf == 56 || walkf == 24 || walkf == 30 || walkf == 40 || walkf == 100)
 	{
-		Animation_Change(WALK, 0.05f);
+		Animation_Change(WALK, m_WalkAnimeTime);
 	}
 	if (walkf <= 4)
 	{
@@ -1241,7 +1261,7 @@ void CEnemy::Enemy_Move(void)
 	//0,56,24,30,40,105(turbo=100)
 	if (walkf == 0 || walkf == 56 || walkf == 24 || walkf == 30 || walkf == 40 || walkf == 105)
 	{
-		Animation_Change(WALK, 0.05f);
+		Animation_Change(WALK, m_WalkAnimeTime);
 	}
 	if (walkf <= WALK_COUNT)
 	{
